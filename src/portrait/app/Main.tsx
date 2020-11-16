@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, ToastAndroid, View} from 'react-native';
+import {Button, View} from 'react-native';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
 import {
   IMQTTService,
@@ -25,7 +25,6 @@ export default class Main extends BaseScreen<BasePops, BaseState> {
 
   private async onData(data: MqttData): Promise<void> {
     Logger.log(`MQTT Main onData`, data);
-    ToastAndroid.show(JSON.stringify(data), ToastAndroid.LONG);
   }
 
   private async move(): Promise<void> {

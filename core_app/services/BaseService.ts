@@ -1,13 +1,9 @@
 import {injectable} from 'inversify';
-import {
-  BaseDto,
-  BaseSdo,
-  CONSTANTS,
-  DTO_CODE,
-  IDataHandle,
-  IHandleDataService,
-  SDO_CODE,
-} from 'core_app';
+import {IHandleDataService} from 'core_app/services/IHandleDataService';
+import {IDataHandle} from 'core_app/services/IDataHandle';
+import {BaseDto} from 'core_app/services/dto';
+import {CONSTANTS, DTO_CODE, SDO_CODE} from 'core_app/common';
+import {BaseSdo} from 'core_app/repositories';
 
 @injectable()
 export class BaseService implements IHandleDataService {
