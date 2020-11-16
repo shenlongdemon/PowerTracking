@@ -1,0 +1,52 @@
+buildscript {
+  repositories {
+    jcenter()
+    maven {
+      url 'https://maven.google.com/'
+      name 'Google'
+    }
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:2.2.3'
+  }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+  compileSdkVersion 26
+  buildToolsVersion "23.0.1"
+
+  defaultConfig {
+    minSdkVersion 26
+    targetSdkVersion 26
+    versionCode 1
+    versionName "1.0"
+  }
+  lintOptions {
+    abortOnError false
+  }
+}
+
+repositories {
+  mavenCentral()
+  maven {
+      url "https://repo.eclipse.org/content/repositories/paho-releases/"
+  }
+  maven {
+    url 'https://maven.google.com/'
+    name 'Google'
+  }
+}
+
+dependencies {
+  compile 'com.facebook.react:react-native:+'
+  compile('org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0') {
+      exclude module: 'support-v4'
+  }
+  compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+
+  compile 'org.bouncycastle:bcprov-jdk15on:1.56'
+}
+
