@@ -6,6 +6,7 @@ export enum LANGUAGES {
 const CONSTANTS = {
   STR_EMPTY: '',
   ERROR: 'Error',
+  TOPIC_SEPARATE: '/',
   NONE_ID: 0,
   MENU_PAGE_SIZE: 48,
   OPERATION_PAGE_SIZE: 36,
@@ -75,5 +76,9 @@ export enum MQTT_MESSAGE_TYPE {
   SUBSCRIBE = 2,
 }
 
+export enum TOPIC_INDEX {
+  MAIN = 0,
+  IMEI = 1,
+}
 
 export {CONSTANTS, DTO_CODE, SDO_CODE, MQTT_CODE};

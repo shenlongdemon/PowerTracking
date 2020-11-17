@@ -1,13 +1,16 @@
 import {
+  AppUtil,
   BaseDto,
   BaseSdo,
   BaseService,
+  CONSTANTS,
   IMQTTService,
   Logger,
   MQTT_CODE,
   MQTT_MESSAGE_TYPE,
   MqttData,
   Subscribe,
+  TOPIC_INDEX,
 } from 'core_app';
 import {injectable} from 'inversify';
 import MQTT, {MqttClient} from 'react-native-mqtt';
@@ -103,19 +106,38 @@ export default class MQTTService extends BaseService implements IMQTTService {
     return 'mqtt://113.160.233.27:1883';
   }
 
-  private onMessage = async (
-    data: any | null,
-    qos: number,
-    retain: boolean,
-    topic: string,
-  ): Promise<void> => {
-    Logger.log(`MQTT onMessage `, topic, data);
-    !!this.onData &&
-      (await this.onData({
-        type: MQTT_MESSAGE_TYPE.MESSAGE,
-        topic,
-        data,
-        obj: {topic, data, qos},
-      }));
+  private onMessage = async (data: {
+    data: any | null;
+    qos: number;
+    retain: boolean;
+    topic: string;
+  }): Promise<void> => {
+    Logger.log(`MQTT onMessage `, data);
+    if (!data) {
+      return;
+    }
+    const topicPath: string = data.topic;
+    const topicValue: any = data.data;
+    Logger.log(
+      `MQTT onMessage topicPath ${topicPath}  topicValue: ${topicValue}`,
+    );
+    const topicItems: string[] = topicPath.split(CONSTANTS.TOPIC_SEPARATE);
+    Logger.log(`MQTT onMessage topicItems`, topicItems);
+    if (topicItems[TOPIC_INDEX.MAIN] !== 'SENSOR') {
+      return;
+    }
+    const owner: string = topicItems[topicItems.length - 2];
+    const topic: string = topicItems[topicItems.length - 1];
+    if (topic === 'XAxis' || topic === 'YAxis' || topic === 'ZAxis') {
+      !!this.onData &&
+        (await this.onData({
+          type: MQTT_MESSAGE_TYPE.MESSAGE,
+          topicPath,
+          topic,
+          owner,
+          data: {data: topicValue, time: AppUtil.now()},
+          obj: data,
+        }));
+    }
   };
 }
