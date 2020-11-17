@@ -15,12 +15,12 @@ export default class TopicChart extends BaseScrPart<Props, State> {
   }
   private renderData(): any {
     return this.state.data.map((d: TopicData): any => {
-      const data: TopicUnitData | null = d.list.length > 0 ? d.list[0] : null;
+      // const data: TopicUnitData | null = d.list.length > 0 ? d.list[0] : null;
       return (
         <>
           <Text>{d.owner}</Text>s
-          <Text>{!!data ? data.data : CONSTANTS.STR_EMPTY}</Text>
-          <Text>{!!data ? data.time : CONSTANTS.STR_EMPTY}</Text>
+          {/*<Text>{!!data ? data.data : CONSTANTS.STR_EMPTY}</Text>*/}
+          {/*<Text>{!!data ? data.time : CONSTANTS.STR_EMPTY}</Text>*/}
         </>
       );
     });

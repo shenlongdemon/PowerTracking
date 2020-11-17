@@ -127,15 +127,14 @@ export default class MQTTService extends BaseService implements IMQTTService {
       return;
     }
     const owner: string = topicItems[topicItems.length - 2];
-    const topic: string = topicItems[topicItems.length - 1];
-    if (topic === 'XAxis' || topic === 'YAxis' || topic === 'ZAxis') {
+    const field: string = topicItems[topicItems.length - 1];
+    if (field === 'XAxis' || field === 'YAxis' || field === 'ZAxis') {
       !!this.onData &&
         (await this.onData({
           type: MQTT_MESSAGE_TYPE.MESSAGE,
           topicPath,
-          topic,
           owner,
-          data: {data: topicValue, time: AppUtil.now()},
+          data: {field, data: topicValue, time: AppUtil.now()},
           obj: data,
         }));
     }

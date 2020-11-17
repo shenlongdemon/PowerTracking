@@ -38,9 +38,6 @@ export default class Main extends BaseScreen<BasePops, State> {
 
   private onData = async (data: MqttData): Promise<void> => {
     Logger.log(`MQTT Main onData`, data);
-    if (data.type !== MQTT_MESSAGE_TYPE.MESSAGE) {
-      return;
-    }
     await this.handleData(data);
   };
 
@@ -55,9 +52,7 @@ export default class Main extends BaseScreen<BasePops, State> {
 
   private async subscribe(): Promise<void> {
     await AppUtil.sleep(2000);
-    const dto: BaseDto = await this.mqttService.subscribe(this.onData);
-    if (dto.isSuccess) {
-    }
+    await this.mqttService.subscribe(this.onData);
   }
 
   private renderTopic(): any {
