@@ -1,10 +1,11 @@
 import {MQTT_MESSAGE_TYPE} from 'core_app/common';
-import {TopicUnitData} from 'core_app/services';
+import {FieldData} from 'core_app/services';
 
 export interface MqttData {
   type: MQTT_MESSAGE_TYPE;
   topicPath: string;
-  owner: string;
-  data: TopicUnitData | null;
+  imei: string;
+  group: string;
+  data: FieldData | null;
   obj: any | null;
 }

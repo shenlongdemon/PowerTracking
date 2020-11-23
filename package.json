@@ -11,7 +11,13 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "postinstall": "sh ./postinstall.sh",
     "shake": "adb shell input keyevent 82",
-    "dev": "ENVFILE=.env && npx react-native run-android"
+    "dev": "ENVFILE=.env && npx react-native run-android",
+    "attach-android-bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
+    "del-android-bundle": "rm -f ./android/app/src/main/assets/index.android.bundle",
+    "del-apk-file": "rm -f ./android/app/build/outputs/apk/debug/*.apk && rm -rf ./android/app/build/outputs/apk/release/*.apk",
+    "prepare-android-bundle": "npm run clear && npm run del-android-bundle && npm run attach-android-bundle",
+    "rm-dup-files": "find android/app/src/main/res/raw android/app/src/main/res/drawable-xxxhdpi android/app/src/main/res/drawable-xxhdpi android/app/src/main/res/drawable-xhdpi android/app/src/main/res/drawable-mdpi android/app/src/main/res/drawable-hdpi -type f ! -name launch_screen* -delete",
+    "release-apk:stg": "npm run prepare-android-bundle && npm run del-apk-file && npm run rm-dup-files && cd ./android && ENVFILE=.env.staging ./gradlew assembleRelease"
   },
   "dependencies": {
     "@react-native-community/async-storage": "1.12.1",
@@ -43,9 +49,11 @@
     "react-native-config": "1.4.1",
     "react-native-crypto": "2.2.0",
     "react-native-gesture-handler": "1.8.0",
+    "react-native-highcharts": "^1.0.2",
     "react-native-level-fs": "3.0.1",
     "react-native-mqtt": "github:rusfearuth/react-native-mqtt",
     "react-native-os": "1.2.6",
+    "react-native-pure-chart": "0.0.24",
     "react-native-randombytes": "3.6.0",
     "react-native-reanimated": "1.13.1",
     "react-native-safe-area-context": "3.1.8",

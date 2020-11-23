@@ -252,4 +252,14 @@ export class AppUtil {
   static async resolve<T>(value: any): Promise<T> {
     return Promise.resolve<T>(value);
   }
+
+  static groupBy(items: any[], key: string): any {
+    return items.reduce(
+      (result, item) => ({
+        ...result,
+        [item[key]]: [...(result[item[key]] || []), item],
+      }),
+      {},
+    );
+  }
 }

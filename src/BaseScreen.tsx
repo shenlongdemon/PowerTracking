@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {NavigationContainerRef} from '@react-navigation/native';
+import {SafeAreaView, ScrollView} from 'react-native';
 
 export interface BasePops {
-  navigation: NavigationContainerRef | undefined;
+  navigation?: NavigationContainerRef | undefined;
 }
 export interface BaseState {}
 export default class BaseScreen<
@@ -27,5 +28,13 @@ export default class BaseScreen<
         routes: [{name: routeName}],
       });
     }
+  }
+
+  render() {
+    return (
+      <SafeAreaView style={{flex: 1}}>
+        <ScrollView style={{flex: 1}}>{this.props.children}</ScrollView>
+      </SafeAreaView>
+    );
   }
 }

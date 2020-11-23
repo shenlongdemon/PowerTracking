@@ -91,7 +91,8 @@ export default class MQTTService extends BaseService implements IMQTTService {
   }
 
   private async getTopic(): Promise<string> {
-    return 'SENSOR/2CF432662C59/#';
+    // return 'SENSOR/2CF432662C59/#';
+    return 'REAL/#';
   }
 
   private onError = (error: Error): void => {
@@ -112,31 +113,41 @@ export default class MQTTService extends BaseService implements IMQTTService {
     retain: boolean;
     topic: string;
   }): Promise<void> => {
-    Logger.log(`MQTT onMessage `, data);
+    // Logger.log(`MQTT onMessage `, data);
     if (!data) {
       return;
     }
     const topicPath: string = data.topic;
-    const topicValue: any = data.data;
-    Logger.log(
-      `MQTT onMessage topicPath ${topicPath}  topicValue: ${topicValue}`,
-    );
+
+    // Logger.log(
+    //   `MQTT onMessage topicPath ${topicPath}  topicValue: ${topicValue}`,
+    // );
     const topicItems: string[] = topicPath.split(CONSTANTS.TOPIC_SEPARATE);
-    Logger.log(`MQTT onMessage topicItems`, topicItems);
-    if (topicItems[TOPIC_INDEX.MAIN] !== 'SENSOR') {
+    // Logger.log(`MQTT onMessage topicItems`, topicItems);
+    if (topicItems[TOPIC_INDEX.MAIN] !== 'SOLIEU') {
       return;
     }
-    const owner: string = topicItems[topicItems.length - 2];
+    const imei: string = topicItems[TOPIC_INDEX.IMEI];
     const field: string = topicItems[topicItems.length - 1];
-    if (field === 'XAxis' || field === 'YAxis' || field === 'ZAxis') {
-      !!this.onData &&
-        (await this.onData({
-          type: MQTT_MESSAGE_TYPE.MESSAGE,
-          topicPath,
-          owner,
-          data: {field, data: topicValue, time: AppUtil.now()},
-          obj: data,
-        }));
+    const groups: string[] = field.split('_');
+    if (groups.length !== 3 || groups[0] !== 'F') {
+      return;
     }
+    const topicValue: any = data.data;
+    const value: number = Number(topicValue);
+    const group: string = groups[1];
+    !!this.onData &&
+      (await this.onData({
+        type: MQTT_MESSAGE_TYPE.MESSAGE,
+        topicPath,
+        imei,
+        group,
+        data: {
+          field,
+          data: value,
+          time: AppUtil.now(),
+        },
+        obj: data,
+      }));
   };
 }

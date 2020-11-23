@@ -77,7 +77,7 @@ export enum MQTT_MESSAGE_TYPE {
 }
 
 export enum TOPIC_INDEX {
-  MAIN = 0,
+  MAIN = 2,
   IMEI = 1,
 }
 
