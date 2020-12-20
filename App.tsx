@@ -16,6 +16,7 @@ import {Provider} from 'react-redux';
 import Store from 'src/redux/Store';
 declare const global: {HermesInternal: null | {}};
 import {YellowBox} from 'react-native';
+import Loading from 'src/shared_controls/Loading';
 YellowBox.ignoreWarnings([]);
 
 Startup.start();

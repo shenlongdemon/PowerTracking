@@ -1,7 +1,7 @@
-/// <reference path="../../src/infrastructure/AxiosWebApi.ts" />
+/// <reference path="../../src/infrastructure/" />
 
-import { ApiResult } from './ApiResult';
-import { ErrorResult } from '../models';
+import {ApiResult} from './ApiResult';
+import {ErrorResult} from 'core_app/models';
 
 export interface IWebApi {
   /**
@@ -47,15 +47,4 @@ export interface IWebApi {
    * @param url
    */
   delete(url: string): Promise<ApiResult>;
-
-  /**
-   * upload file
-   * @param url url of server
-   * @param fileUri uri of file
-   * @param fileName name of file
-   * @param fileType type of file
-   */
-  uploadFile(url: string, fileUri: string, fileName: string, fileType: string): Promise<ApiResult>;
-
-  uploadS3(signedUrl: string, fileData: Buffer, dataType: string): Promise<ApiResult>;
 }

@@ -1,9 +1,9 @@
-import { ENV } from '../config';
+import {ENV} from '../config';
 
 const API = {
-  GET_TRACKING_DEVICE_STATUS: (trackingDeviceId: string): string => {
-    return `${ENV.HOST}/company/tse-status/${trackingDeviceId}`;
-  }
+  USER_LOGIN: (): string => {
+    return `${ENV.HOST}/login`;
+  },
 };
 
-export { API };
+export {API};

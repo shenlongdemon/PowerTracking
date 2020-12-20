@@ -5,3 +5,5 @@ export * from './IMQTTService';
 export * from './BaseService';
 export * from './IHandleDataService';
 export * from './IDataHandle';
+export * from './IAuthService';
+export * from './IStore';

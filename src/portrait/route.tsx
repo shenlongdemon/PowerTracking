@@ -1,11 +1,9 @@
 export const ROUTE = {
-    SPLASH: 'splash',
-    AUTH: {
-        ROUTE: 'auth',
-        USER_LOGIN: 'user_login'
-    },
-    APP: {
-        ROUTE: 'app',
-        MAIN: 'main',
-    }
+  SPLASH: 'splash',
+  AUTH: 'user_login',
+  APP: {
+    ROUTE: 'app',
+    MAIN: 'main',
+    IMEI_INFO: 'imei_info',
+  },
 };

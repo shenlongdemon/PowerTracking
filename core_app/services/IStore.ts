@@ -5,4 +5,7 @@
  * Scope: singleton
  */
 
-export interface IStore {}
+export interface IStore {
+  setAccessToken(accessToken: string): Promise<void>;
+  getAccessToken(): Promise<string>;
+}

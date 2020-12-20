@@ -5,6 +5,7 @@ export interface MqttData {
   type: MQTT_MESSAGE_TYPE;
   topicPath: string;
   imei: string;
+  mainGroup: string;
   group: string;
   data: FieldData | null;
   obj: any | null;

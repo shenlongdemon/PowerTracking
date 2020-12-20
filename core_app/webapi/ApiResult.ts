@@ -1,9 +1,9 @@
-import { API_METHOD } from '../common';
+import {API_METHOD} from 'core_app/common';
 
 export interface ApiResult {
   data?: any | null;
   message: string;
-  code: number;
+  code: string;
   url: string;
-  method: API_METHOD
+  method: API_METHOD;
 }

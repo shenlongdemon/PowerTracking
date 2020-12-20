@@ -4,23 +4,19 @@
   "private": true,
   "scripts": {
     "clear": "sh ./clear.sh",
-    "start": "npm run clear && npx react-native start --reset-cache",
+    "start": "sh ./start.sh",
     "android": "npx react-native run-android",
     "ios": "react-native run-ios",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "postinstall": "sh ./postinstall.sh",
     "shake": "adb shell input keyevent 82",
-    "dev": "ENVFILE=.env && npx react-native run-android",
-    "attach-android-bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
-    "del-android-bundle": "rm -f ./android/app/src/main/assets/index.android.bundle",
-    "del-apk-file": "rm -f ./android/app/build/outputs/apk/debug/*.apk && rm -rf ./android/app/build/outputs/apk/release/*.apk",
-    "prepare-android-bundle": "npm run clear && npm run del-android-bundle && npm run attach-android-bundle",
-    "rm-dup-files": "find android/app/src/main/res/raw android/app/src/main/res/drawable-xxxhdpi android/app/src/main/res/drawable-xxhdpi android/app/src/main/res/drawable-xhdpi android/app/src/main/res/drawable-mdpi android/app/src/main/res/drawable-hdpi -type f ! -name launch_screen* -delete",
-    "release-apk:stg": "npm run prepare-android-bundle && npm run del-apk-file && npm run rm-dup-files && cd ./android && ENVFILE=.env.staging ./gradlew assembleRelease"
+    "install-apk": "adb install ./android/app/build/outputs/apk/release/app-release.apk",
+    "dev": "export ENVFILE=.env && npx react-native run-android",
+    "release-apk": "export ENVFILE=.env.staging && sh ./release-apk.sh"
   },
   "dependencies": {
-    "@react-native-community/async-storage": "1.12.1",
+    "@react-native-async-storage/async-storage": "1.13.2",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/compat": "5.3.9",
     "@react-navigation/drawer": "5.11.2",
@@ -29,6 +25,7 @@
     "@tradle/react-native-http": "2.0.1",
     "@types/react-redux": "^7.1.11",
     "assert": "1.5.0",
+    "axios": "^0.21.0",
     "browserify-zlib": "0.1.4",
     "buffer": "6.0.2",
     "console-browserify": "1.2.0",
@@ -37,6 +34,7 @@
     "dns.js": "1.0.1",
     "domain-browser": "1.2.0",
     "events": "3.2.0",
+    "formik": "^2.2.5",
     "https-browserify": "0.0.1",
     "inversify": "5.0.1",
     "native-base": "2.13.14",
@@ -71,7 +69,8 @@
     "tty-browserify": "0.0.0",
     "url": "0.10.3",
     "util": "0.10.4",
-    "vm-browserify": "0.0.4"
+    "vm-browserify": "0.0.4",
+    "yup": "^0.31.0"
   },
   "devDependencies": {
     "@babel/core": "7.8.4",

@@ -11,14 +11,13 @@ import {
   MqttData,
   Subscribe,
   TOPIC_INDEX,
+  SubscribeTopicDto,
 } from 'core_app';
 import {injectable} from 'inversify';
 import MQTT, {MqttClient} from 'react-native-mqtt';
 @injectable()
 export default class MQTTService extends BaseService implements IMQTTService {
   private client: MqttClient | null = null;
-  private onData: ((data: MqttData) => Promise<void>) | null = null;
-  private subscriber: Subscribe | null = null;
   constructor() {
     super();
     this.onError.bind(this);
@@ -28,37 +27,56 @@ export default class MQTTService extends BaseService implements IMQTTService {
 
   async subscribe(onData: (data: MqttData) => Promise<void>): Promise<BaseDto> {
     Logger.log(`MqttService subscribe client`, this.client);
-    if (!!this.client) {
-      if (!!this.subscriber) {
-        // close subscriber
-        this.client.unsubscribe(this.subscriber.getTopic());
-        this.subscriber = null;
-      }
-      this.onData = onData;
-      const topics: string = await this.getTopic();
-      Logger.log(`MQTT subscribe `, topics);
-      this.client.subscribe(topics, 0);
-      const subscribe: Subscribe = new Subscribe(this.client, topics);
-      this.subscriber = subscribe;
-      return this.successDto(subscribe);
+    const topics: string = await this.getTopic();
+    return this.subscribeTopic(topics, onData);
+  }
+  async subscribeIMEI(
+    imei: string,
+    onData: (data: MqttData) => Promise<void>,
+  ): Promise<SubscribeTopicDto> {
+    const topic: string = await this.getIMEITopic(imei);
+    Logger.log(`MqttService subscribeIMEI topic ${topic}`);
+    const dto: SubscribeTopicDto = await this.subscribeTopic(topic, onData);
+    if (dto.isSuccess && !!dto.subscribe) {
     }
-
-    const sdo: BaseSdo = await this.connect();
-    if (sdo.isSuccess) {
-      return this.subscribe(onData);
-    }
-    return this.populate(sdo, false);
+    return dto;
   }
 
-  private async connect(): Promise<BaseSdo> {
-    const sdo: BaseSdo = await this.makeConnect();
+  private async subscribeTopic(
+    topic: string,
+    onData: (data: MqttData) => Promise<void>,
+  ): Promise<SubscribeTopicDto> {
+    Logger.log(`MqttService subscribe client`, this.client);
+    if (!!this.client) {
+      Logger.log(`MQTT unsubscribe `, topic);
+      this.client.unsubscribe(topic);
+      await AppUtil.sleep(2000);
+      Logger.log(`MQTT subscribe `, topic);
+      this.client.subscribe(topic, 0);
+      const subscribe: Subscribe = new Subscribe(this.client, topic);
+      return {...this.successDto(subscribe), subscribe};
+    }
+
+    const sdo: BaseSdo = await this.connect(onData);
+    if (sdo.isSuccess) {
+      return this.subscribeTopic(topic, onData);
+    }
+    return {...this.populate(sdo, false), subscribe: null};
+  }
+
+  private async connect(
+    onData: (data: MqttData) => Promise<void>,
+  ): Promise<BaseSdo> {
+    const sdo: BaseSdo = await this.makeConnect(onData);
     if (sdo.isSuccess && !!sdo.data) {
       this.client = sdo.data as MqttClient;
     }
     return sdo;
   }
 
-  private async makeConnect(): Promise<BaseSdo> {
+  private async makeConnect(
+    onData: (data: MqttData) => Promise<void>,
+  ): Promise<BaseSdo> {
     Logger.log(`MqttService makeConnect`);
     const promise = new Promise<BaseSdo>(
       async (resolve): Promise<void> => {
@@ -72,9 +90,12 @@ export default class MQTTService extends BaseService implements IMQTTService {
               client.on('error', (msg): void => {
                 resolve(this.failedSdo(MQTT_CODE.CONNECT_ERROR, msg));
               });
-              client.on('message', this.onMessage);
+              client.on('message', (data): void => {
+                Logger.log('message', data);
+                this.onMessage(onData, data);
+              });
               client.on('connect', (): void => {
-                console.log('connected');
+                Logger.log('connected');
                 resolve(this.successDto(client));
               });
               client.connect();
@@ -94,6 +115,10 @@ export default class MQTTService extends BaseService implements IMQTTService {
     // return 'SENSOR/2CF432662C59/#';
     return 'REAL/#';
   }
+  private async getIMEITopic(imei: string): Promise<string> {
+    // return 'SENSOR/2CF432662C59/#';
+    return `REAL/${imei}/#`;
+  }
 
   private onError = (error: Error): void => {
     Logger.log(`MQTT error `, error);
@@ -107,40 +132,41 @@ export default class MQTTService extends BaseService implements IMQTTService {
     return 'mqtt://113.160.233.27:1883';
   }
 
-  private onMessage = async (data: {
-    data: any | null;
-    qos: number;
-    retain: boolean;
-    topic: string;
-  }): Promise<void> => {
+  private onMessage = async (
+    onData: ((data: MqttData) => Promise<void>) | null | undefined,
+    data:
+      | {
+          data: any | null;
+          qos: number;
+          retain: boolean;
+          topic: string;
+        }
+      | null
+      | undefined,
+  ): Promise<void> => {
     // Logger.log(`MQTT onMessage `, data);
-    if (!data) {
+    if (!data || !onData) {
       return;
     }
     const topicPath: string = data.topic;
-
-    // Logger.log(
-    //   `MQTT onMessage topicPath ${topicPath}  topicValue: ${topicValue}`,
-    // );
     const topicItems: string[] = topicPath.split(CONSTANTS.TOPIC_SEPARATE);
-    // Logger.log(`MQTT onMessage topicItems`, topicItems);
-    if (topicItems[TOPIC_INDEX.MAIN] !== 'SOLIEU') {
-      return;
-    }
+    const mainGroup: string = topicItems[TOPIC_INDEX.MAIN];
+
     const imei: string = topicItems[TOPIC_INDEX.IMEI];
     const field: string = topicItems[topicItems.length - 1];
     const groups: string[] = field.split('_');
-    if (groups.length !== 3 || groups[0] !== 'F') {
+    if (groups.length !== 3) {
       return;
     }
     const topicValue: any = data.data;
-    const value: number = Number(topicValue);
+    const value: number = topicValue;
     const group: string = groups[1];
-    !!this.onData &&
-      (await this.onData({
+    !!onData &&
+      (await onData({
         type: MQTT_MESSAGE_TYPE.MESSAGE,
         topicPath,
         imei,
+        mainGroup,
         group,
         data: {
           field,

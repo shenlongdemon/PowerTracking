@@ -33,7 +33,10 @@ export default class BaseScreen<
   render() {
     return (
       <SafeAreaView style={{flex: 1}}>
-        <ScrollView style={{flex: 1}}>{this.props.children}</ScrollView>
+        {/*<Image style={styleSheet.imageBackground} source={background} />*/}
+        <ScrollView style={{flex: 1}} contentContainerStyle={{flexGrow: 1}}>
+          {this.props.children}
+        </ScrollView>
       </SafeAreaView>
     );
   }

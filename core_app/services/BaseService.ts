@@ -2,14 +2,19 @@ import {injectable} from 'inversify';
 import {IHandleDataService} from 'core_app/services/IHandleDataService';
 import {IDataHandle} from 'core_app/services/IDataHandle';
 import {BaseDto} from 'core_app/services/dto';
-import {CONSTANTS, DTO_CODE, SDO_CODE} from 'core_app/common';
+import {API_METHOD, CONSTANTS, DTO_CODE, SDO_CODE} from 'core_app/common';
 import {BaseSdo} from 'core_app/repositories';
 
 @injectable()
 export class BaseService implements IHandleDataService {
   handleData?: IDataHandle | undefined = undefined;
   protected successDto(data: any): BaseDto {
-    return new BaseDto(DTO_CODE.OK, data, CONSTANTS.STR_EMPTY, true);
+    return {
+      code: DTO_CODE.OK,
+      data,
+      message: CONSTANTS.STR_EMPTY,
+      isSuccess: true,
+    };
   }
   protected successSdo(data: any | null): BaseSdo {
     return {
@@ -17,6 +22,8 @@ export class BaseService implements IHandleDataService {
       data,
       message: CONSTANTS.STR_EMPTY,
       isSuccess: true,
+      method: API_METHOD.GET,
+      __debug: data,
     };
   }
   protected failedSdo(code: string, data?: any | null): BaseSdo {
@@ -25,6 +32,8 @@ export class BaseService implements IHandleDataService {
       data: null,
       message: CONSTANTS.STR_EMPTY,
       isSuccess: false,
+      method: API_METHOD.GET,
+      __debug: {code, data},
     };
   }
   protected populate(
@@ -41,12 +50,12 @@ export class BaseService implements IHandleDataService {
   }
 
   private handleSdo(sdo: BaseSdo, data?: any): BaseDto {
-    let dto: BaseDto = new BaseDto(
-      sdo.code,
-      sdo.data,
-      sdo.message,
-      sdo.isSuccess,
-    );
+    let dto: BaseDto = {
+      code: sdo.code,
+      data: sdo.data,
+      message: sdo.message,
+      isSuccess: sdo.isSuccess,
+    };
     if (!sdo.isSuccess && !!this[`handle${sdo.code}`]) {
       try {
         dto = this[`handle${sdo.code}`](sdo, data);

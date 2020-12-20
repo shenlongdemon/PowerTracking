@@ -6,4 +6,8 @@ import {BaseDto} from 'core_app/services/dto';
 
 export interface IMQTTService extends IHandleDataService {
   subscribe(onData: (data: MqttData) => Promise<void>): Promise<BaseDto>;
+  subscribeIMEI(
+    imei: string,
+    onData: (data: MqttData) => Promise<void>,
+  ): Promise<BaseDto>;
 }

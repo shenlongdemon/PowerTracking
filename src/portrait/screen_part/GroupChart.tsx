@@ -1,13 +1,13 @@
 import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import {FieldData, IMEIGroupData} from 'core_app/services';
 import {connect, ConnectedProps} from 'react-redux';
 import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
 import {RootState} from 'src/redux/rootReducer';
 import {AppUtil} from 'core_app/common';
-import {H1, H2, H3} from 'native-base';
+import {Text} from 'src/shared_controls/Text';
 type Props = ConnectedProps<typeof connector> & {
   name: string;
 };
@@ -157,7 +157,9 @@ class GroupChart extends BaseScrPart<Props, State> {
         const fields: string[] = Object.keys(dg);
         return (
           <>
-            <H3 key={imei.name}>{imei.name}</H3>
+            <Text H3 key={imei.name}>
+              {imei.name}
+            </Text>
             <>
               {fields
                 .sort((k1: string, k2: string): number => {
@@ -187,9 +189,9 @@ class GroupChart extends BaseScrPart<Props, State> {
   render() {
     return (
       <View key={this.props.name}>
-        <H1>{this.props.name}</H1>
+        <Text H1>{this.props.name}</Text>
         {this.renderData()}
-        <H1>-------------</H1>
+        <Text H1>-------------</Text>
       </View>
     );
   }

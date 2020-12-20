@@ -262,4 +262,8 @@ export class AppUtil {
       {},
     );
   }
+
+  static getProperties(schema: any): string[] {
+    return Object.keys(schema);
+  }
 }
