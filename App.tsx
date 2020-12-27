@@ -25,6 +25,7 @@ const App = () => {
     <Provider store={Store}>
       <NavigationContainer>
         <PortraitApp />
+        <Loading />
       </NavigationContainer>
     </Provider>
   );

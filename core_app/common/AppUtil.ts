@@ -1,7 +1,6 @@
 // @ts-ignore
 import {CONSTANTS} from './Constants';
 
-import {IStore} from '../repositories';
 import {Logger} from './Logger';
 
 export class AppUtil {
@@ -265,5 +264,11 @@ export class AppUtil {
 
   static getProperties(schema: any): string[] {
     return Object.keys(schema);
+  }
+
+  static runAsync(promise: Promise<void>): void {
+    setTimeout(async (): Promise<void> => {
+      await promise;
+    }, 1);
   }
 }

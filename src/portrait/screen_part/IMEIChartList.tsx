@@ -1,21 +1,23 @@
 import BaseScrPart from 'src/BaseScrPart';
-import * as React from 'react';
-import {View} from 'react-native';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {DataHandling} from 'src/infrastructure/DataHandling';
-import {AppUtil, Logger} from 'core_app/common';
-import {FieldData, IMQTTService, MqttData} from 'core_app/services';
-import GroupChart from 'src/portrait/screen_part/GroupChart';
+import {AppUtil} from 'core_app/common';
+import {FieldData, IMEIDetail, IMQTTService, MqttData} from 'core_app/services';
 import store from 'src/redux/Store';
-import {addIMEIDataAction} from 'src/redux/GSDLReducer';
+import {actAddIMEIData} from 'src/redux/GSDLReducer';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
+import IMEIChart from 'src/portrait/screen_part/IMEIChart';
+import React from 'react';
+import {Text} from 'src/shared_controls/Text';
 
-interface Props {}
+interface Props {
+  imeiDetail: IMEIDetail;
+}
 interface State {
   groups: string[];
 }
 
-export default class GroupChartList extends BaseScrPart<Props, State> {
+export default class IMEIChartList extends BaseScrPart<Props, State> {
   protected mqttService: IMQTTService = FactoryInjection.get<IMQTTService>(
     PUBLIC_TYPES.IMQTTService,
   );
@@ -33,7 +35,12 @@ export default class GroupChartList extends BaseScrPart<Props, State> {
   }
   private async subscribe(): Promise<void> {
     await AppUtil.sleep(2000);
-    await this.mqttService.subscribe(this.onData);
+    await this.mqttService.subscribeIMEI(
+      // this.props.imeiDetail.imei,
+      '2CF4326631D6',
+      true,
+      this.onData,
+    );
   }
 
   private onData = async (data: MqttData): Promise<void> => {
@@ -46,7 +53,7 @@ export default class GroupChartList extends BaseScrPart<Props, State> {
     const group: string = data.group;
     const imei: string = data.imei;
     const fieldData: FieldData | null = data.data;
-    if (!fieldData) {
+    if (!fieldData || fieldData.field.indexOf('F') !== 0 || group === 'LIVE') {
       return;
     }
     if (this.state.groups.indexOf(group) < 0) {
@@ -54,21 +61,25 @@ export default class GroupChartList extends BaseScrPart<Props, State> {
     }
     // store.dispatch(addIMEIData(group, imei, fieldData));
     store.dispatch(
-      addIMEIDataAction({
+      actAddIMEIData({
         group,
         imei,
         data: fieldData,
       }),
     );
   }
-
   private renderData(): any {
     return this.state.groups.map((group): any => {
-      return <GroupChart key={group} name={group} />;
+      return <IMEIChart key={group} name={group} />;
     });
   }
-
   render() {
-    return <View>{this.renderData()}</View>;
+    return <BaseScrPart>{this.renderData()}</BaseScrPart>;
   }
+
+  // private renderData(): any {
+  //     return this.state.groups.map((group): any => {
+  //         return <IMEIChart key={group} name={group} />;
+  //     });
+  // }
 }

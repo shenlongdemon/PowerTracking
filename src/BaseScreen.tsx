@@ -1,7 +1,9 @@
 import * as React from 'react';
 import {NavigationContainerRef} from '@react-navigation/native';
 import {SafeAreaView, ScrollView} from 'react-native';
-
+import Store from 'src/redux/Store';
+import {actSetLoading} from 'src/redux/UIReducer';
+import {Logger} from 'core_app/common';
 export interface BasePops {
   navigation?: NavigationContainerRef | undefined;
 }
@@ -27,6 +29,28 @@ export default class BaseScreen<
       this.props.navigation.original.reset({
         routes: [{name: routeName}],
       });
+    }
+  }
+
+  protected async setLoading(isLoading: boolean): Promise<void> {
+    Store.dispatch(actSetLoading(isLoading));
+  }
+  protected getParam(): any | null | undefined {
+    // @ts-ignore
+    const state: {params: any; routeName: string} | null | undefined =
+      // @ts-ignore
+      this.props.navigation.state;
+    if (!!state) {
+      const param: any | null | undefined = state.params;
+      Logger.log(`Navigation ${state.routeName}`, state.params);
+      return param;
+    }
+    return null;
+  }
+
+  protected goBack(): void {
+    if (!!this.props.navigation?.canGoBack) {
+      this.props.navigation?.goBack();
     }
   }
 

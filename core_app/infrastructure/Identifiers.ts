@@ -3,7 +3,9 @@ export enum PUBLIC_TYPES {
   IAuthService = 'IAuthService',
   IWebApi = 'IWebApi',
   IStore = 'IStore',
+  IIMEIService = 'IIMEIService',
 }
 export enum PRIVATE_TYPES {
   IAuthRepo = 'IAuthRepo',
+  IIMEIRepo = 'IIMEIRepo',
 }

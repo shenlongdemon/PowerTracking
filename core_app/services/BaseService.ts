@@ -8,6 +8,7 @@ import {BaseSdo} from 'core_app/repositories';
 @injectable()
 export class BaseService implements IHandleDataService {
   handleData?: IDataHandle | undefined = undefined;
+
   protected successDto(data: any): BaseDto {
     return {
       code: DTO_CODE.OK,
@@ -16,6 +17,7 @@ export class BaseService implements IHandleDataService {
       isSuccess: true,
     };
   }
+
   protected successSdo(data: any | null): BaseSdo {
     return {
       code: SDO_CODE.OK,
@@ -26,6 +28,7 @@ export class BaseService implements IHandleDataService {
       __debug: data,
     };
   }
+
   protected failedSdo(code: string, data?: any | null): BaseSdo {
     return {
       code,
@@ -36,6 +39,7 @@ export class BaseService implements IHandleDataService {
       __debug: {code, data},
     };
   }
+
   protected populate(
     sdo: BaseSdo,
     checkData: boolean = false,
@@ -66,5 +70,39 @@ export class BaseService implements IHandleDataService {
 
   setHandleData(handle: IDataHandle): void {
     this.handleData = handle;
+  }
+
+  mappingList<T>(
+    items: any[] | null | undefined,
+    type: {new (): T} | null = null,
+  ): T[] {
+    const ts: T[] = [];
+    if (!!items) {
+      const tData: (T | null)[] = items.map((d: any | null | undefined) => {
+        return this.mappingObject<T>(d, type);
+      });
+
+      tData.forEach((o: T | null) => {
+        if (o) {
+          ts.push(o);
+        }
+      });
+    }
+    return ts;
+  }
+
+  mappingObject<T>(
+    data: any | null | undefined,
+    type: {new (): T} | null = null,
+  ): T | null {
+    if (!data) {
+      return null;
+    }
+    if (type) {
+      const t: T = new type();
+      Object.assign(t, data);
+      return t;
+    }
+    return data as T;
   }
 }

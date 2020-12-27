@@ -1,4 +1,4 @@
-import * as React from 'react';
+/*import * as React from 'react';
 import {Button, View} from 'react-native';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
 import Input from 'src/shared_controls/Input';
@@ -14,16 +14,22 @@ interface State extends BaseState {
   cauhinh: FieldData[];
   solieu: FieldData[];
 }
-export default class IMEIInfo extends BaseScreen<BasePops, State> {
+export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
   private mqttService: IMQTTService = FactoryInjection.get<IMQTTService>(
     PUBLIC_TYPES.IMQTTService,
   );
+  private imeiInfo!: IMEIInfoScreen;
   constructor(p: BasePops) {
     super(p);
     this.state = {
       cauhinh: [],
       solieu: [],
     };
+    const param: any | null | undefined = this.getParam();
+    if (!param) {
+      this.goBack();
+    }
+    this.imeiInfo = param as IMEIInfoScreen;
   }
   private onData = async (data: MqttData): Promise<void> => {
     if (!data.data) {
@@ -117,3 +123,4 @@ export default class IMEIInfo extends BaseScreen<BasePops, State> {
     );
   }
 }
+*/

@@ -14,19 +14,19 @@ class Loading extends PureComponent<Props> {
   }
   render() {
     if (this.props.isLoading) {
-      // return (
-      //   <View
-      //     style={{
-      //       height: '100%',
-      //       width: '100%',
-      //       position: 'absolute',
-      //       zIndex: 99999,
-      //       justifyContent: 'center',
-      //       flexDirection: 'row',
-      //     }}>
-      //     <Spinner color="white" size={100} style={styleSheet.spinner} />
-      //   </View>
-      // );
+      return (
+        <View
+          style={{
+            height: '100%',
+            width: '100%',
+            position: 'absolute',
+            zIndex: 99999,
+            justifyContent: 'center',
+            flexDirection: 'row',
+          }}>
+          <Spinner color="white" size={30} style={styleSheet.spinner} />
+        </View>
+      );
     }
     return null;
   }

@@ -5,7 +5,7 @@ export enum GSDL_REDUCER_ACTION {
   ADD_IMEI_DATA = 'ADD_IMEI_DATA',
 }
 
-export const addIMEIDataAction = (data: AddIMEIData): GSDLReduxState => {
+export const actAddIMEIData = (data: AddIMEIData): GSDLReduxState => {
   return {
     type: GSDL_REDUCER_ACTION.ADD_IMEI_DATA,
     data,

@@ -14,6 +14,7 @@ interface Props<T> extends ViewProps {
   schema: Schema<T>;
   cancel?: () => void;
   submit: (value: T) => Promise<void>;
+  defaultValue?: T;
   layout?: number[][];
   submitTittle?: string;
 }
@@ -39,6 +40,9 @@ export default class Formik<T> extends React.Component<Props<T>, State> {
   }
 
   private initialValues(): T {
+    if (!!this.props.defaultValue) {
+      return this.props.defaultValue;
+    }
     const keys: string[] = AppUtil.getProperties(this.props.schema);
     const value: any = {};
     keys.forEach((key: string): void => {

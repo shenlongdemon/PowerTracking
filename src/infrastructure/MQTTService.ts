@@ -18,6 +18,7 @@ import MQTT, {MqttClient} from 'react-native-mqtt';
 @injectable()
 export default class MQTTService extends BaseService implements IMQTTService {
   private client: MqttClient | null = null;
+  private imeiMap: Map<string, string> = new Map<string, string>();
   constructor() {
     super();
     this.onError.bind(this);
@@ -30,14 +31,31 @@ export default class MQTTService extends BaseService implements IMQTTService {
     const topics: string = await this.getTopic();
     return this.subscribeTopic(topics, onData);
   }
+
+  private clearAllSubscribes(): void {
+    if (!this.client) {
+      return;
+    }
+    for (const imeiMapKey in this.imeiMap) {
+      this.client.unsubscribe(this.imeiMap[imeiMapKey]);
+    }
+  }
+  private addSubscribeByIMEI(imei: string, topic: string): void {
+    this.imeiMap.set(imei, topic);
+  }
   async subscribeIMEI(
     imei: string,
+    clearAll: boolean,
     onData: (data: MqttData) => Promise<void>,
   ): Promise<SubscribeTopicDto> {
+    if (clearAll) {
+      this.clearAllSubscribes();
+    }
     const topic: string = await this.getIMEITopic(imei);
     Logger.log(`MqttService subscribeIMEI topic ${topic}`);
     const dto: SubscribeTopicDto = await this.subscribeTopic(topic, onData);
     if (dto.isSuccess && !!dto.subscribe) {
+      this.addSubscribeByIMEI(imei, topic);
     }
     return dto;
   }
@@ -96,7 +114,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
               });
               client.on('connect', (): void => {
                 Logger.log('connected');
-                resolve(this.successDto(client));
+                resolve(this.successSdo(client));
               });
               client.connect();
             })

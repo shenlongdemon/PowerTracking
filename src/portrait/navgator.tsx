@@ -10,15 +10,35 @@ import {ROUTE} from './route';
 import Splash from './Splash';
 import Main from './app/Main';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import IMEIInfo from 'src/portrait/app/IMEIInfo';
+import IMEIInfoScreen from 'src/portrait/app/IMEIInfoScreen';
 
 const mainStack = createCompatNavigatorFactory(createDrawerNavigator)(
   {
     [ROUTE.APP.MAIN]: Main,
-    [ROUTE.APP.IMEI_INFO]: IMEIInfo,
+    [ROUTE.APP.IMEI_INFO]: IMEIInfoScreen,
   },
   {
-    initialRouteName: ROUTE.APP.IMEI_INFO,
+    initialRouteName: ROUTE.APP.MAIN,
+    defaultNavigationOptions: {
+      headerStyle: {},
+      headerTitleStyle: {
+        textAlign: 'center',
+        // backgroundColor: 'red',
+        // flexGrow: 1,
+        flex: 1,
+        alignSelf: 'center',
+        marginLeft: -50,
+        // width: '100%',
+      },
+    },
+    // navigationOptions: {
+    //   headerTitleStyle: {
+    //     alignSelf: 'center',
+    //     textAlign: 'center',
+    //     flex: 1,
+    //     backgroundColor: 'red',
+    //   },
+    // },
   },
 );
 

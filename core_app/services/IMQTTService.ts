@@ -8,6 +8,7 @@ export interface IMQTTService extends IHandleDataService {
   subscribe(onData: (data: MqttData) => Promise<void>): Promise<BaseDto>;
   subscribeIMEI(
     imei: string,
+    clearAll: boolean,
     onData: (data: MqttData) => Promise<void>,
   ): Promise<BaseDto>;
 }
