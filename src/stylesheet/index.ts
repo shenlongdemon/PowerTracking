@@ -2,6 +2,15 @@ import {StyleSheet} from 'react-native';
 
 const color = {
   button: '#30ab9a',
+  buttonText: '#ffffff',
+
+  buttonDanger: '#ce3d3e',
+
+  lightButton: 'rgba(226,245,244,0.3)',
+  lightButtonText: '#30ab9a',
+};
+const font = {
+  size: 18,
 };
 const styleSheet = StyleSheet.create({
   imageBackground: {
@@ -33,4 +42,4 @@ const styleSheet = StyleSheet.create({
   },
 });
 
-export {styleSheet};
+export {styleSheet, color, font};

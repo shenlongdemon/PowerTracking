@@ -8,8 +8,7 @@ interface Props extends TextProps, IControl {
   H3?: boolean;
   bold?: boolean;
 }
-interface State {}
-export class Text extends React.Component<Props, State> {
+export class Text extends React.PureComponent<Props> {
   constructor(p: Props) {
     super(p);
   }

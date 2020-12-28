@@ -76,14 +76,20 @@ class IMEIChart extends BaseScrPart<Props, State> {
         '#b16829',
         '#29b1b1',
       ];
+
       let colorIndex: number = 0;
       const dg: any = AppUtil.groupBy(this.state.list, 'field');
-      const keys: string[] = Object.keys(dg);
-      const dd: any[] = keys.map((key: string): any => {
+      const keys: string[] = Object.keys(dg).sort(
+        (k1: string, k2: string): number => {
+          return k1 > k2 ? 1 : -1;
+        },
+      );
+      const dd: any[] = keys.map((key: string, index: number): any => {
         const list: FieldData[] = dg[key];
-        colorIndex += 1;
-        if (colorIndex === colors.length) {
-          colorIndex = 0;
+        if (index < colors.length) {
+          colorIndex = index;
+        } else {
+          colorIndex = index % colors.length;
         }
         return {
           data: list
