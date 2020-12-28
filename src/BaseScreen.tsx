@@ -29,12 +29,18 @@ export default class BaseScreen<
   }
 
   protected reset(routeName: string): void {
-    // @ts-ignore
-    if (!!this.props.navigation && this.props.navigation.original) {
+    if (!!this.props.navigation) {
       // @ts-ignore
-      this.props.navigation.original.reset({
-        routes: [{name: routeName}],
-      });
+      if (this.props.navigation.original) {
+        // @ts-ignore
+        this.props.navigation.original.reset({
+          routes: [{name: routeName}],
+        });
+      } else {
+        this.props.navigation.reset({
+          routes: [{name: routeName}],
+        });
+      }
     }
   }
 

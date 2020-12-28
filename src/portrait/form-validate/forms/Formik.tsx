@@ -125,9 +125,6 @@ export default class Formik<T> extends React.Component<Props<T>, State> {
             onPress={async (): Promise<void> => {
               props.handleSubmit();
             }}
-            title={
-              !!this.props.submitTittle ? this.props.submitTittle : 'Submit'
-            }
             disabled={!props.isValid}>
             {!!this.props.submitTittle ? this.props.submitTittle : 'Submit'}
           </Button>

@@ -6,4 +6,6 @@ export interface IAuthService {
   login(phone: string, password: string): Promise<UserLoginDto>;
 
   isLoggedIn(): Promise<boolean>;
+
+  logOut(): Promise<boolean>;
 }

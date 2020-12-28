@@ -11,11 +11,36 @@ import Splash from './Splash';
 import Main from './app/Main';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import IMEIInfoScreen from 'src/portrait/app/IMEIInfoScreen';
+import DrawerMenu from 'src/portrait/DrawerMenu';
 
+const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
+  {
+    [ROUTE.APP.MAIN]: {screen: Main, navigationOptions: {title: 'IMEI List'}},
+  },
+  {
+    initialRouteName: ROUTE.APP.MAIN,
+    drawerContent: (props) => <DrawerMenu {...props} />,
+    defaultNavigationOptions: {
+      headerStyle: {},
+      headerTitleStyle: {
+        textAlign: 'center',
+        // backgroundColor: 'red',
+        // flexGrow: 1,
+        flex: 1,
+        alignSelf: 'center',
+        // marginLeft: -50,
+        // width: '100%',
+      },
+    },
+  },
+);
 // const mainStack = createCompatNavigatorFactory(createDrawerNavigator)(
 const mainStack = createCompatNavigatorFactory(createStackNavigator)(
   {
-    [ROUTE.APP.MAIN]: {screen: Main, navigationOptions: {title: 'IMEI List'}},
+    [ROUTE.APP.ROUTE]: {
+      screen: drawerStack,
+      navigationOptions: {headerShown: false},
+    },
     [ROUTE.APP.IMEI_INFO]: IMEIInfoScreen,
   },
   {

@@ -10,7 +10,6 @@ import {styleSheet} from 'src/stylesheet';
 
 export interface Props extends TouchViewProps {
   isLoading?: boolean;
-  title: string;
 }
 
 export default class Button extends TouchView<Props> {
