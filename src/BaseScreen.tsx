@@ -21,6 +21,12 @@ export default class BaseScreen<
       this.props.navigation.navigate(routeName, data);
     }
   }
+  protected setHeader(title: string): void {
+    if (!!this.props.navigation) {
+      // @ts-ignore
+      this.props.navigation.setOptions({title: title});
+    }
+  }
 
   protected reset(routeName: string): void {
     // @ts-ignore

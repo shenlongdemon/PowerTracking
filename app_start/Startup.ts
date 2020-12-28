@@ -21,10 +21,7 @@ export default class Startup {
   }
 
   private static inject(): void {
-    FactoryInjection.bindSingleton<IMQTTService>(
-      PUBLIC_TYPES.IMQTTService,
-      MQTTService,
-    );
+    FactoryInjection.bind<IMQTTService>(PUBLIC_TYPES.IMQTTService, MQTTService);
     FactoryInjection.bindSingleton<IStore>(
       PUBLIC_TYPES.IStore,
       AsyncStorageStore,

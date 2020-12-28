@@ -6,13 +6,14 @@ import {connect, ConnectedProps} from 'react-redux';
 import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
 import {RootState} from 'src/redux/rootReducer';
-import {AppUtil} from 'core_app/common';
+import {AppUtil, CONSTANTS, DateUtils} from 'core_app/common';
 import {Text} from 'src/shared_controls/Text';
 import {Body, Left, List, ListItem} from 'native-base';
 import {LineChart, Grid, XAxis, YAxis} from 'react-native-svg-charts';
 
 type Props = ConnectedProps<typeof connector> & {
   name: string; // group name
+  imei: string; // group name
 };
 
 interface State {
@@ -58,33 +59,6 @@ class IMEIChart extends BaseScrPart<Props, State> {
           return {
             list: [...prevState.list, data.data],
           };
-          // let currentImei: IMEIGroupData | null =
-          //   prevState.imeis.find((imei: IMEIGroupData): boolean => {
-          //     return imei.name === data.imei;
-          //   }) || null;
-          // if (!currentImei) {
-          //   currentImei = {name: data.imei, list: [data.data]};
-          //   return {
-          //     imeis: [...prevState.imeis, currentImei],
-          //   };
-          // } else {
-          //   return {
-          //     imeis: [
-          //       ...prevState.imeis.map(
-          //         (imei: IMEIGroupData): IMEIGroupData => {
-          //           if (imei.name === data.imei) {
-          //             //TODO remove when use chart
-          //             imei.list = imei.list.filter((fd: FieldData): boolean => {
-          //               return fd.field !== data.data.field;
-          //             });
-          //             imei.list.push(data.data);
-          //           }
-          //           return imei;
-          //         },
-          //       ),
-          //     ],
-          //   };
-          // }
         }
       }
     }
@@ -120,88 +94,102 @@ class IMEIChart extends BaseScrPart<Props, State> {
               // return {x: `${f.time}`, y: f.data <= 0 ? 0 : f.data};
               return Number(f.data);
             }),
+          time: list
+            .sort((a: FieldData, b: FieldData): number => {
+              return a.time - b.time;
+            })
+            .map((f: FieldData, index: number): any => {
+              // return {x: `${f.time}`, y: f.data <= 0 ? 0 : f.data};
+              return new Date(f.time);
+            }),
           svg: {stroke: colors[colorIndex]},
         };
       });
       if (dd.length > 0) {
-        const data: number[] = [].concat(
+        const yAxis: number[] = [].concat(
           ...dd.map((d: any): any => {
             return d.data;
           }),
         );
-        const yMin: number = Math.min(...data);
-        const yMax: number = Math.max(...data);
+        const xAxis: Date[] = [].concat(
+          ...dd.map((d: any): any => {
+            return d.time;
+          }),
+        );
+        const values: number[] = yAxis.sort((a, b) => b - a);
+        const max: number = values[0] + Math.abs(values[0]) / 10;
+        const min: number =
+          values[values.length - 1] - Math.abs(values[values.length - 1]) / 10;
+
         return (
           <View
             style={{
-              height: 200,
-              flexDirection: 'row',
-              paddingTop: 10,
-              marginTop: 10,
+              height: 320,
+              paddingRight: 10,
             }}>
-            <YAxis
-              data={data}
-              // contentInset={{top: yMax, bottom: yMin}}
-              svg={{
-                fill: 'grey',
-                fontSize: 10,
+            <View
+              style={{
+                height: 250,
+                flexDirection: 'row',
+              }}>
+              <YAxis
+                style={{width: 30}}
+                data={yAxis}
+                svg={{
+                  fill: 'grey',
+                  fontSize: 10,
+                }}
+                min={min}
+                max={max}
+                formatLabel={(value) => `${value}`}
+              />
+              <LineChart
+                yMin={min}
+                yMax={max}
+                style={{flex: 1}}
+                data={dd}
+                // contentInset={{right: 20}}
+              >
+                <Grid />
+              </LineChart>
+            </View>
+            <XAxis
+              contentInset={{right: 20}}
+              style={{
+                flex: 1,
+                // paddingLeft: 10,
+                // backgroundColor: 'yellow',
+                // marginRight: 10,
               }}
-              numberOfTicks={(yMin + yMax) / 10}
-              formatLabel={(value) => `${value}`}
+              data={xAxis}
+              formatLabel={(value, index): string => {
+                if (
+                  xAxis.length <= 4 ||
+                  index === xAxis.length - 1 ||
+                  index === 0
+                ) {
+                  return DateUtils.format(xAxis[index], 'HH:mm:ss (DD)');
+                } else if (xAxis.length - index <= 4) {
+                  return DateUtils.format(xAxis[index], 'HH:mm:ss (DD)');
+                } else if (index % Math.round(xAxis.length / 4) === 0) {
+                  return DateUtils.format(xAxis[index], 'HH:mm:ss (DD)');
+                }
+                return CONSTANTS.STR_EMPTY;
+              }}
+              svg={{
+                fill: 'black',
+                fontSize: 10,
+                rotation: 90,
+                originY: 30,
+                y: 0,
+              }}
             />
-            <LineChart
-              style={{flex: 1, marginLeft: 16}}
-              data={dd}
-              // contentInset={{top: yMax, bottom: yMin}}
-            >
-              <Grid />
-            </LineChart>
           </View>
         );
       }
     }
     return <View />;
   }
-  // private renderData(): any {
-  //   // const dataChart: any[] = this.state.imeis.filter(
-  //   //   (imei: IMEIGroupData): boolean => {
-  //   //     return imei.list.length > 0;
-  //   //   },
-  //   // );
-  //   if (this.state.list.length > 0) {
-  //     const dg: any = AppUtil.groupBy(this.state.list, 'field');
-  //     const fields: string[] = Object.keys(dg);
-  //     return (
-  //       <List>
-  //         {fields
-  //           .sort((k1: string, k2: string): number => {
-  //             return k1 > k2 ? 1 : -1;
-  //           })
-  //           .map((field: string): any => {
-  //             const list: FieldData[] = (dg[field] as FieldData[])
-  //               .filter((fd: FieldData): boolean => {
-  //                 return fd.field === field;
-  //               })
-  //               .sort((a: FieldData, b: FieldData): number => {
-  //                 return a.time - b.time;
-  //               });
-  //             return (
-  //               <ListItem noIndent>
-  //                 <Left style={styles.leftColumn}>
-  //                   <Text>{this.props.name}</Text>
-  //                 </Left>
-  //                 <Body>
-  //                   <Text>{list[list.length - 1].data}</Text>
-  //                 </Body>
-  //               </ListItem>
-  //             );
-  //           })}
-  //       </List>
-  //     );
-  //   }
-  //   return <View />;
-  // }
-
   render() {
     return (
       <BaseScrPart key={this.props.name}>

@@ -11,4 +11,6 @@ export interface IMQTTService extends IHandleDataService {
     clearAll: boolean,
     onData: (data: MqttData) => Promise<void>,
   ): Promise<BaseDto>;
+
+  close(): Promise<BaseDto>;
 }

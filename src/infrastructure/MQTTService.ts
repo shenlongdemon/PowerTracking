@@ -18,7 +18,10 @@ import MQTT, {MqttClient} from 'react-native-mqtt';
 @injectable()
 export default class MQTTService extends BaseService implements IMQTTService {
   private client: MqttClient | null = null;
-  private imeiMap: Map<string, string> = new Map<string, string>();
+  private imeiMap: Map<string, {topic: string; onData: any}> = new Map<
+    string,
+    any
+  >();
   constructor() {
     super();
     this.onError.bind(this);
@@ -37,11 +40,11 @@ export default class MQTTService extends BaseService implements IMQTTService {
       return;
     }
     for (const imeiMapKey in this.imeiMap) {
-      this.client.unsubscribe(this.imeiMap[imeiMapKey]);
+      this.unsubscribe(imeiMapKey);
     }
   }
-  private addSubscribeByIMEI(imei: string, topic: string): void {
-    this.imeiMap.set(imei, topic);
+  private addSubscribeByIMEI(imei: string, topic: string, onData: any): void {
+    this.imeiMap.set(imei, {topic, onData});
   }
   async subscribeIMEI(
     imei: string,
@@ -55,9 +58,32 @@ export default class MQTTService extends BaseService implements IMQTTService {
     Logger.log(`MqttService subscribeIMEI topic ${topic}`);
     const dto: SubscribeTopicDto = await this.subscribeTopic(topic, onData);
     if (dto.isSuccess && !!dto.subscribe) {
-      this.addSubscribeByIMEI(imei, topic);
+      this.addSubscribeByIMEI(imei, topic, onData);
     }
     return dto;
+  }
+
+  async close(): Promise<BaseDto> {
+    Logger.log(`MqttService close`);
+
+    if (this.client) {
+      this.clearAllSubscribes();
+      this.client.disconnect();
+      MQTT.removeClient(this.client);
+    }
+
+    this.client = null;
+    return this.successDto(null);
+  }
+
+  private unsubscribe(imei: string): void {
+    if (this.client) {
+      const item: {topic: string; onData: any} = this.imeiMap[imei];
+      Logger.log(`MqttService unsubscribe ${item.topic}`);
+
+      this.client.unsubscribe(item.topic);
+      item.onData = undefined;
+    }
   }
 
   private async subscribeTopic(

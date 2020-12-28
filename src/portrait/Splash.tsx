@@ -6,8 +6,14 @@ import {ENV} from 'core_app/config';
 import {AppUtil, Logger} from 'core_app/common';
 import {logo} from 'src/assets';
 import {styleSheet} from 'src/stylesheet';
+import {IAuthService} from 'core_app/services';
+import {FactoryInjection} from 'core_app/infrastructure';
+import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 
 export default class Splash extends BaseScreen<BasePops, BaseState> {
+  public authService: IAuthService = FactoryInjection.get<IAuthService>(
+    PUBLIC_TYPES.IAuthService,
+  );
   constructor(p: BasePops) {
     super(p);
     Logger.log(`Splash `);
@@ -19,8 +25,13 @@ export default class Splash extends BaseScreen<BasePops, BaseState> {
     }, 2000);
   }
 
-  move(): void {
-    this.reset(ROUTE.AUTH);
+  async move(): Promise<void> {
+    const isLoggedIn: boolean = await this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.reset(ROUTE.APP.ROUTE);
+    } else {
+      this.reset(ROUTE.AUTH);
+    }
   }
 
   render() {

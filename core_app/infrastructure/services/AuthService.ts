@@ -24,4 +24,9 @@ export class AuthService extends BaseService implements IAuthService {
     }
     return {...this.populate(sdo), isLoggedIn};
   }
+  async isLoggedIn(): Promise<boolean> {
+    const token: string = await this.store.getAccessToken();
+    Logger.log(`AuthService isLoggedIn token ${token}`);
+    return token !== CONSTANTS.STR_EMPTY;
+  }
 }

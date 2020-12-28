@@ -12,9 +12,10 @@ import Main from './app/Main';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import IMEIInfoScreen from 'src/portrait/app/IMEIInfoScreen';
 
-const mainStack = createCompatNavigatorFactory(createDrawerNavigator)(
+// const mainStack = createCompatNavigatorFactory(createDrawerNavigator)(
+const mainStack = createCompatNavigatorFactory(createStackNavigator)(
   {
-    [ROUTE.APP.MAIN]: Main,
+    [ROUTE.APP.MAIN]: {screen: Main, navigationOptions: {title: 'IMEI List'}},
     [ROUTE.APP.IMEI_INFO]: IMEIInfoScreen,
   },
   {
@@ -27,7 +28,7 @@ const mainStack = createCompatNavigatorFactory(createDrawerNavigator)(
         // flexGrow: 1,
         flex: 1,
         alignSelf: 'center',
-        marginLeft: -50,
+        // marginLeft: -50,
         // width: '100%',
       },
     },

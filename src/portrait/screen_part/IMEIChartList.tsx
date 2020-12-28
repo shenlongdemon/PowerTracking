@@ -33,6 +33,14 @@ export default class IMEIChartList extends BaseScrPart<Props, State> {
   async componentDidMount(): Promise<void> {
     await this.subscribe();
   }
+
+  async componentWillUnmount(): Promise<void> {
+    await this.close();
+  }
+
+  private async close(): Promise<void> {
+    await this.mqttService.close();
+  }
   private async subscribe(): Promise<void> {
     await AppUtil.sleep(2000);
     await this.mqttService.subscribeIMEI(
@@ -70,11 +78,25 @@ export default class IMEIChartList extends BaseScrPart<Props, State> {
   }
   private renderData(): any {
     return this.state.groups.map((group): any => {
-      return <IMEIChart key={group} name={group} />;
+      return (
+        <IMEIChart
+          key={`${this.props.imeiDetail.imei}-${group}`}
+          name={group}
+          imei={this.props.imeiDetail.imei}
+        />
+      );
     });
   }
   render() {
-    return <BaseScrPart>{this.renderData()}</BaseScrPart>;
+    return (
+      <BaseScrPart>
+        {this.state.groups.length > 0 ? (
+          this.renderData()
+        ) : (
+          <Text>Loading ...</Text>
+        )}
+      </BaseScrPart>
+    );
   }
 
   // private renderData(): any {

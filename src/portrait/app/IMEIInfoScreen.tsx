@@ -29,6 +29,7 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
       this.goBack();
     }
     this.imeiInfo = param as IMEIInfo;
+    this.setHeader(this.imeiInfo.imei);
   }
 
   async componentDidMount(): Promise<void> {

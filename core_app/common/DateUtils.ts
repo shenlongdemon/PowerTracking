@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 
 export class DateUtils {
   static now = (): Date => {
@@ -9,4 +10,7 @@ export class DateUtils {
   static toString = (date: Date): string => {
     return `moment(date).format(CONSTANTS.DATE_FORMAT)`;
   };
+  static format(date: Date, template: string) {
+    return dayjs(date).format(template);
+  }
 }
