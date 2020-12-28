@@ -6,6 +6,7 @@
  npm cache clean --force && rm -rf **/build/* && rm -rf **/.idea/*
   rm -rf ./android/build
   rm -rf ./android/app/build
+  rm -rf ./android/app/src/debug
 
 
 

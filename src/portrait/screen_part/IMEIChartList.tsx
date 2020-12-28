@@ -37,7 +37,7 @@ export default class IMEIChartList extends BaseScrPart<Props, State> {
     await AppUtil.sleep(2000);
     await this.mqttService.subscribeIMEI(
       // this.props.imeiDetail.imei,
-      '2CF4326631D6',
+      this.props.imeiDetail.imei,
       true,
       this.onData,
     );

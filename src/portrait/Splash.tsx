@@ -1,9 +1,11 @@
 import * as React from 'react';
-import {Button, Text, View} from 'react-native';
+import {Button, Image, Text, View} from 'react-native';
 import BaseScreen, {BasePops, BaseState} from '../BaseScreen';
 import {ROUTE} from './route';
 import {ENV} from 'core_app/config';
-import {Logger} from 'core_app/common';
+import {AppUtil, Logger} from 'core_app/common';
+import {logo} from 'src/assets';
+import {styleSheet} from 'src/stylesheet';
 
 export default class Splash extends BaseScreen<BasePops, BaseState> {
   constructor(p: BasePops) {
@@ -12,22 +14,20 @@ export default class Splash extends BaseScreen<BasePops, BaseState> {
   }
   componentDidMount() {
     // this.navigate(ROUTE.AUTH.ROUTE);
+    setTimeout((): void => {
+      this.move();
+    }, 2000);
   }
-  move() {
+
+  move(): void {
     this.reset(ROUTE.AUTH);
   }
 
   render() {
     return (
-      <View>
-        <Button
-          title={ENV.ENVIRONMENT}
-          onPress={() => {
-            this.move();
-          }}>
-          {ENV.ENVIRONMENT}
-        </Button>
-      </View>
+      <BaseScreen>
+        <Image source={logo} style={[styleSheet.logo]} />
+      </BaseScreen>
     );
   }
 }

@@ -232,10 +232,13 @@ export default class AxiosWebApi implements IWebApi {
     }
     const config: AxiosRequestConfig = {
       headers,
+      adapter: require('axios/lib/adapters/xhr'),
     };
     const timeOut: number = 15 * 10000;
     axios.defaults.timeout = timeOut;
     const instance: AxiosInstance = axios.create(config);
+    instance.defaults.adapter = require('axios/lib/adapters/xhr'); // Force set to xhr adapter
+
     instance.defaults.timeout = timeOut;
     return instance;
   }

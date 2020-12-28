@@ -13,6 +13,7 @@
     "shake": "adb shell input keyevent 82",
     "install-apk": "adb install ./android/app/build/outputs/apk/release/app-release.apk",
     "dev": "export ENVFILE=.env && npx react-native run-android",
+    "stg": "export ENVFILE=.env.staging && npx react-native run-android",
     "release-apk": "export ENVFILE=.env.staging && sh ./release-apk.sh"
   },
   "dependencies": {

@@ -247,6 +247,11 @@ export class AppUtil {
       await value();
     }, 1000);
   }
+  static runAfter<TAll>(value: () => Promise<TAll>, mili: number): void {
+    setTimeout(async (): Promise<void> => {
+      await value();
+    }, mili);
+  }
 
   static async resolve<T>(value: any): Promise<T> {
     return Promise.resolve<T>(value);
