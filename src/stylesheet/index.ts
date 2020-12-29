@@ -10,7 +10,7 @@ const color = {
   lightButtonText: '#30ab9a',
 };
 const font = {
-  size: 18,
+  size: 14,
 };
 const styleSheet = StyleSheet.create({
   imageBackground: {
