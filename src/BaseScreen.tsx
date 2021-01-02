@@ -1,9 +1,16 @@
 import * as React from 'react';
 import {NavigationContainerRef} from '@react-navigation/native';
-import {SafeAreaView, ScrollView} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from 'react-native';
 import Store from 'src/redux/Store';
 import {actSetLoading} from 'src/redux/UIReducer';
 import {Logger} from 'core_app/common';
+import {Container} from 'native-base';
 export interface BasePops {
   navigation?: NavigationContainerRef | undefined;
 }
@@ -68,12 +75,17 @@ export default class BaseScreen<
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1}}>
-        {/*<Image style={styleSheet.imageBackground} source={background} />*/}
-        <ScrollView style={{flex: 1}} contentContainerStyle={{flexGrow: 1}}>
-          {this.props.children}
-        </ScrollView>
-      </SafeAreaView>
+      <Container>
+        <View
+          style={{
+            flex: 1,
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+          }}
+        />
+        <View style={{flex: 1}}>{this.props.children}</View>
+      </Container>
     );
   }
 }

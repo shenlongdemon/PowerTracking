@@ -13,4 +13,10 @@ export interface IMQTTService extends IHandleDataService {
   ): Promise<BaseDto>;
 
   close(): Promise<BaseDto>;
+
+  subscribeRSSIIMEIS(
+    imeiList: string[],
+    clearAll: boolean,
+    onData: (data: MqttData) => Promise<void>,
+  ): Promise<BaseDto>;
 }

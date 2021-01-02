@@ -1,6 +1,6 @@
 import * as React from 'react';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
-import {IMEIDetail, IMEIDetailDto, IMEIInfo} from 'core_app/services';
+import {IMEIInfo} from 'core_app/services';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {CONSTANTS} from 'core_app/common';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
@@ -20,7 +20,6 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
     PUBLIC_TYPES.IIMEIService,
   );
   private readonly imeiInfo!: IMEIInfo;
-  private imeiDetail: IMEIDetail | null = null;
   constructor(p: BasePops) {
     super(p);
     this.state = {};
@@ -32,28 +31,10 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
     this.setHeader(this.imeiInfo.imei);
   }
 
-  async componentDidMount(): Promise<void> {
-    await this.getDetail();
-    // this.setSellNavigateParam();
-  }
-
-  private async getDetail(): Promise<void> {
-    await this.setLoading(true);
-    const dto: IMEIDetailDto = await this.IMEIService.getIMEIDetail(
-      this.imeiInfo.imei,
-    );
-    if (dto.isSuccess) {
-      this.imeiDetail = dto.imei![0];
-      this.forceUpdate();
-    }
-    await this.setLoading(false);
-  }
+  async componentDidMount(): Promise<void> {}
 
   render() {
-    if (!this.imeiDetail) {
-      return <BaseScreen />;
-    }
-    const note: string = this.imeiDetail.note;
+    const note: string = this.imeiInfo.note;
     const hasNote: boolean = note === CONSTANTS.STR_EMPTY;
     return (
       <BaseScreen>
@@ -63,15 +44,7 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
               <Text>IMEI No.</Text>
             </Left>
             <Body>
-              <Text>{this.imeiDetail.imei}</Text>
-            </Body>
-          </ListItem>
-          <ListItem noIndent>
-            <Left style={styles.leftColumn}>
-              <Text>Phone</Text>
-            </Left>
-            <Body>
-              <Text>{this.imeiDetail.phone}</Text>
+              <Text>{this.imeiInfo.imei}</Text>
             </Body>
           </ListItem>
           <ListItem noIndent>
@@ -79,7 +52,7 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
               <Text>Thời gian</Text>
             </Left>
             <Body>
-              <Text>{this.imeiDetail.thoigian}</Text>
+              <Text>{this.imeiInfo.thoigian}</Text>
             </Body>
           </ListItem>
           <ListItem noIndent>
@@ -87,7 +60,7 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
               <Text>Địa chỉ</Text>
             </Left>
             <Body>
-              <Text>{this.imeiDetail.addr}</Text>
+              <Text>{this.imeiInfo.addr}</Text>
             </Body>
           </ListItem>
           {hasNote && (
@@ -98,10 +71,7 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
             </ListItem>
           )}
         </List>
-        <IMEIChartList
-          key={this.imeiDetail.imei}
-          imeiDetail={this.imeiDetail}
-        />
+        <IMEIChartList key={this.imeiInfo.imei} imeiInfo={this.imeiInfo} />
       </BaseScreen>
     );
   }

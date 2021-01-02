@@ -22,8 +22,8 @@ export class BaseAsyncStorage {
     return keyValuePairs.length;
   };
 
-  async saveObject(key: string, data: any): Promise<void> {
-    const json: string = this.toString(data);
+  async saveObject(key: string, data: any | null): Promise<void> {
+    const json: string = !!data ? this.toString(data) : CONSTANTS.STR_EMPTY;
     await this.setItem(key, json);
   }
 

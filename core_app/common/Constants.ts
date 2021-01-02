@@ -4,6 +4,7 @@ export enum LANGUAGES {
 }
 
 const CONSTANTS = {
+  ADMIN: 'admin',
   STR_EMPTY: '',
   ERROR: 'Error',
   TOPIC_SEPARATE: '/',
@@ -108,8 +109,13 @@ export enum API_METHOD {
 }
 
 const STORAGE_KEYS = {
-  ACCESS_TOKEN: '@qldl:access_token',
+  USER: '@qldl:user',
 };
+
+export enum STATE_ACTION {
+  UPDATE_USER = 'UPDATE_USER',
+}
+
 export {
   CONSTANTS,
   DTO_CODE,

@@ -2,16 +2,22 @@ import BaseScrPart from 'src/BaseScrPart';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {DataHandling} from 'src/infrastructure/DataHandling';
 import {AppUtil} from 'core_app/common';
-import {FieldData, IMEIDetail, IMQTTService, MqttData} from 'core_app/services';
+import {
+  FieldData,
+  IMEIDetail,
+  IMEIInfo,
+  IMQTTService,
+  MqttData,
+} from 'core_app/services';
 import store from 'src/redux/Store';
 import {actAddIMEIData} from 'src/redux/GSDLReducer';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
-import IMEIChart from 'src/portrait/screen_part/IMEIChart';
 import React from 'react';
 import {Text} from 'src/shared_controls/Text';
+import IMEIChartThumb from 'src/portrait/screen_part/IMEIChartThumb';
 
 interface Props {
-  imeiDetail: IMEIDetail;
+  imeiInfo: IMEIInfo;
 }
 interface State {
   groups: string[];
@@ -24,7 +30,7 @@ export default class IMEIChartList extends BaseScrPart<Props, State> {
   constructor(p: Props) {
     super(p);
     this.mqttService.setHandleData(new DataHandling(this));
-    this.onData.bind(this);
+    this.onData = this.onData.bind(this);
     this.state = {
       groups: [],
     };
@@ -45,7 +51,7 @@ export default class IMEIChartList extends BaseScrPart<Props, State> {
     await AppUtil.sleep(2000);
     await this.mqttService.subscribeIMEI(
       // this.props.imeiDetail.imei,
-      this.props.imeiDetail.imei,
+      this.props.imeiInfo.imei,
       true,
       this.onData,
     );
@@ -79,10 +85,10 @@ export default class IMEIChartList extends BaseScrPart<Props, State> {
   private renderData(): any {
     return this.state.groups.map((group): any => {
       return (
-        <IMEIChart
-          key={`${this.props.imeiDetail.imei}-${group}`}
+        <IMEIChartThumb
+          key={`${this.props.imeiInfo.imei}-${group}`}
           name={group}
-          imei={this.props.imeiDetail.imei}
+          imei={this.props.imeiInfo.imei}
         />
       );
     });

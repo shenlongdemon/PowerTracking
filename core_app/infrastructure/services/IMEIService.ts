@@ -24,13 +24,4 @@ export class IMEIService extends BaseService implements IIMEIService {
     }
     return {...this.populate(sdo), list};
   }
-
-  async getIMEIDetail(imei: string): Promise<IMEIDetailDto> {
-    const sdo: BaseSdo = await this.IMEIRepo.getIMEIDetail(imei);
-    let device: IMEIDetail | null = null;
-    if (sdo.isSuccess && sdo.data !== null) {
-      device = this.mappingObject<IMEIDetail>(sdo.data);
-    }
-    return {...this.populate(sdo, true), imei: device};
-  }
 }

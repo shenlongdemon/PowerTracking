@@ -22,12 +22,21 @@ const styleSheet = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 5,
   },
-  logo: {
+  logo_splash: {
     flex: 1,
     resizeMode: 'contain',
     // position: 'absolute',
     width: '100%',
     height: '100%',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+  logo: {
+    resizeMode: 'contain',
+    alignItems: 'center',
+    // position: 'absolute',
+    width: '50%',
+    height: '50%',
     justifyContent: 'center',
     borderRadius: 5,
   },

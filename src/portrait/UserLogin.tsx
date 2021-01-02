@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View} from 'react-native';
+import {Image, ScrollView, View} from 'react-native';
 import {ROUTE} from './route';
 import BaseScreen, {BasePops, BaseState} from '../BaseScreen';
 import Formik from 'src/portrait/form-validate/forms/Formik';
@@ -7,6 +7,11 @@ import UserLoginValidate from 'src/portrait/form-validate/validate/UserLogigVali
 import {IAuthService, UserLoginDto} from 'core_app/services';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
+import {Text} from 'src/shared_controls/Text';
+import {ENV} from 'core_app/config';
+import {Link} from 'src/shared_controls/Link';
+import {logo} from 'src/assets';
+import {styleSheet} from 'src/stylesheet';
 
 export default class UserLogin extends BaseScreen<BasePops, BaseState> {
   public authService: IAuthService = FactoryInjection.get<IAuthService>(
@@ -39,10 +44,11 @@ export default class UserLogin extends BaseScreen<BasePops, BaseState> {
       <BaseScreen>
         <View
           style={{
-            justifyContent: 'center',
             alignItems: 'center',
             flex: 1,
+            marginTop: -20,
           }}>
+          <Image source={logo} style={[styleSheet.logo]} />
           <Formik
             style={{
               width: 300,
@@ -52,6 +58,18 @@ export default class UserLogin extends BaseScreen<BasePops, BaseState> {
             defaultValue={{phone: '0978480206', password: '1234567890'}}
           />
         </View>
+        <Link
+          H3
+          style={{alignSelf: 'center', color: 'grey'}}
+          url={ENV.WEB_SITE}>
+          Design by {ENV.WEB_SITE_NAME}
+        </Link>
+        <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
+          Made in VietNam
+        </Text>
+        <Text style={{alignSelf: 'center', color: 'grey'}}>
+          Version {ENV.VERSION_CODE}
+        </Text>
       </BaseScreen>
     );
   }

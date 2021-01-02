@@ -1,8 +1,7 @@
 import * as React from 'react';
-import {TextProps, Linking} from 'react-native';
-import {IControl} from 'src/shared_controls/IControl';
-import {Text} from 'src/shared_controls/Text';
-interface Props extends TextProps, IControl {
+import {Linking} from 'react-native';
+import {Text, Props as TextProps} from 'src/shared_controls/Text';
+interface Props extends TextProps {
   url: string;
 }
 export class Link extends React.PureComponent<Props> {

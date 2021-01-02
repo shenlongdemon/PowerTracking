@@ -3,7 +3,7 @@ import {Text as NBText, H1, H2, H3} from 'native-base';
 import {TextProps} from 'react-native';
 import {IControl} from 'src/shared_controls/IControl';
 import {font} from 'src/stylesheet';
-interface Props extends TextProps, IControl {
+export interface Props extends TextProps, IControl {
   H1?: boolean;
   H2?: boolean;
   H3?: boolean;

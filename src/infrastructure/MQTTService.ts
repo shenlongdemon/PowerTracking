@@ -36,6 +36,8 @@ export default class MQTTService extends BaseService implements IMQTTService {
   }
 
   private clearAllSubscribes(): void {
+    Logger.log(`MqttService clearAllSubscribes`, this.client);
+
     if (!this.client) {
       return;
     }
@@ -86,15 +88,33 @@ export default class MQTTService extends BaseService implements IMQTTService {
     }
   }
 
+  async subscribeRSSIIMEIS(
+    imeiList: string[],
+    clearAll: boolean,
+    onData: (data: MqttData) => Promise<void>,
+  ): Promise<BaseDto> {
+    Logger.log(`MqttService subscribe imeiList`, imeiList);
+    if (clearAll) {
+      this.clearAllSubscribes();
+    }
+    const sdo: BaseSdo = await this.connect(onData);
+    if (sdo.isSuccess) {
+      for (const imei of imeiList) {
+        const topic: string = await this.getIMEIRSSITopic(imei);
+        await this.subscribeTopic(topic, onData);
+      }
+    }
+    return {
+      ...this.populate(sdo),
+    };
+  }
+
   private async subscribeTopic(
     topic: string,
     onData: (data: MqttData) => Promise<void>,
   ): Promise<SubscribeTopicDto> {
     Logger.log(`MqttService subscribe client`, this.client);
     if (!!this.client) {
-      Logger.log(`MQTT unsubscribe `, topic);
-      this.client.unsubscribe(topic);
-      await AppUtil.sleep(2000);
       Logger.log(`MQTT subscribe `, topic);
       this.client.subscribe(topic, 0);
       const subscribe: Subscribe = new Subscribe(this.client, topic);
@@ -115,6 +135,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
     if (sdo.isSuccess && !!sdo.data) {
       this.client = sdo.data as MqttClient;
     }
+    Logger.log(`MqttService connect`, sdo);
     return sdo;
   }
 
@@ -159,9 +180,15 @@ export default class MQTTService extends BaseService implements IMQTTService {
     // return 'SENSOR/2CF432662C59/#';
     return 'REAL/#';
   }
+
   private async getIMEITopic(imei: string): Promise<string> {
     // return 'SENSOR/2CF432662C59/#';
-    return `REAL/${imei}/#`;
+    return `REAL/${imei}/SOLIEU/#`;
+  }
+
+  private async getIMEIRSSITopic(imei: string): Promise<string> {
+    // return 'SENSOR/2CF432662C59/#';
+    return `REAL/${imei}/SOLIEU/F_RSSI_1`;
   }
 
   private onError = (error: Error): void => {

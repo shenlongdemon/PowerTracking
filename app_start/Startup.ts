@@ -1,4 +1,11 @@
-import {FactoryInjection, IMQTTService, ENV, IWebApi, IStore} from 'core_app';
+import {
+  FactoryInjection,
+  IMQTTService,
+  ENV,
+  IWebApi,
+  IStore,
+  IGlobalState,
+} from 'core_app';
 import MQTTService from 'src/infrastructure/MQTTService';
 import Config from 'react-native-config';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
@@ -9,6 +16,7 @@ import {
   handleBusinessError,
   handleExceptionError,
 } from './ApiHandle';
+import GlobalState from 'src/middlewares/GlobalState';
 export default class Startup {
   static start(): void {
     Startup.config();
@@ -27,6 +35,11 @@ export default class Startup {
       AsyncStorageStore,
     );
     FactoryInjection.bindSingleton<IWebApi>(PUBLIC_TYPES.IWebApi, AxiosWebApi);
+
+    FactoryInjection.bindSingleton<IGlobalState>(
+      PUBLIC_TYPES.IGlobalState,
+      GlobalState,
+    );
   }
 
   private static handleApi(): void {

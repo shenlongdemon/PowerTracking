@@ -1,14 +1,15 @@
 import * as React from 'react';
-import {Button, Image, Text, View} from 'react-native';
+import {Image, ScrollView} from 'react-native';
 import BaseScreen, {BasePops, BaseState} from '../BaseScreen';
 import {ROUTE} from './route';
-import {ENV} from 'core_app/config';
-import {AppUtil, Logger} from 'core_app/common';
+import {Logger} from 'core_app/common';
 import {logo} from 'src/assets';
 import {styleSheet} from 'src/stylesheet';
 import {IAuthService} from 'core_app/services';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
+import {Text} from 'src/shared_controls/Text';
+import {ENV} from 'core_app/config';
 
 export default class Splash extends BaseScreen<BasePops, BaseState> {
   public authService: IAuthService = FactoryInjection.get<IAuthService>(
@@ -37,7 +38,16 @@ export default class Splash extends BaseScreen<BasePops, BaseState> {
   render() {
     return (
       <BaseScreen>
-        <Image source={logo} style={[styleSheet.logo]} />
+        <Image source={logo} style={[styleSheet.logo_splash]} />
+        <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
+          Design by GiamSatDuLieu.com
+        </Text>
+        <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
+          Made in VietNam
+        </Text>
+        <Text style={{alignSelf: 'center', color: 'grey'}}>
+          Version {ENV.VERSION_CODE}
+        </Text>
       </BaseScreen>
     );
   }

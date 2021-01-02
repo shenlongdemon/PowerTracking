@@ -2,35 +2,51 @@ import {
   BaseService,
   IAuthService,
   IStore,
+  User,
   UserLoginDto,
 } from 'core_app/services';
 
 import {inject, injectable} from 'inversify';
 import {PRIVATE_TYPES, PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import {IAuthRepo, UserLoginSdo} from 'core_app/repositories';
-import {CONSTANTS, Logger} from 'core_app/common';
+import {CONSTANTS, Logger, STATE_ACTION} from 'core_app/common';
 
 @injectable()
 export class AuthService extends BaseService implements IAuthService {
   @inject(PRIVATE_TYPES.IAuthRepo) private authRepo!: IAuthRepo;
   @inject(PUBLIC_TYPES.IStore) private store!: IStore;
+
   async login(phone: string, password: string): Promise<UserLoginDto> {
-    Logger.log(`AuthService login ${phone} ${password} `);
+    Logger.log(`AuthService login ${phone} ${password}`);
     const sdo: UserLoginSdo = await this.authRepo.login(phone, password);
     let isLoggedIn: boolean = false;
-    if (sdo.isSuccess && sdo.accessToken !== CONSTANTS.STR_EMPTY) {
+    let user: User | null = null;
+    if (sdo.isSuccess && sdo.token !== CONSTANTS.STR_EMPTY) {
       isLoggedIn = true;
-      await this.store.setAccessToken(sdo.accessToken);
+      user = {
+        id: sdo.id,
+        infoapp: sdo.infoapp,
+        isadmin: sdo.isadmin,
+        linklogo: sdo.linklogo,
+        token: sdo.token,
+      };
+      await this.store.setUser(user);
     }
-    return {...this.populate(sdo), isLoggedIn};
+    return {
+      ...this.populateAction(sdo, user, STATE_ACTION.UPDATE_USER),
+      isLoggedIn,
+      user,
+    };
   }
+
   async isLoggedIn(): Promise<boolean> {
-    const token: string = await this.store.getAccessToken();
-    Logger.log(`AuthService isLoggedIn token ${token}`);
-    return token !== CONSTANTS.STR_EMPTY;
+    const user: User | null = await this.store.getUser();
+    Logger.log(`AuthService isLoggedIn user`, user);
+    return !!this.populateData(user, STATE_ACTION.UPDATE_USER);
   }
+
   async logOut(): Promise<boolean> {
-    await this.store.setAccessToken(CONSTANTS.STR_EMPTY);
+    await this.store.setUser(null);
     return true;
   }
 }

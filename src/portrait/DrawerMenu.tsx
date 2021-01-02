@@ -1,37 +1,46 @@
-import {View, Image, Linking, StyleSheet} from 'react-native';
+import {View, Image, Linking} from 'react-native';
 import Button from 'src/shared_controls/Button';
-import {IAuthService} from 'core_app/services';
+import {IAuthService, User} from 'core_app/services';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
 import {ROUTE} from 'src/portrait/route';
-import {logo} from 'src/assets';
 import {Text} from 'src/shared_controls/Text';
-import {ListItem, List, Left, Icon, Body, Right, Content} from 'native-base';
+import {ListItem, List, Left, Icon, Body, Content} from 'native-base';
 import * as React from 'react';
+import {ENV} from 'core_app/config';
+import {RootState} from 'src/redux/rootReducer';
+import {map} from 'src/middlewares/GlobalObservable';
 
-export default class DrawerMenu extends BaseScreen<BasePops, BaseState> {
+interface Props extends BasePops {
+  user?: User | null;
+}
+class DrawerMenu extends BaseScreen<Props, BaseState> {
   public authService: IAuthService = FactoryInjection.get<IAuthService>(
     PUBLIC_TYPES.IAuthService,
   );
-  constructor(p: BasePops) {
+  constructor(p: Props) {
     super(p);
     this.logout = this.logout.bind(this);
     this.goToURL = this.goToURL.bind(this);
   }
-  private logout = async (): Promise<void> => {
-    const isLoggedOut: boolean = await this.authService.logOut();
+  private readonly logout = async (): Promise<void> => {
+    await this.authService.logOut();
     this.reset(ROUTE.AUTH);
   };
 
-  private goToURL = async (): Promise<void> => {
-    Linking.openURL('http://giamsatdulieu.com/');
+  private readonly goToURL = async (): Promise<void> => {
+    await Linking.openURL(ENV.WEB_SITE);
   };
   render() {
+    if (!this.props.user) {
+      return <View />;
+    }
+    const user: User = this.props.user!;
     return (
       <View style={{flex: 1}}>
         <Image
-          source={logo}
+          source={{uri: user.linklogo}}
           style={{
             flex: 0.25,
             aspectRatio: 1,
@@ -42,16 +51,16 @@ export default class DrawerMenu extends BaseScreen<BasePops, BaseState> {
         <View style={{flex: 1}}>
           <Content>
             <List>
-              <ListItem itemDivider></ListItem>
+              <ListItem itemDivider />
               <ListItem icon>
                 <Left>
                   <Icon type="FontAwesome" active name="user-circle" />
                 </Left>
                 <Body>
-                  <Text>Ten User</Text>
+                  <Text>{user.id}</Text>
                 </Body>
               </ListItem>
-              <ListItem itemDivider></ListItem>
+              <ListItem itemDivider />
               <ListItem icon>
                 <Left>
                   <Icon type="FontAwesome" active name="wifi" />
@@ -60,8 +69,7 @@ export default class DrawerMenu extends BaseScreen<BasePops, BaseState> {
                   <Text>Smart Config</Text>
                 </Body>
               </ListItem>
-
-              <ListItem itemDivider></ListItem>
+              <ListItem itemDivider />
               <ListItem icon>
                 <Left>
                   <Icon type="FontAwesome" active name="facebook-square" />
@@ -86,7 +94,7 @@ export default class DrawerMenu extends BaseScreen<BasePops, BaseState> {
                   <Text>Website</Text>
                 </Body>
               </ListItem>
-              <ListItem itemDivider></ListItem>
+              <ListItem itemDivider />
               <ListItem icon>
                 <Left>
                   <Icon type="FontAwesome" active name="download" />
@@ -107,9 +115,9 @@ export default class DrawerMenu extends BaseScreen<BasePops, BaseState> {
           </Content>
         </View>
         <Button light onPress={this.goToURL}>
-          Go giamsatdulieu.com
+          {`Designed by ${ENV.WEB_SITE}`}
         </Button>
-        <View style={{height: 10}}></View>
+        <View style={{height: 10}} />
         <Button danger onPress={this.logout}>
           LOG OUT
         </Button>
@@ -118,8 +126,6 @@ export default class DrawerMenu extends BaseScreen<BasePops, BaseState> {
   }
 }
 
-const styles = StyleSheet.create({
-  leftColumn: {
-    flex: 0.4,
-  },
-});
+export default map<Props>(DrawerMenu, (state: RootState) => ({
+  user: state.auth.user,
+}));

@@ -24,12 +24,4 @@ export class IMEIRepo extends BaseRepository implements IIMEIRepo {
       list: res.data || [],
     };
   }
-
-  async getIMEIDetail(imei: string): Promise<BaseSdo> {
-    const url: string = API.GET_IMEI_DETAIL(imei);
-    const res: ApiResult = await this.api.get(url);
-    return {
-      ...this.populate(res),
-    };
-  }
 }

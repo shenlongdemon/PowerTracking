@@ -1,15 +1,14 @@
-import {CONSTANTS, IStore, STORAGE_KEYS} from 'core_app';
+import {CONSTANTS, IStore, STORAGE_KEYS, User} from 'core_app';
 
 import {injectable} from 'inversify';
 import {BaseAsyncStorage} from 'src/infrastructure/BaseAsyncStorage';
 
 @injectable()
 export class AsyncStorageStore extends BaseAsyncStorage implements IStore {
-  getAccessToken(): Promise<string> {
-    return this.getItem(STORAGE_KEYS.ACCESS_TOKEN, CONSTANTS.STR_EMPTY);
+  async setUser(user: User | null): Promise<void> {
+    await this.saveObject(STORAGE_KEYS.USER, user);
   }
-
-  async setAccessToken(accessToken: string): Promise<void> {
-    await this.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
+  async getUser(): Promise<User | null> {
+    return this.getObject<User>(STORAGE_KEYS.USER);
   }
 }

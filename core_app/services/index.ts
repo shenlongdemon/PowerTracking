@@ -7,3 +7,4 @@ export * from './IHandleDataService';
 export * from './IDataHandle';
 export * from './IAuthService';
 export * from './IStore';
+export * from './IGlobalState';

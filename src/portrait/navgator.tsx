@@ -15,7 +15,13 @@ import DrawerMenu from 'src/portrait/DrawerMenu';
 
 const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
   {
-    [ROUTE.APP.MAIN]: {screen: Main, navigationOptions: {title: 'IMEI List'}},
+    [ROUTE.APP.MAIN]: {
+      screen: Main,
+      navigationOptions: {
+        title: 'IMEI List',
+        headerTitleStyle: {alignSelf: 'center', marginLeft: -40},
+      },
+    },
   },
   {
     initialRouteName: ROUTE.APP.MAIN,

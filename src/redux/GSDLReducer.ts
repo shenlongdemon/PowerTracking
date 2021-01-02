@@ -22,7 +22,7 @@ const initialState: GSDLReduxState = {
   data: null,
 };
 
-const GSDLReducer = (
+const gsdlReducer = (
   state = initialState,
   action: GSDLReduxState,
 ): GSDLReduxState => {
@@ -37,4 +37,4 @@ const GSDLReducer = (
   }
 };
 
-export default GSDLReducer;
+export default gsdlReducer;
