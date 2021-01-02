@@ -5,6 +5,7 @@ export class User {
   isadmin: string = CONSTANTS.STR_EMPTY;
   infoapp: string = CONSTANTS.STR_EMPTY;
   linklogo: string = CONSTANTS.STR_EMPTY;
+  name: string = CONSTANTS.STR_EMPTY;
 
   constructor() {}
 }

@@ -1,27 +1,18 @@
 import * as React from 'react';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
 import {IMEIInfo} from 'core_app/services';
-import {FactoryInjection} from 'core_app/infrastructure';
 import {CONSTANTS} from 'core_app/common';
-import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
-import {IIMEIService} from 'core_app/services/IIMEIService';
 import {Body, Left, List, ListItem} from 'native-base';
 import {StyleSheet} from 'react-native';
 import {Text} from 'src/shared_controls/Text';
 import IMEIChartList from 'src/portrait/screen_part/IMEIChartList';
+import {ROUTE} from 'src/portrait/route';
 interface State extends BaseState {}
 export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
-  // static navigationOptions = ({navigation}) => {
-  //   return {
-  //     title: navigation.getParam('otherParam', 'A Nested Details Screen'),
-  //   };
-  // };
-  public IMEIService: IIMEIService = FactoryInjection.get<IIMEIService>(
-    PUBLIC_TYPES.IIMEIService,
-  );
   private readonly imeiInfo!: IMEIInfo;
   constructor(p: BasePops) {
     super(p);
+    this.onChartPress = this.onChartPress.bind(this);
     this.state = {};
     const param: any | null | undefined = this.getParam();
     if (!param) {
@@ -32,7 +23,13 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
   }
 
   async componentDidMount(): Promise<void> {}
-
+  private onChartPress(group: string): void {
+    const data: {name: string; imei: string} = {
+      name: group,
+      imei: this.imeiInfo.imei,
+    };
+    this.navigate(ROUTE.APP.GROUP_CHART_INFO, data);
+  }
   render() {
     const note: string = this.imeiInfo.note;
     const hasNote: boolean = note === CONSTANTS.STR_EMPTY;
@@ -71,7 +68,11 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
             </ListItem>
           )}
         </List>
-        <IMEIChartList key={this.imeiInfo.imei} imeiInfo={this.imeiInfo} />
+        <IMEIChartList
+          onPress={this.onChartPress}
+          key={this.imeiInfo.imei}
+          imeiInfo={this.imeiInfo}
+        />
       </BaseScreen>
     );
   }

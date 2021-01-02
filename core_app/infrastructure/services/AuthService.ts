@@ -21,14 +21,10 @@ export class AuthService extends BaseService implements IAuthService {
     const sdo: UserLoginSdo = await this.authRepo.login(phone, password);
     let isLoggedIn: boolean = false;
     let user: User | null = null;
-    if (sdo.isSuccess && sdo.token !== CONSTANTS.STR_EMPTY) {
+    if (sdo.isSuccess && !!sdo.user) {
       isLoggedIn = true;
       user = {
-        id: sdo.id,
-        infoapp: sdo.infoapp,
-        isadmin: sdo.isadmin,
-        linklogo: sdo.linklogo,
-        token: sdo.token,
+        ...sdo.user,
       };
       await this.store.setUser(user);
     }

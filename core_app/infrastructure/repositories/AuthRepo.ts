@@ -17,26 +17,10 @@ export class AuthRepo extends BaseRepository implements IAuthRepo {
     const url: string = API.USER_LOGIN();
     const req: UserLoginRequest = {phone, pass: password};
     const res: ApiResult = await this.api.post(url, req);
-    let id: number = 0;
-    let token: string = CONSTANTS.STR_EMPTY;
-    let isadmin: string = CONSTANTS.STR_EMPTY;
-    let infoapp: string = CONSTANTS.STR_EMPTY;
-    let linklogo: string = CONSTANTS.STR_EMPTY;
     const data: any | null = res.data;
-    if (!!data) {
-      id = data.id;
-      token = data.token;
-      isadmin = data.isadmin;
-      infoapp = data.infoapp;
-      linklogo = data.linklogo;
-    }
     return {
       ...this.populate(res),
-      id,
-      token,
-      isadmin,
-      infoapp,
-      linklogo,
+      user: data,
     };
   }
 }

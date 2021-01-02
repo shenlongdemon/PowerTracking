@@ -1,27 +1,31 @@
 import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {FieldData, IMEIGroupData} from 'core_app/services';
-import {connect, ConnectedProps} from 'react-redux';
+import {View} from 'react-native';
+import {FieldData} from 'core_app/services';
 import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
 import {RootState} from 'src/redux/rootReducer';
-import {AppUtil, CONSTANTS, DateUtils} from 'core_app/common';
+import {AppUtil, CONSTANTS} from 'core_app/common';
 import {Text} from 'src/shared_controls/Text';
-import {Body, Left, List, ListItem} from 'native-base';
-import {LineChart, Grid, XAxis, YAxis} from 'react-native-svg-charts';
-
-type Props = ConnectedProps<typeof connector> & {
+import {Body, Left, ListItem} from 'native-base';
+import {map} from 'src/middlewares/GlobalObservable';
+interface Props {
+  event?: any | null;
+}
+interface BaseProps extends Props {
   name: string; // group name
   imei: string; // group name
-};
-
+  onPress: () => void;
+}
+interface FieldDataExt extends FieldData {
+  onOff: boolean;
+}
 interface State {
-  list: FieldData[];
+  list: FieldDataExt[];
 }
 
-class IMEIChartThumb extends BaseScrPart<Props, State> {
-  constructor(p: Props) {
+class IMEIChartThumb extends BaseScrPart<BaseProps, State> {
+  constructor(p: BaseProps) {
     super(p);
     this.state = {
       list: [],
@@ -29,7 +33,7 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
   }
 
   shouldComponentUpdate(
-    nextProps: Readonly<Props>,
+    nextProps: Readonly<BaseProps>,
     nextState: Readonly<State>,
     nextContext: any,
   ): boolean {
@@ -40,7 +44,7 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
         reduxState.type === GSDL_REDUCER_ACTION.ADD_IMEI_DATA
       ) {
         const data: AddIMEIData = reduxState.data;
-        return nextProps.name === data.group;
+        return nextProps.name === data.group && nextProps.imei === data.imei;
       }
     }
     return false;
@@ -48,7 +52,7 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
 
   //
   static getDerivedStateFromProps(
-    nextProps: Readonly<Props>,
+    nextProps: Readonly<BaseProps>,
     prevState: Readonly<State>,
   ): State | null {
     if (!!nextProps.event) {
@@ -56,16 +60,20 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
       if (inputRedux.type === GSDL_REDUCER_ACTION.ADD_IMEI_DATA) {
         const data: AddIMEIData | null = inputRedux.data;
         if (!!data && data.group === nextProps.name) {
-          let rest: FieldData[] = prevState.list;
+          let rest: FieldDataExt[] = prevState.list;
           const existsIndex: number = prevState.list.findIndex(
             (item: FieldData): boolean => {
               return item.field === data.data.field;
             },
           );
+          let onOff: boolean = false;
           if (existsIndex > -1) {
+            const existsItem: FieldDataExt = rest[existsIndex];
+            onOff = !existsItem.onOff;
             rest = rest.slice(existsIndex);
           }
-          rest.push(data.data);
+          rest.push({...data.data, onOff});
+
           return {
             list: rest,
           };
@@ -97,47 +105,52 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
 
       if (keys.length > 0) {
         return (
-          <View
-            style={{
-              height: 40,
-              paddingRight: 10,
-              borderTopWidth: 2,
-              borderColor: 'grey',
-              marginBottom: 20,
-              marginTop: 10,
-              flexDirection: 'row',
-            }}>
-            <Text style={{flex: 1 / keys.length + 1}}>{this.props.name}</Text>
-            {keys.map((field: string, index: number): any => {
-              const ns: string[] = field.split('_');
-              let colorIndex: number = index;
-              if (index >= colors.length) {
-                colorIndex = index % colors.length;
-              }
-              const data: FieldData | null =
-                this.state.list.find((item: FieldData): boolean => {
-                  return item.field === field;
-                }) || null;
-              return (
-                <Text
-                  style={{
-                    color: 'white',
-                    alignContent: 'center',
-                    textAlign: 'center',
-                    alignSelf: 'center',
-                    padding: 10,
-                    backgroundColor: colors[colorIndex],
-                    // flex: 1 / dd.length + 1,
-                    marginLeft: 5,
-                    height: 40,
-                  }}>
-                  {`${ns[1]} ${ns[2]} : ${
-                    !!data ? data.data : CONSTANTS.STR_EMPTY
-                  }`}
-                </Text>
-              );
-            })}
-          </View>
+          <ListItem
+            onPress={this.props.onPress}
+            style={{marginVertical: 8, marginHorizontal: 16}}>
+            <Left style={{flex: 0.35}}>
+              <Text>{this.props.name}</Text>
+            </Left>
+            <Body
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                // alignSelf: 'space-between',
+                // alignItems: 'space-between',
+                alignContent: 'space-between',
+              }}>
+              {keys.map((field: string, index: number): any => {
+                const ns: string[] = field.split('_');
+                let colorIndex: number = index;
+                if (index >= colors.length) {
+                  colorIndex = index % colors.length;
+                }
+                const data: FieldDataExt | null =
+                  this.state.list.find((item: FieldDataExt): boolean => {
+                    return item.field === field;
+                  }) || null;
+                return (
+                  <Text
+                    style={{
+                      color: 'white',
+                      alignContent: 'center',
+                      textAlign: 'center',
+                      // alignSelf: 'center',
+                      padding: 10,
+                      backgroundColor: colors[colorIndex],
+                      opacity: !!data && data.onOff ? 1 : 0.9,
+                      // flex: 1 / dd.length + 1,
+                      marginLeft: 5,
+                      height: 40,
+                    }}>
+                    {`${ns[1]} ${ns[2]} : ${
+                      !!data ? data.data : CONSTANTS.STR_EMPTY
+                    }`}
+                  </Text>
+                );
+              })}
+            </Body>
+          </ListItem>
         );
       }
     }
@@ -147,16 +160,7 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
     return <BaseScrPart key={this.props.name}>{this.renderData()}</BaseScrPart>;
   }
 }
-const styles = StyleSheet.create({
-  leftColumn: {
-    flex: 0.4,
-  },
-});
 
-const mapStateToProps = (state: RootState) => ({
+export default map<Props>(IMEIChartThumb, (state: RootState) => ({
   event: state.gsdlReducer,
-});
-
-const connector = connect(mapStateToProps);
-
-export default connector(IMEIChartThumb);
+}));

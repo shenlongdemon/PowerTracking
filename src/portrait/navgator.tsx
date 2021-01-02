@@ -12,6 +12,8 @@ import Main from './app/Main';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import IMEIInfoScreen from 'src/portrait/app/IMEIInfoScreen';
 import DrawerMenu from 'src/portrait/DrawerMenu';
+import {color} from 'src/stylesheet';
+import GroupChartDetail from 'src/portrait/app/GroupChartDetail';
 
 const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
   {
@@ -19,7 +21,15 @@ const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
       screen: Main,
       navigationOptions: {
         title: 'IMEI List',
-        headerTitleStyle: {alignSelf: 'center', marginLeft: -40},
+        headerStyle: {
+          backgroundColor: color.button,
+        },
+        headerTintColor: color.buttonText, // This is wrong and will not work!!!!
+        headerTitleStyle: {
+          alignSelf: 'center',
+          marginLeft: -40,
+          color: color.buttonText,
+        },
       },
     },
   },
@@ -27,16 +37,14 @@ const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
     initialRouteName: ROUTE.APP.MAIN,
     drawerContent: (props) => <DrawerMenu {...props} />,
     defaultNavigationOptions: {
-      headerStyle: {},
+      headerStyle: {backgroundColor: color.button, tintColor: color.buttonText},
       headerTitleStyle: {
         textAlign: 'center',
-        // backgroundColor: 'red',
-        // flexGrow: 1,
+        color: color.buttonText,
         flex: 1,
         alignSelf: 'center',
-        // marginLeft: -50,
-        // width: '100%',
       },
+      headerTintColor: color.buttonText,
     },
   },
 );
@@ -48,20 +56,24 @@ const mainStack = createCompatNavigatorFactory(createStackNavigator)(
       navigationOptions: {headerShown: false},
     },
     [ROUTE.APP.IMEI_INFO]: IMEIInfoScreen,
+    [ROUTE.APP.GROUP_CHART_INFO]: GroupChartDetail,
   },
   {
     initialRouteName: ROUTE.APP.MAIN,
     defaultNavigationOptions: {
-      headerStyle: {},
+      headerStyle: {backgroundColor: color.button},
       headerTitleStyle: {
         textAlign: 'center',
         // backgroundColor: 'red',
         // flexGrow: 1,
         flex: 1,
         alignSelf: 'center',
+        color: color.buttonText,
+        backgroundColor: color.button,
         // marginLeft: -50,
         // width: '100%',
       },
+      headerTintColor: color.buttonText,
     },
     // navigationOptions: {
     //   headerTitleStyle: {

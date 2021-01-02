@@ -96,18 +96,14 @@ export default class Main extends BaseScreen<BasePops, State> {
   private renderItem = (data: {item: IMEIInfo; index: number}): any => {
     this.imeiItemRefs[data.item.imei] = React.createRef();
     return (
-      <TouchView
-        key={data.item.imei}
-        style={{padding: 20, marginVertical: 8, marginHorizontal: 16}}
+      <IMEIThumbListItem
         onPress={(): void => {
           this.onIMEISelected(data.item);
-        }}>
-        <IMEIThumbListItem
-          key={data.item.imei}
-          ref={this.imeiItemRefs[data.item.imei]}
-          imei={data.item}
-        />
-      </TouchView>
+        }}
+        key={`IMEIThumbListItem_${data.item.imei}`}
+        ref={this.imeiItemRefs[data.item.imei]}
+        imei={data.item}
+      />
     );
   };
 
@@ -117,7 +113,7 @@ export default class Main extends BaseScreen<BasePops, State> {
         <View style={{flex: 1}}>
           <FlatList
             style={{marginBottom: 30}}
-            data={[...this.state.list, ...this.state.list]}
+            data={this.state.list}
             renderItem={this.renderItem}
             keyExtractor={(item) => item.imei}
           />

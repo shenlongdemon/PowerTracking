@@ -57,7 +57,7 @@ class DrawerMenu extends BaseScreen<Props, BaseState> {
                   <Icon type="FontAwesome" active name="user-circle" />
                 </Left>
                 <Body>
-                  <Text>{user.id}</Text>
+                  <Text>{user.name}</Text>
                 </Body>
               </ListItem>
               <ListItem itemDivider />

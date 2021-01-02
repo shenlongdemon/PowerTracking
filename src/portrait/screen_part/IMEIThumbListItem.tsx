@@ -13,6 +13,7 @@ import {LineChart, Grid, XAxis, YAxis} from 'react-native-svg-charts';
 
 interface Props {
   imei: IMEIInfo;
+  onPress: () => void;
 }
 interface State {
   data: FieldData | null;
@@ -27,7 +28,9 @@ export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
   }
 
   onData(data: FieldData): void {
-    this.setState({data});
+    AppUtil.runAfter(async (): Promise<void> => {
+      this.setState({data});
+    }, 1);
   }
 
   render() {
@@ -36,24 +39,34 @@ export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
       ? this.state.data.data
       : CONSTANTS.STR_EMPTY;
     return (
-      <BaseScrPart key={this.props.imei.imei}>
-        <ListItem noIndent>
-          <Body style={{flex: 1}}>
-            <Text>{this.props.imei.imei}</Text>
-          </Body>
-          <Right>
-            <Icon
-              type="FontAwesome"
-              active
-              name="wifi"
-              style={{color: isOnline ? 'green' : 'red', alignSelf: 'center'}}
-            />
-            <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
-              {data}
-            </Text>
-          </Right>
-        </ListItem>
-      </BaseScrPart>
+      <ListItem
+        style={{padding: 20, marginVertical: 8, marginHorizontal: 16}}
+        noIndent
+        button
+        onPress={this.props.onPress}>
+        <Body style={{flex: 1}}>
+          <Text H3 style={{marginBottom: 10}}>
+            {this.props.imei.imei}
+          </Text>
+          <Text style={{color: 'grey'}}>{this.props.imei.xdesc}</Text>
+          <Text style={{color: 'grey'}}>{this.props.imei.addr}</Text>
+        </Body>
+        <Right>
+          <Icon
+            type="FontAwesome"
+            active
+            name="wifi"
+            style={{
+              color: isOnline ? 'green' : 'red',
+              alignSelf: 'center',
+              fontSize: 24,
+            }}
+          />
+          <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
+            {data}
+          </Text>
+        </Right>
+      </ListItem>
     );
   }
 }
