@@ -200,56 +200,67 @@ class GroupChartDetail extends BaseScreen<Props, State> {
                 })}
               </View>
             </View>
-            <ScrollView horizontal={true} scrollEventThrottle={16}>
+
+            <View
+              style={{
+                flex: 1,
+                height: windowHeight() - 80,
+              }}>
               <View
                 style={{
-                  height: windowHeight() - 80,
-                  width: xAxis.length < 7 ? windowWidth() : xAxis.length * 80,
+                  flex: 1,
+                  flexDirection: 'row',
                 }}>
-                <View
+                <YAxis
                   style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                  }}>
-                  <YAxis
-                    style={{
-                      width: 30,
-                    }}
-                    data={yAxis}
-                    svg={{
-                      fill: 'grey',
-                      fontSize: 10,
-                    }}
-                    min={min}
-                    max={max}
-                    formatLabel={(value) => `${value}`}
-                  />
-                  <LineChart
-                    yMin={min}
-                    yMax={max}
+                    width: 30,
+                  }}
+                  data={yAxis}
+                  svg={{
+                    fill: 'grey',
+                    fontSize: 10,
+                  }}
+                  min={min}
+                  max={max}
+                  formatLabel={(value) => `${value}`}
+                />
+                <ScrollView horizontal={true} scrollEventThrottle={16}>
+                  <View
                     style={{
                       flex: 1,
-                    }}
-                    data={dd}>
-                    <Grid />
-                  </LineChart>
-                </View>
-                <XAxis
-                  contentInset={{left: 10, right: 35}}
-                  style={{
-                    height: 30,
-                  }}
-                  data={xAxis}
-                  formatLabel={(value, index): string => {
-                    return DateUtils.format(xAxis[index], 'HH:mm:ss');
-                  }}
-                  svg={{
-                    fill: 'black',
-                    fontSize: 14,
-                  }}
-                />
+                      width:
+                        xAxis.length * 80 < windowWidth()
+                          ? windowWidth()
+                          : xAxis.length * 80,
+                    }}>
+                    <LineChart
+                      contentInset={{left: 20, right: 55}}
+                      yMin={min}
+                      yMax={max}
+                      style={{
+                        flex: 1,
+                      }}
+                      data={dd}>
+                      <Grid />
+                    </LineChart>
+                    <XAxis
+                      contentInset={{left: 20, right: 55}}
+                      style={{
+                        height: 30,
+                      }}
+                      data={xAxis}
+                      formatLabel={(value, index): string => {
+                        return DateUtils.format(xAxis[index], 'HH:mm:ss');
+                      }}
+                      svg={{
+                        fill: 'black',
+                        fontSize: 14,
+                      }}
+                    />
+                  </View>
+                </ScrollView>
               </View>
-            </ScrollView>
+            </View>
           </View>
         );
       }
