@@ -70,7 +70,7 @@ class IMEIChartThumb extends BaseScrPart<BaseProps, State> {
           if (existsIndex > -1) {
             const existsItem: FieldDataExt = rest[existsIndex];
             onOff = !existsItem.onOff;
-            rest = rest.slice(existsIndex);
+            rest.splice(existsIndex, 1);
           }
           rest.push({...data.data, onOff});
 
@@ -141,7 +141,7 @@ class IMEIChartThumb extends BaseScrPart<BaseProps, State> {
                       opacity: !!data && data.onOff ? 1 : 0.9,
                       // flex: 1 / dd.length + 1,
                       marginLeft: 5,
-                      height: 40,
+                      height: !!data && data.onOff ? 40 : 50,
                     }}>
                     {`${ns[1]} ${ns[2]} : ${
                       !!data ? data.data : CONSTANTS.STR_EMPTY

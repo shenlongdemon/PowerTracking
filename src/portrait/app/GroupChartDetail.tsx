@@ -38,6 +38,7 @@ class GroupChartDetail extends BaseScreen<Props, State> {
     this.name = param!.name;
     this.setHeader(this.name);
   }
+  async componentDidMount(): Promise<void> {}
 
   shouldComponentUpdate(
     nextProps: Readonly<Props>,

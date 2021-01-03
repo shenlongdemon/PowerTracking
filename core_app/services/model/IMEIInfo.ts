@@ -1,6 +1,6 @@
 export interface IMEIInfo {
   imei: string;
-  xdesc: string;
+  xdesc: string; // name of IMEI
   addr: string;
   note: string;
   thoigian: string;
