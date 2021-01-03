@@ -32,3 +32,11 @@ export const windowWidth = (dim: 'window' | 'screen' = 'window') => {
   let width = Dimensions.get(dim).width;
   return width;
 };
+export const screenWidth = () => {
+  let width = Dimensions.get('screen').width;
+  return width;
+};
+export const screenHeight = () => {
+  let width = Dimensions.get('screen').width;
+  return width;
+};

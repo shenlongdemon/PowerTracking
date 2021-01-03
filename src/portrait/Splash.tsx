@@ -10,6 +10,7 @@ import {FactoryInjection} from 'core_app/infrastructure';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import {Text} from 'src/shared_controls/Text';
 import {ENV} from 'core_app/config';
+import Orientation from 'react-native-orientation';
 
 export default class Splash extends BaseScreen<BasePops, BaseState> {
   public authService: IAuthService = FactoryInjection.get<IAuthService>(
@@ -20,6 +21,7 @@ export default class Splash extends BaseScreen<BasePops, BaseState> {
     Logger.log(`Splash `);
   }
   componentDidMount() {
+    Orientation.lockToPortrait();
     // this.navigate(ROUTE.AUTH.ROUTE);
     setTimeout((): void => {
       this.move();

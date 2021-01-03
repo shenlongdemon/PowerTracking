@@ -1,6 +1,6 @@
 import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
-import {View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {FieldData} from 'core_app/services';
 import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
@@ -10,6 +10,9 @@ import {Text} from 'src/shared_controls/Text';
 import {map} from 'src/middlewares/GlobalObservable';
 import {LineChart, Grid, XAxis, YAxis} from 'react-native-svg-charts';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
+import Orientation from 'react-native-orientation';
+import LoadingView from 'src/shared_controls/LoadingView';
+import {windowHeight, windowWidth} from 'src/commons/Size';
 
 interface Props extends BasePops {
   event?: any | null;
@@ -38,7 +41,13 @@ class GroupChartDetail extends BaseScreen<Props, State> {
     this.name = param!.name;
     this.setHeader(this.name);
   }
-  async componentDidMount(): Promise<void> {}
+  async componentDidMount(): Promise<void> {
+    Orientation.lockToLandscape();
+  }
+
+  async componentWillUnmount(): Promise<void> {
+    Orientation.lockToLandscape();
+  }
 
   shouldComponentUpdate(
     nextProps: Readonly<Props>,
@@ -150,107 +159,109 @@ class GroupChartDetail extends BaseScreen<Props, State> {
           values[values.length - 1] - Math.abs(values[values.length - 1]) / 11;
 
         return (
-          <View
-            style={{
-              height: 390,
-              paddingRight: 10,
-              borderTopWidth: 2,
-              borderColor: 'grey',
-              marginBottom: 20,
-              marginTop: 10,
-            }}>
+          <View style={{flex: 1}}>
             <View
               style={{
                 height: 30,
+                width: '100%',
                 flexDirection: 'row',
-                // backgroundColor: 'red',
               }}>
-              <Text style={{flex: 1 / dd.length + 1}}>{this.name}</Text>
-              {dd.map((d: any): any => {
-                return (
-                  <Text
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                }}>
+                <Text H3 style={{alignSelf: 'center'}}>
+                  {this.name}
+                </Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: 'flex-end',
+                }}>
+                {dd.map((d: any): any => {
+                  return (
+                    <Text
+                      style={{
+                        color: 'white',
+                        alignContent: 'center',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                        textAlignVertical: 'center',
+                        backgroundColor: d.color,
+                        minWidth: 30,
+                        marginLeft: 5,
+                        height: 30,
+                        borderRadius: 5,
+                      }}>
+                      {d.field}
+                    </Text>
+                  );
+                })}
+              </View>
+            </View>
+            <ScrollView horizontal={true} scrollEventThrottle={16}>
+              <View
+                style={{
+                  height: windowHeight() - 80,
+                  width: xAxis.length < 7 ? windowWidth() : xAxis.length * 80,
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                  }}>
+                  <YAxis
                     style={{
-                      color: 'white',
-                      alignContent: 'center',
-                      textAlign: 'center',
-                      alignSelf: 'center',
-                      backgroundColor: d.color,
-                      // flex: 1 / dd.length + 1,
-                      minWidth: 30,
-                      marginLeft: 5,
-                      height: 30,
-                    }}>
-                    {d.field}
-                  </Text>
-                );
-              })}
-            </View>
-            <View
-              style={{
-                height: 260,
-                flexDirection: 'row',
-                // backgroundColor: 'yellow',
-              }}>
-              <YAxis
-                style={{width: 30}}
-                data={yAxis}
-                svg={{
-                  fill: 'grey',
-                  fontSize: 10,
-                }}
-                min={min}
-                max={max}
-                formatLabel={(value) => `${value}`}
-              />
-              <LineChart
-                yMin={min}
-                yMax={max}
-                style={{flex: 1}}
-                data={dd}
-                // contentInset={{right: 10}}
-              >
-                <Grid />
-              </LineChart>
-            </View>
-            <XAxis
-              // contentInset={{right: 10}}
-              contentInset={{left: 10, right: 35}}
-              style={{
-                flex: 1,
-                // paddingVertical: 16,
-                // paddingTop: 10,
-                // paddingLeft: 10,
-                // backgroundColor: 'green',
-                // marginRight: 10,
-              }}
-              data={xAxis}
-              formatLabel={(value, index): string => {
-                if (
-                  xAxis.length <= 4 ||
-                  index === 0 ||
-                  index === xAxis.length - 1 ||
-                  index % Math.round(xAxis.length / 5) === 0
-                ) {
-                  return DateUtils.format(xAxis[index], 'HH:mm:ss');
-                }
-                return ``;
-              }}
-              svg={{
-                fill: 'black',
-                fontSize: 14,
-                rotation: 90,
-                originY: 50,
-                y: 20,
-              }}
-            />
+                      width: 30,
+                    }}
+                    data={yAxis}
+                    svg={{
+                      fill: 'grey',
+                      fontSize: 10,
+                    }}
+                    min={min}
+                    max={max}
+                    formatLabel={(value) => `${value}`}
+                  />
+                  <LineChart
+                    yMin={min}
+                    yMax={max}
+                    style={{
+                      flex: 1,
+                    }}
+                    data={dd}>
+                    <Grid />
+                  </LineChart>
+                </View>
+                <XAxis
+                  contentInset={{left: 10, right: 35}}
+                  style={{
+                    height: 30,
+                  }}
+                  data={xAxis}
+                  formatLabel={(value, index): string => {
+                    return DateUtils.format(xAxis[index], 'HH:mm:ss');
+                  }}
+                  svg={{
+                    fill: 'black',
+                    fontSize: 14,
+                  }}
+                />
+              </View>
+            </ScrollView>
           </View>
         );
       }
     }
-    return <View />;
+    return <LoadingView />;
   }
   render() {
-    return <BaseScrPart key={this.name}>{this.renderData()}</BaseScrPart>;
+    return (
+      <BaseScrPart style={{flex: 1}} key={this.name}>
+        {this.renderData()}
+      </BaseScrPart>
+    );
   }
 }
 

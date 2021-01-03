@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.github.yamill.orientation.OrientationPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.tuanpm.RCTMqtt.RCTMqttPackage;
 import com.facebook.react.ReactInstanceManager;
