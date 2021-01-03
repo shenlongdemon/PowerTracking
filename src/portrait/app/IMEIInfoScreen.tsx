@@ -23,6 +23,7 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
   }
 
   async componentDidMount(): Promise<void> {}
+
   private onChartPress(group: string): void {
     const data: {name: string; imei: string} = {
       name: group,

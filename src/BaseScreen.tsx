@@ -19,8 +19,11 @@ export default class BaseScreen<
   P extends BasePops,
   S extends BaseState
 > extends React.Component<P, S> {
+  private focusSubscription?: any | null;
+  private blurSubscription?: any | null;
   constructor(p: P) {
     super(p);
+    this.setNavigationEvents(true);
   }
 
   protected navigate(routeName: string, data?: any | undefined): void {
@@ -32,6 +35,30 @@ export default class BaseScreen<
     if (!!this.props.navigation) {
       // @ts-ignore
       this.props.navigation.setOptions({title: title});
+    }
+  }
+
+  private setNavigationEvents(isNew: boolean): void {
+    const navigation: any | null = this.props.navigation;
+    if (!!navigation) {
+      if (isNew) {
+        this.focusSubscription = navigation.addListener('focus', () => {
+          if (!!this['componentFocus']) {
+            this['componentFocus']();
+          }
+        });
+      } else if (!!this.focusSubscription) {
+        this.focusSubscription();
+      }
+      if (isNew) {
+        this.blurSubscription = navigation.addListener('beforeRemove', () => {
+          if (!!this['componentBlur']) {
+            this['componentBlur']();
+          }
+        });
+      } else if (!!this.blurSubscription) {
+        this.blurSubscription();
+      }
     }
   }
 

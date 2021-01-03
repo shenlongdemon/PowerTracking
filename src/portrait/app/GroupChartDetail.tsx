@@ -45,8 +45,8 @@ class GroupChartDetail extends BaseScreen<Props, State> {
     Orientation.lockToLandscape();
   }
 
-  async componentWillUnmount(): Promise<void> {
-    Orientation.lockToLandscape();
+  async componentBlur(): Promise<void> {
+    Orientation.lockToPortrait();
   }
 
   shouldComponentUpdate(

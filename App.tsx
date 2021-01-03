@@ -8,27 +8,44 @@
  * @format
  */
 
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import React, {useRef} from 'react';
+import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
 import {app as PortraitApp} from './src/portrait/navgator';
 import Startup from './app_start/Startup';
 import {Provider} from 'react-redux';
 import Store from 'src/redux/Store';
 declare const global: {HermesInternal: null | {}};
-import {YellowBox} from 'react-native';
+import {BackHandler, YellowBox} from 'react-native';
 import Loading from 'src/shared_controls/Loading';
 YellowBox.ignoreWarnings([]);
 
 Startup.start();
-const App = () => {
+function App() {
+  const navigationRef = useRef(null);
+  const onBackPress = () => {
+    // const navigation = navigationRef.current;
+    // if (!!navigation) {
+    //   // @ts-ignore
+    //   !!navigation.goBack && navigation.goBack();
+    // }
+    // return true;
+    return false;
+  };
+  React.useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+    return () => {
+      window.removeEventListener('hardwareBackPress', onBackPress);
+    };
+  }, [onBackPress]);
   return (
     <Provider store={Store}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <PortraitApp />
         <Loading />
       </NavigationContainer>
     </Provider>
   );
-};
+}
 
 export default App;
