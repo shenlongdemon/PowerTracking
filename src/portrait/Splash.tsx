@@ -41,10 +41,10 @@ export default class Splash extends BaseScreen<BasePops, BaseState> {
     return (
       <BaseScreen>
         <Image source={logo} style={[styleSheet.logo_splash]} />
-        <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
+        <Text style={{alignSelf: 'center', color: 'grey'}}>
           Design by GiamSatDuLieu.com
         </Text>
-        <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
+        <Text style={{alignSelf: 'center', color: 'grey'}}>
           Made in VietNam
         </Text>
         <Text style={{alignSelf: 'center', color: 'grey'}}>

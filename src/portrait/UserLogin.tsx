@@ -58,13 +58,10 @@ export default class UserLogin extends BaseScreen<BasePops, BaseState> {
             defaultValue={{phone: '0978480206', password: '1234567890'}}
           />
         </View>
-        <Link
-          H3
-          style={{alignSelf: 'center', color: 'grey'}}
-          url={ENV.WEB_SITE}>
+        <Link style={{alignSelf: 'center', color: 'grey'}} url={ENV.WEB_SITE}>
           Design by {ENV.WEB_SITE_NAME}
         </Link>
-        <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
+        <Text style={{alignSelf: 'center', color: 'grey'}}>
           Made in VietNam
         </Text>
         <Text style={{alignSelf: 'center', color: 'grey'}}>

@@ -9,6 +9,8 @@ import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import React from 'react';
 import {Text} from 'src/shared_controls/Text';
 import IMEIChartThumb from 'src/portrait/screen_part/IMEIChartThumb';
+import LoadingView from 'src/shared_controls/LoadingView';
+import {ViewProps} from 'react-native';
 
 interface Props {
   imeiInfo: IMEIInfo;
@@ -18,11 +20,14 @@ interface State {
   groups: string[];
 }
 
-export default class IMEIChartList extends BaseScrPart<Props, State> {
+export default class IMEIChartList extends BaseScrPart<
+  Props & ViewProps,
+  State
+> {
   protected mqttService: IMQTTService = FactoryInjection.get<IMQTTService>(
     PUBLIC_TYPES.IMQTTService,
   );
-  constructor(p: Props) {
+  constructor(p: Props & ViewProps) {
     super(p);
     this.mqttService.setHandleData(new DataHandling(this));
     this.onData = this.onData.bind(this);
@@ -93,19 +98,9 @@ export default class IMEIChartList extends BaseScrPart<Props, State> {
   }
   render() {
     return (
-      <BaseScrPart>
-        {this.state.groups.length > 0 ? (
-          this.renderData()
-        ) : (
-          <Text>Loading ...</Text>
-        )}
+      <BaseScrPart style={{flex: 1}}>
+        {this.state.groups.length > 0 ? this.renderData() : <LoadingView />}
       </BaseScrPart>
     );
   }
-
-  // private renderData(): any {
-  //     return this.state.groups.map((group): any => {
-  //         return <IMEIChart key={group} name={group} />;
-  //     });
-  // }
 }

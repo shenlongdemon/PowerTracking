@@ -12,7 +12,16 @@ import {LineChart, Grid, XAxis, YAxis} from 'react-native-svg-charts';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
 import Orientation from 'react-native-orientation';
 import LoadingView from 'src/shared_controls/LoadingView';
-import {windowHeight, windowWidth} from 'src/commons/Size';
+import {
+  sizeFont,
+  sizeHeight,
+  windowHeight,
+  windowWidth,
+} from 'src/commons/Size';
+import Button from 'src/shared_controls/Button';
+import {color} from 'src/stylesheet';
+import {Icon} from 'native-base';
+import TouchView from 'src/shared_controls/TouchView';
 
 interface Props extends BasePops {
   event?: any | null;
@@ -20,6 +29,7 @@ interface Props extends BasePops {
 
 interface State extends BaseState {
   list: FieldData[];
+  isDetail: boolean;
 }
 
 class GroupChartDetail extends BaseScreen<Props, State> {
@@ -29,6 +39,7 @@ class GroupChartDetail extends BaseScreen<Props, State> {
     super(p);
     this.state = {
       list: [],
+      isDetail: true,
     };
     const param:
       | {name: string; imei: string}
@@ -40,6 +51,8 @@ class GroupChartDetail extends BaseScreen<Props, State> {
     this.imei = param!.imei;
     this.name = param!.name;
     this.setHeader(this.name);
+    this.viewAll = this.viewAll.bind(this);
+    this.back = this.back.bind(this);
   }
   async componentDidMount(): Promise<void> {
     Orientation.lockToLandscape();
@@ -48,6 +61,10 @@ class GroupChartDetail extends BaseScreen<Props, State> {
   async componentBlur(): Promise<void> {
     Orientation.lockToPortrait();
   }
+
+  private back = (): void => {
+    this.goBack();
+  };
 
   shouldComponentUpdate(
     nextProps: Readonly<Props>,
@@ -87,12 +104,20 @@ class GroupChartDetail extends BaseScreen<Props, State> {
         ) {
           return {
             list: [...prevState.list, data.data],
+            isDetail: prevState.isDetail,
           };
         }
       }
     }
     return null;
   }
+  private viewAll = (): void => {
+    this.setState((prevState: State) => {
+      return {
+        isDetail: !prevState.isDetail,
+      };
+    });
+  };
 
   private renderData(): any {
     if (this.state.list.length > 0) {
@@ -157,6 +182,8 @@ class GroupChartDetail extends BaseScreen<Props, State> {
         const max: number = values[0] + Math.abs(values[0]) / 10;
         const min: number =
           values[values.length - 1] - Math.abs(values[values.length - 1]) / 11;
+        const totalWidth: number = xAxis.length * 80;
+        const isLargeThanView: boolean = totalWidth > windowWidth();
 
         return (
           <View style={{flex: 1}}>
@@ -214,6 +241,7 @@ class GroupChartDetail extends BaseScreen<Props, State> {
                 <YAxis
                   style={{
                     width: 30,
+                    height: windowHeight() - 80 - 30 - 30,
                   }}
                   data={yAxis}
                   svg={{
@@ -224,17 +252,21 @@ class GroupChartDetail extends BaseScreen<Props, State> {
                   max={max}
                   formatLabel={(value) => `${value}`}
                 />
-                <ScrollView horizontal={true} scrollEventThrottle={16}>
+                <ScrollView
+                  horizontal={true}
+                  scrollEnabled={this.state.isDetail}
+                  scrollEventThrottle={16}>
                   <View
                     style={{
                       flex: 1,
-                      width:
-                        xAxis.length * 80 < windowWidth()
-                          ? windowWidth()
-                          : xAxis.length * 80,
+                      width: this.state.isDetail
+                        ? isLargeThanView
+                          ? totalWidth
+                          : windowWidth()
+                        : windowWidth(),
                     }}>
                     <LineChart
-                      contentInset={{left: 20, right: 55}}
+                      contentInset={{left: 30, right: 55}}
                       yMin={min}
                       yMax={max}
                       style={{
@@ -244,12 +276,23 @@ class GroupChartDetail extends BaseScreen<Props, State> {
                       <Grid />
                     </LineChart>
                     <XAxis
-                      contentInset={{left: 20, right: 55}}
+                      contentInset={{left: 30, right: 55}}
                       style={{
                         height: 30,
                       }}
                       data={xAxis}
                       formatLabel={(value, index): string => {
+                        if (!this.state.isDetail) {
+                          if (
+                            xAxis.length <= 4 ||
+                            index === 0 ||
+                            index === xAxis.length - 1 ||
+                            index % Math.round(xAxis.length / 5) === 0
+                          ) {
+                            return DateUtils.format(xAxis[index], 'HH:mm:ss');
+                          }
+                          return CONSTANTS.STR_EMPTY;
+                        }
                         return DateUtils.format(xAxis[index], 'HH:mm:ss');
                       }}
                       svg={{
@@ -261,6 +304,20 @@ class GroupChartDetail extends BaseScreen<Props, State> {
                 </ScrollView>
               </View>
             </View>
+            <View
+              style={{
+                height: 50,
+                width: '100%',
+                alignItems: 'center',
+                alignContent: 'center',
+                justifyContent: 'center',
+              }}>
+              <Button
+                style={{paddingLeft: 10, paddingRight: 10}}
+                onPress={this.viewAll}>
+                {this.state.isDetail ? 'Overview' : 'Detail'}
+              </Button>
+            </View>
           </View>
         );
       }
@@ -271,6 +328,29 @@ class GroupChartDetail extends BaseScreen<Props, State> {
     return (
       <BaseScrPart style={{flex: 1}} key={this.name}>
         {this.renderData()}
+        <TouchView
+          // disable={this.props.isLoading}
+          id={'btnAdd'}
+          style={{
+            position: 'absolute',
+            flex: 1,
+            zIndex: 100,
+            top: sizeHeight(0.5),
+            left: sizeHeight(4.5),
+            backgroundColor: color.button,
+            width: sizeHeight(10),
+            height: sizeHeight(10),
+            borderRadius: sizeHeight(4.5),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onPress={this.back}>
+          <Icon
+            name={'long-arrow-left'}
+            type={'FontAwesome'}
+            style={{color: color.buttonText}}
+          />
+        </TouchView>
       </BaseScrPart>
     );
   }
