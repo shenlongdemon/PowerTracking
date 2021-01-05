@@ -52,7 +52,6 @@ export default class Button extends TouchView<Props> {
           id={`lbl${this.props.id}`}
           disabled={disabled}
           style={{
-            fontSize: font.size,
             fontWeight: 'bold',
             color: this.textColor(),
           }}>

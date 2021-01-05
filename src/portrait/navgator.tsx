@@ -20,7 +20,7 @@ const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
     [ROUTE.APP.MAIN]: {
       screen: Main,
       navigationOptions: {
-        title: 'IMEI List',
+        title: 'Danh sách thiết bị',
         headerStyle: {
           backgroundColor: color.button,
         },
@@ -36,6 +36,7 @@ const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
   {
     initialRouteName: ROUTE.APP.MAIN,
     drawerContent: (props) => <DrawerMenu {...props} />,
+    drawerStyle: {width: '90%'},
     defaultNavigationOptions: {
       headerStyle: {backgroundColor: color.button, tintColor: color.buttonText},
       headerTitleStyle: {

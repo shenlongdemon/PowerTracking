@@ -11,6 +11,9 @@ import * as React from 'react';
 import {ENV} from 'core_app/config';
 import {RootState} from 'src/redux/rootReducer';
 import {map} from 'src/middlewares/GlobalObservable';
+import {AppUtil, CONSTANTS} from 'core_app/common';
+import {Link} from 'src/shared_controls/Link';
+import {color} from 'src/stylesheet';
 
 interface Props extends BasePops {
   user?: User | null;
@@ -37,6 +40,10 @@ class DrawerMenu extends BaseScreen<Props, BaseState> {
       return <View />;
     }
     const user: User = this.props.user!;
+    const info: any = AppUtil.toJSON(user.infoapp);
+    const facebook: string = info['facebook'] || CONSTANTS.STR_EMPTY;
+    const zalo: string = info['zalo'] || CONSTANTS.STR_EMPTY;
+    const web: string = info['web'] || CONSTANTS.STR_EMPTY;
     return (
       <View style={{flex: 1}}>
         <Image
@@ -75,7 +82,9 @@ class DrawerMenu extends BaseScreen<Props, BaseState> {
                   <Icon type="FontAwesome" active name="facebook-square" />
                 </Left>
                 <Body>
-                  <Text>Facebook</Text>
+                  <Link style={{color: color.textColor}} url={facebook}>
+                    Facebook
+                  </Link>
                 </Body>
               </ListItem>
               <ListItem icon>
@@ -83,7 +92,9 @@ class DrawerMenu extends BaseScreen<Props, BaseState> {
                   <Text>ZALO</Text>
                 </Left>
                 <Body>
-                  <Text>Zalo</Text>
+                  <Link style={{color: color.textColor}} url={zalo}>
+                    Zalo
+                  </Link>
                 </Body>
               </ListItem>
               <ListItem icon>
@@ -91,7 +102,9 @@ class DrawerMenu extends BaseScreen<Props, BaseState> {
                   <Icon type="FontAwesome" active name="safari" />
                 </Left>
                 <Body>
-                  <Text>Website</Text>
+                  <Link style={{color: color.textColor}} url={web}>
+                    Website
+                  </Link>
                 </Body>
               </ListItem>
               <ListItem itemDivider />

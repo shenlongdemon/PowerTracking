@@ -1,6 +1,6 @@
 import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ViewProps} from 'react-native';
 import {FieldData, IMEIGroupData, IMEIInfo} from 'core_app/services';
 import {connect, ConnectedProps} from 'react-redux';
 import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
@@ -11,7 +11,7 @@ import {Text} from 'src/shared_controls/Text';
 import {Body, Icon, Left, List, ListItem, Right} from 'native-base';
 import {LineChart, Grid, XAxis, YAxis} from 'react-native-svg-charts';
 
-interface Props {
+interface Props extends ViewProps {
   imei: IMEIInfo;
   onPress: () => void;
 }
@@ -46,10 +46,10 @@ export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
         onPress={this.props.onPress}>
         <Body style={{flex: 1}}>
           <Text H3 style={{marginBottom: 10}}>
-            {this.props.imei.imei}
+            {this.props.imei.xdesc}
           </Text>
-          <Text style={{color: 'grey'}}>{this.props.imei.xdesc}</Text>
           <Text style={{color: 'grey'}}>{this.props.imei.addr}</Text>
+          <Text style={{color: 'grey'}}>{this.props.imei.imei}</Text>
         </Body>
         <Right>
           <Icon

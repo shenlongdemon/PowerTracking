@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {sizeFont} from 'src/commons/Size';
 
 const color = {
   button: '#30ab9a',
@@ -8,9 +9,10 @@ const color = {
 
   lightButton: 'rgba(226,245,244,0.3)',
   lightButtonText: '#30ab9a',
+  textColor: '#000',
 };
 const font = {
-  size: 14,
+  size: sizeFont(6),
 };
 const styleSheet = StyleSheet.create({
   imageBackground: {

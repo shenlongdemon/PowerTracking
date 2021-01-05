@@ -1,6 +1,6 @@
 import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
-import {View} from 'react-native';
+import {View, ViewProps} from 'react-native';
 import {FieldData} from 'core_app/services';
 import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
@@ -24,8 +24,8 @@ interface State {
   list: FieldDataExt[];
 }
 
-class IMEIChartThumb extends BaseScrPart<BaseProps, State> {
-  constructor(p: BaseProps) {
+class IMEIChartThumb extends BaseScrPart<BaseProps & ViewProps, State> {
+  constructor(p: BaseProps & ViewProps) {
     super(p);
     this.state = {
       list: [],
@@ -86,14 +86,14 @@ class IMEIChartThumb extends BaseScrPart<BaseProps, State> {
   private renderData(): any {
     if (this.state.list.length > 0) {
       let colors: any[] = [
+        '#b12929',
         '#2e29b1',
         '#29b140',
-        '#b12929',
-        '#297ab1',
         '#8129b1',
         '#b16829',
-        '#29b1b1',
+        '#297ab1',
         '#2d2365',
+        '#29b1b1',
       ];
 
       const dg: any = AppUtil.groupBy(this.state.list, 'field');
@@ -108,16 +108,17 @@ class IMEIChartThumb extends BaseScrPart<BaseProps, State> {
           <ListItem
             onPress={this.props.onPress}
             style={{marginVertical: 8, marginHorizontal: 16}}>
-            <Left style={{flex: 0.35}}>
+            <Left style={{flex: 0.5}}>
               <Text>{this.props.name}</Text>
             </Left>
             <Body
               style={{
                 flex: 1,
-                flexDirection: 'row',
                 // alignSelf: 'space-between',
                 // alignItems: 'space-between',
                 alignContent: 'space-between',
+                // flexDirection: 'row',
+                // flexWrap: 'wrap',
               }}>
               {keys.map((field: string, index: number): any => {
                 const ns: string[] = field.split('_');
@@ -132,20 +133,19 @@ class IMEIChartThumb extends BaseScrPart<BaseProps, State> {
                 return (
                   <Text
                     style={{
+                      paddingRight: 5,
+                      paddingLeft: 5,
+                      margin: 5,
                       color: 'white',
                       alignContent: 'center',
                       textAlign: 'center',
                       // alignSelf: 'center',
-                      padding: 10,
+                      textAlignVertical: 'center',
                       backgroundColor: colors[colorIndex],
-                      opacity: !!data && data.onOff ? 1 : 0.9,
                       // flex: 1 / dd.length + 1,
-                      marginLeft: 5,
-                      height: !!data && data.onOff ? 40 : 50,
+                      height: 40,
                     }}>
-                    {`${ns[1]} ${ns[2]} : ${
-                      !!data ? data.data : CONSTANTS.STR_EMPTY
-                    }`}
+                    {`${!!data ? data.data : CONSTANTS.STR_EMPTY} (${ns[2]})`}
                   </Text>
                 );
               })}

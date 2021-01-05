@@ -14,7 +14,7 @@ export class Link extends React.PureComponent<Props> {
     return this.props;
   }
   private goToURL(): void {
-    Linking.openURL('http://google.com');
+    Linking.openURL(this.props.url);
   }
   private renderControl(): any {
     return (
