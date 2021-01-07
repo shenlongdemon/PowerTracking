@@ -121,7 +121,7 @@ export default class Main extends BaseScreen<BasePops, State> {
       <BaseScreen>
         <View style={{flex: 1}}>
           <FlatList
-            style={{paddingBottom: sizeHeight(14)}}
+            contentContainerStyle={{paddingBottom: sizeHeight(9)}}
             data={this.state.list}
             renderItem={this.renderItem}
             keyExtractor={(item) => item.imei}
@@ -133,7 +133,7 @@ export default class Main extends BaseScreen<BasePops, State> {
               position: 'absolute',
               flex: 1,
               zIndex: 100,
-              bottom: sizeHeight(2.5),
+              bottom: sizeHeight(1.5),
               right: sizeHeight(3.5),
               backgroundColor: color.button,
               width: sizeHeight(9),
