@@ -1,15 +1,10 @@
 import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
-import {StyleSheet, View, ViewProps} from 'react-native';
-import {FieldData, IMEIGroupData, IMEIInfo} from 'core_app/services';
-import {connect, ConnectedProps} from 'react-redux';
-import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
-import {AddIMEIData} from 'src/redux/models/AddIMEIData';
-import {RootState} from 'src/redux/rootReducer';
-import {AppUtil, CONSTANTS, DateUtils} from 'core_app/common';
+import {StyleSheet, ViewProps} from 'react-native';
+import {FieldData, IMEIInfo} from 'core_app/services';
+import {AppUtil, CONSTANTS} from 'core_app/common';
 import {Text} from 'src/shared_controls/Text';
-import {Body, Icon, Left, List, ListItem, Right} from 'native-base';
-import {LineChart, Grid, XAxis, YAxis} from 'react-native-svg-charts';
+import {Body, Icon, ListItem, Right} from 'native-base';
 
 interface Props extends ViewProps {
   imei: IMEIInfo;
@@ -70,8 +65,3 @@ export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
     );
   }
 }
-const styles = StyleSheet.create({
-  leftColumn: {
-    flex: 0.4,
-  },
-});

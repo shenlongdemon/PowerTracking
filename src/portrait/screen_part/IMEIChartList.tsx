@@ -4,26 +4,27 @@ import {DataHandling} from 'src/infrastructure/DataHandling';
 import {AppUtil} from 'core_app/common';
 import {FieldData, IMEIInfo, IMQTTService, MqttData} from 'core_app/services';
 import store from 'src/redux/Store';
-import {actAddIMEIData} from 'src/redux/GSDLReducer';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import React from 'react';
-import {Text} from 'src/shared_controls/Text';
 import IMEIChartThumb from 'src/portrait/screen_part/IMEIChartThumb';
 import LoadingView from 'src/shared_controls/LoadingView';
 import {ViewProps} from 'react-native';
+import {actSetIMEIData} from 'src/redux/GSDLReducer';
+import {AddIMEIData} from 'src/redux/models/AddIMEIData';
+import {map} from 'src/middlewares/GlobalObservable';
+import {RootState} from 'src/redux/rootReducer';
+import GSDLBusinessUtils from 'src/commons/GSDLBusinessUtils';
 
-interface Props {
+interface InjectProps {
+  list: AddIMEIData[];
+}
+interface Props extends InjectProps {
   imeiInfo: IMEIInfo;
   onPress: (group: string) => void;
 }
-interface State {
-  groups: string[];
-}
+interface State {}
 
-export default class IMEIChartList extends BaseScrPart<
-  Props & ViewProps,
-  State
-> {
+class IMEIChartList extends BaseScrPart<Props & ViewProps, State> {
   protected mqttService: IMQTTService = FactoryInjection.get<IMQTTService>(
     PUBLIC_TYPES.IMQTTService,
   );
@@ -70,11 +71,9 @@ export default class IMEIChartList extends BaseScrPart<
     if (!fieldData || fieldData.field.indexOf('F') !== 0 || group === 'LIVE') {
       return;
     }
-    if (this.state.groups.indexOf(group) < 0) {
-      this.setState({groups: [...this.state.groups, group]});
-    }
+
     store.dispatch(
-      actAddIMEIData({
+      actSetIMEIData({
         group,
         imei,
         data: fieldData,
@@ -83,24 +82,36 @@ export default class IMEIChartList extends BaseScrPart<
   }
 
   private renderData(): any {
-    return this.state.groups.map((group): any => {
-      return (
-        <IMEIChartThumb
-          onPress={(): void => {
-            this.props.onPress(group);
-          }}
-          key={`${this.props.imeiInfo.imei}-${group}`}
-          name={group}
-          imei={this.props.imeiInfo.imei}
-        />
-      );
-    });
+    const list: AddIMEIData[] = GSDLBusinessUtils.getFieldDataList(
+      this.props.list,
+      this.props.imeiInfo.imei,
+    );
+    const groups: string[] = AppUtil.distinct(
+      list.map((aid: AddIMEIData): string => {
+        return aid.group;
+      }),
+    );
+
+    if (groups.length) {
+      return groups.map((group): any => {
+        return (
+          <IMEIChartThumb
+            onPress={(): void => {
+              this.props.onPress(group);
+            }}
+            key={`${this.props.imeiInfo.imei}-${group}`}
+            name={group}
+            imei={this.props.imeiInfo.imei}
+          />
+        );
+      });
+    }
+    return <LoadingView />;
   }
   render() {
-    return (
-      <BaseScrPart style={{flex: 1}}>
-        {this.state.groups.length > 0 ? this.renderData() : <LoadingView />}
-      </BaseScrPart>
-    );
+    return <BaseScrPart style={{flex: 1}}>{this.renderData()}</BaseScrPart>;
   }
 }
+export default map<InjectProps>(IMEIChartList, (state: RootState) => ({
+  list: state.gsdlReducer.list,
+}));

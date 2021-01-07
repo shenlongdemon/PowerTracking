@@ -21,7 +21,7 @@ export class Text extends React.PureComponent<Props> {
     return this.props;
   }
   private renderControl(): any {
-    let fontSize: number = 5;
+    let fontSize: number = 12;
     if (!!this.props.H1 || !!this.props.H2 || !!this.props.H3) {
       if (!!this.props.H1) {
         fontSize += 6;

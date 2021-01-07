@@ -1,9 +1,9 @@
-import BaseScrPart from 'src/BaseScrPart';
+/*import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {FieldData, IMEIGroupData} from 'core_app/services';
 import {connect, ConnectedProps} from 'react-redux';
-import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
+import {GSDL_REDUCER_ACTION, SetIMEIData} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
 import {RootState} from 'src/redux/rootReducer';
 import {AppUtil, CONSTANTS, DateUtils} from 'core_app/common';
@@ -37,7 +37,7 @@ class IMEIChart extends BaseScrPart<Props, State> {
       const reduxState: GSDLReduxState = nextProps.event as GSDLReduxState;
       if (
         !!reduxState.data &&
-        reduxState.type === GSDL_REDUCER_ACTION.ADD_IMEI_DATA
+        reduxState.type === GSDL_REDUCER_ACTION.SET_IMEI_DATA
       ) {
         const data: AddIMEIData = reduxState.data;
         return nextProps.name === data.group;
@@ -53,7 +53,7 @@ class IMEIChart extends BaseScrPart<Props, State> {
   ): State | null {
     if (!!nextProps.event) {
       const inputRedux: GSDLReduxState = nextProps.event as GSDLReduxState;
-      if (inputRedux.type === GSDL_REDUCER_ACTION.ADD_IMEI_DATA) {
+      if (inputRedux.type === GSDL_REDUCER_ACTION.SET_IMEI_DATA) {
         const data: AddIMEIData | null = inputRedux.data;
         if (!!data && data.group === nextProps.name) {
           return {
@@ -247,3 +247,4 @@ const mapStateToProps = (state: RootState) => ({
 const connector = connect(mapStateToProps);
 
 export default connector(IMEIChart);
+*/

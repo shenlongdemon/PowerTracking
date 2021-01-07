@@ -6,6 +6,7 @@ export class User {
   infoapp: string = CONSTANTS.STR_EMPTY; // "{"facebook":"facebook/giamsatdulieu", "zalo":"GSDL","web":"giamsatdulieu.com"}"
   linklogo: string = CONSTANTS.STR_EMPTY;
   name: string = CONSTANTS.STR_EMPTY;
+  mail: string = CONSTANTS.STR_EMPTY;
 
   constructor() {}
 }

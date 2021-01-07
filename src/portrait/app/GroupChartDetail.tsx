@@ -2,7 +2,7 @@ import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
 import {ScrollView, View} from 'react-native';
 import {FieldData} from 'core_app/services';
-import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
+import {GSDL_REDUCER_ACTION, SetIMEIData} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
 import {RootState} from 'src/redux/rootReducer';
 import {AppUtil, CONSTANTS, DateUtils} from 'core_app/common';
@@ -12,23 +12,17 @@ import {LineChart, Grid, XAxis, YAxis} from 'react-native-svg-charts';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
 import Orientation from 'react-native-orientation';
 import LoadingView from 'src/shared_controls/LoadingView';
-import {
-  sizeFont,
-  sizeHeight,
-  windowHeight,
-  windowWidth,
-} from 'src/commons/Size';
+import {sizeWidth, windowHeight, windowWidth} from 'src/commons/Size';
 import Button from 'src/shared_controls/Button';
 import {color} from 'src/stylesheet';
 import {Icon} from 'native-base';
 import TouchView from 'src/shared_controls/TouchView';
 
 interface Props extends BasePops {
-  event?: any | null;
+  list: AddIMEIData[];
 }
 
 interface State extends BaseState {
-  list: FieldData[];
   isDetail: boolean;
 }
 
@@ -38,7 +32,6 @@ class GroupChartDetail extends BaseScreen<Props, State> {
   constructor(p: Props) {
     super(p);
     this.state = {
-      list: [],
       isDetail: true,
     };
     const param:
@@ -66,51 +59,6 @@ class GroupChartDetail extends BaseScreen<Props, State> {
     this.goBack();
   };
 
-  shouldComponentUpdate(
-    nextProps: Readonly<Props>,
-    nextState: Readonly<State>,
-    nextContext: any,
-  ): boolean {
-    if (nextProps.event) {
-      const reduxState: GSDLReduxState = nextProps.event as GSDLReduxState;
-      if (
-        !!reduxState.data &&
-        reduxState.type === GSDL_REDUCER_ACTION.ADD_IMEI_DATA
-      ) {
-        const data: AddIMEIData = reduxState.data;
-        return this.name === data.group && this.imei === data.imei;
-      }
-    }
-    return false;
-  }
-
-  static getDerivedStateFromProps(
-    nextProps: Readonly<Props>,
-    prevState: Readonly<State>,
-  ): State | null {
-    if (!!nextProps.event) {
-      const inputRedux: GSDLReduxState = nextProps.event as GSDLReduxState;
-      if (inputRedux.type === GSDL_REDUCER_ACTION.ADD_IMEI_DATA) {
-        const data: AddIMEIData | null = inputRedux.data;
-
-        const param: {name: string; imei: string} | null | undefined =
-          // @ts-ignore
-          nextProps.navigation?.state.params || null;
-        if (
-          !!data &&
-          !!param &&
-          data.group === param.name &&
-          data.imei === param.imei
-        ) {
-          return {
-            list: [...prevState.list, data.data],
-            isDetail: prevState.isDetail,
-          };
-        }
-      }
-    }
-    return null;
-  }
   private viewAll = (): void => {
     this.setState((prevState: State) => {
       return {
@@ -120,7 +68,16 @@ class GroupChartDetail extends BaseScreen<Props, State> {
   };
 
   private renderData(): any {
-    if (this.state.list.length > 0) {
+    const list: FieldData[] = this.props.list
+      .filter((aid: AddIMEIData): boolean => {
+        return aid.imei === this.imei && aid.group === this.name;
+      })
+      .map(
+        (aid: AddIMEIData): FieldData => {
+          return aid.data;
+        },
+      );
+    if (list.length > 0) {
       let colors: any[] = [
         '#2e29b1',
         '#29b140',
@@ -132,7 +89,7 @@ class GroupChartDetail extends BaseScreen<Props, State> {
       ];
 
       let colorIndex: number = 0;
-      const dg: any = AppUtil.groupBy(this.state.list, 'field');
+      const dg: any = AppUtil.groupBy(list, 'field');
       const keys: string[] = Object.keys(dg).sort(
         (k1: string, k2: string): number => {
           return k1 > k2 ? 1 : -1;
@@ -205,21 +162,23 @@ class GroupChartDetail extends BaseScreen<Props, State> {
               <View
                 style={{
                   justifyContent: 'flex-end',
+                  flexDirection: 'row',
                 }}>
                 {dd.map((d: any): any => {
                   return (
                     <Text
                       style={{
-                        color: 'white',
+                        color: color.buttonText,
                         alignContent: 'center',
                         textAlign: 'center',
-                        justifyContent: 'center',
+                        // justifyContent: 'center',
                         textAlignVertical: 'center',
+                        alignSelf: 'center',
                         backgroundColor: d.color,
-                        minWidth: 30,
+                        minWidth: 40,
                         marginLeft: 5,
-                        height: 30,
-                        borderRadius: 5,
+                        height: 40,
+                        borderRadius: 20,
                       }}>
                       {d.field}
                     </Text>
@@ -241,7 +200,7 @@ class GroupChartDetail extends BaseScreen<Props, State> {
                 <YAxis
                   style={{
                     width: 30,
-                    height: windowHeight() - 80 - 30 - 30,
+                    height: windowWidth() - 80 - 30 - 30,
                   }}
                   data={yAxis}
                   svg={{
@@ -262,8 +221,8 @@ class GroupChartDetail extends BaseScreen<Props, State> {
                       width: this.state.isDetail
                         ? isLargeThanView
                           ? totalWidth
-                          : windowWidth()
-                        : windowWidth(),
+                          : windowHeight()
+                        : windowHeight(),
                     }}>
                     <LineChart
                       contentInset={{left: 30, right: 55}}
@@ -335,12 +294,12 @@ class GroupChartDetail extends BaseScreen<Props, State> {
             position: 'absolute',
             flex: 1,
             zIndex: 100,
-            top: sizeHeight(0.5),
-            left: sizeHeight(4.5),
+            top: sizeWidth(0.5),
+            left: sizeWidth(4.5),
             backgroundColor: color.button,
-            width: sizeHeight(10),
-            height: sizeHeight(10),
-            borderRadius: sizeHeight(4.5),
+            width: sizeWidth(5),
+            height: sizeWidth(5),
+            borderRadius: sizeWidth(2.5),
             alignItems: 'center',
             justifyContent: 'center',
           }}
@@ -357,5 +316,5 @@ class GroupChartDetail extends BaseScreen<Props, State> {
 }
 
 export default map<Props>(GroupChartDetail, (state: RootState) => ({
-  event: state.gsdlReducer,
+  list: state.gsdlReducer.list,
 }));

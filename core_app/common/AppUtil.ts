@@ -220,20 +220,6 @@ export class AppUtil {
     return num;
   }
 
-  static async getCompanyId(store: IStore): Promise<string> {
-    let email: string = '';
-    email = email.toLowerCase();
-
-    if (email === CONSTANTS.STR_EMPTY) {
-      email = 'testting_mode@phoenix.posbill.com';
-    }
-
-    const companyId: string = email.replace(CONSTANTS.CLEAR_EMAIL, '_');
-    return `${companyId}_${AppUtil.convertStringToTotalInt(
-      email,
-    )}`.toLowerCase();
-  }
-
   static isObjectEmpty(obj: Object | null) {
     return !obj || Object.keys(obj).length === 0;
   }
@@ -275,5 +261,9 @@ export class AppUtil {
     setTimeout(async (): Promise<void> => {
       await promise;
     }, 1);
+  }
+
+  static distinct(array: any[]): any[] {
+    return [...new Set(array)];
   }
 }

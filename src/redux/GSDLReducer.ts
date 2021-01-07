@@ -1,36 +1,48 @@
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
-import {Action} from 'redux';
+import {FieldData} from 'core_app/services';
+
 export enum GSDL_REDUCER_ACTION {
   UNKNOWN = 'UNKNOWN',
-  ADD_IMEI_DATA = 'ADD_IMEI_DATA',
+  SET_IMEI_DATA = 'SET_IMEI_DATA',
 }
 
-export const actAddIMEIData = (data: AddIMEIData): GSDLReduxState => {
+export interface SetIMEIData {
+  type: typeof GSDL_REDUCER_ACTION.SET_IMEI_DATA;
+  data: AddIMEIData;
+}
+
+export const actSetIMEIData = (data: AddIMEIData): SetIMEIData => {
   return {
-    type: GSDL_REDUCER_ACTION.ADD_IMEI_DATA,
+    type: GSDL_REDUCER_ACTION.SET_IMEI_DATA,
     data,
   };
 };
 
-export interface GSDLReduxState {
+interface GSDLReduxState {
   type: GSDL_REDUCER_ACTION;
   data: AddIMEIData | null;
+  list: AddIMEIData[];
 }
 
 const initialState: GSDLReduxState = {
   type: GSDL_REDUCER_ACTION.UNKNOWN,
   data: null,
+  list: [],
 };
+
+type GSDLAction = SetIMEIData;
 
 const gsdlReducer = (
   state = initialState,
-  action: GSDLReduxState,
+  action: GSDLAction,
 ): GSDLReduxState => {
   switch (action.type) {
-    case GSDL_REDUCER_ACTION.ADD_IMEI_DATA:
-      const act: GSDLReduxState = {...action};
+    case GSDL_REDUCER_ACTION.SET_IMEI_DATA:
+      const act: SetIMEIData = {...action};
       return {
+        ...state,
         ...act,
+        list: [...state.list, act.data],
       };
     default:
       return state;

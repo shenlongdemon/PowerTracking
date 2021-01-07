@@ -2,7 +2,7 @@ import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
 import {View, ViewProps} from 'react-native';
 import {FieldData} from 'core_app/services';
-import {GSDL_REDUCER_ACTION, GSDLReduxState} from 'src/redux/GSDLReducer';
+import {GSDL_REDUCER_ACTION, SetIMEIData} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
 import {RootState} from 'src/redux/rootReducer';
 import {AppUtil, CONSTANTS} from 'core_app/common';
@@ -10,81 +10,85 @@ import {Text} from 'src/shared_controls/Text';
 import {Body, Left, ListItem} from 'native-base';
 import {map} from 'src/middlewares/GlobalObservable';
 interface Props {
-  event?: any | null;
+  list: AddIMEIData[];
 }
 interface BaseProps extends Props {
   name: string; // group name
   imei: string; // group name
   onPress: () => void;
 }
-interface FieldDataExt extends FieldData {
-  onOff: boolean;
-}
-interface State {
-  list: FieldDataExt[];
-}
+
+interface State {}
 
 class IMEIChartThumb extends BaseScrPart<BaseProps & ViewProps, State> {
   constructor(p: BaseProps & ViewProps) {
     super(p);
-    this.state = {
-      list: [],
-    };
+    this.state = {};
   }
 
-  shouldComponentUpdate(
-    nextProps: Readonly<BaseProps>,
-    nextState: Readonly<State>,
-    nextContext: any,
-  ): boolean {
-    if (nextProps.event) {
-      const reduxState: GSDLReduxState = nextProps.event as GSDLReduxState;
-      if (
-        !!reduxState.data &&
-        reduxState.type === GSDL_REDUCER_ACTION.ADD_IMEI_DATA
-      ) {
-        const data: AddIMEIData = reduxState.data;
-        return nextProps.name === data.group && nextProps.imei === data.imei;
-      }
-    }
-    return false;
-  }
-
+  // shouldComponentUpdate(
+  //   nextProps: Readonly<BaseProps>,
+  //   nextState: Readonly<State>,
+  //   nextContext: any,
+  // ): boolean {
+  //   if (nextProps.event) {
+  //     const reduxState: SetIMEIData = nextProps.event as SetIMEIData;
+  //     if (
+  //       !!reduxState.data &&
+  //       reduxState.type === GSDL_REDUCER_ACTION.SET_IMEI_DATA
+  //     ) {
+  //       const data: AddIMEIData = reduxState.data;
+  //       return nextProps.name === data.group && nextProps.imei === data.imei;
+  //     }
+  //   }
+  //   return false;
+  // }
   //
-  static getDerivedStateFromProps(
-    nextProps: Readonly<BaseProps>,
-    prevState: Readonly<State>,
-  ): State | null {
-    if (!!nextProps.event) {
-      const inputRedux: GSDLReduxState = nextProps.event as GSDLReduxState;
-      if (inputRedux.type === GSDL_REDUCER_ACTION.ADD_IMEI_DATA) {
-        const data: AddIMEIData | null = inputRedux.data;
-        if (!!data && data.group === nextProps.name) {
-          let rest: FieldDataExt[] = prevState.list;
-          const existsIndex: number = prevState.list.findIndex(
-            (item: FieldData): boolean => {
-              return item.field === data.data.field;
-            },
-          );
-          let onOff: boolean = false;
-          if (existsIndex > -1) {
-            const existsItem: FieldDataExt = rest[existsIndex];
-            onOff = !existsItem.onOff;
-            rest.splice(existsIndex, 1);
-          }
-          rest.push({...data.data, onOff});
-
-          return {
-            list: rest,
-          };
-        }
-      }
-    }
-    return null;
-  }
+  // //
+  // static getDerivedStateFromProps(
+  //   nextProps: Readonly<BaseProps>,
+  //   prevState: Readonly<State>,
+  // ): State | null {
+  //   if (!!nextProps.event) {
+  //     const inputRedux: SetIMEIData = nextProps.event as SetIMEIData;
+  //     if (inputRedux.type === GSDL_REDUCER_ACTION.SET_IMEI_DATA) {
+  //       const data: AddIMEIData | null = inputRedux.data;
+  //       if (!!data && data.group === nextProps.name) {
+  //         let rest: FieldDataExt[] = prevState.list;
+  //         const existsIndex: number = prevState.list.findIndex(
+  //           (item: FieldData): boolean => {
+  //             return item.field === data.data.field;
+  //           },
+  //         );
+  //         let onOff: boolean = false;
+  //         if (existsIndex > -1) {
+  //           const existsItem: FieldDataExt = rest[existsIndex];
+  //           onOff = !existsItem.onOff;
+  //           rest.splice(existsIndex, 1);
+  //         }
+  //         rest.push({...data.data, onOff});
+  //
+  //         return {
+  //           list: rest,
+  //         };
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // }
 
   private renderData(): any {
-    if (this.state.list.length > 0) {
+    const list: FieldData[] = this.props.list
+      .filter((aid: AddIMEIData): boolean => {
+        return aid.imei === this.props.imei && aid.group === this.props.name;
+      })
+      .map(
+        (aid: AddIMEIData): FieldData => {
+          return aid.data;
+        },
+      );
+
+    if (list.length > 0) {
       let colors: any[] = [
         '#b12929',
         '#2e29b1',
@@ -96,7 +100,7 @@ class IMEIChartThumb extends BaseScrPart<BaseProps & ViewProps, State> {
         '#29b1b1',
       ];
 
-      const dg: any = AppUtil.groupBy(this.state.list, 'field');
+      const dg: any = AppUtil.groupBy(list, 'field');
       const keys: string[] = Object.keys(dg).sort(
         (k1: string, k2: string): number => {
           return k1 > k2 ? 1 : -1;
@@ -126,10 +130,14 @@ class IMEIChartThumb extends BaseScrPart<BaseProps & ViewProps, State> {
                 if (index >= colors.length) {
                   colorIndex = index % colors.length;
                 }
-                const data: FieldDataExt | null =
-                  this.state.list.find((item: FieldDataExt): boolean => {
-                    return item.field === field;
-                  }) || null;
+                const dataList: FieldData[] = list
+                  .filter((fd: FieldData): boolean => {
+                    return fd.field === field;
+                  })
+                  .sort((a: FieldData, b: FieldData): number => {
+                    return a.time - b.time;
+                  });
+                const data: FieldData = dataList[dataList.length - 1];
                 return (
                   <Text
                     style={{
@@ -162,5 +170,5 @@ class IMEIChartThumb extends BaseScrPart<BaseProps & ViewProps, State> {
 }
 
 export default map<Props>(IMEIChartThumb, (state: RootState) => ({
-  event: state.gsdlReducer,
+  list: state.gsdlReducer.list,
 }));

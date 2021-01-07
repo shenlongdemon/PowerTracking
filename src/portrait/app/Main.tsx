@@ -19,6 +19,8 @@ import {AppUtil} from 'core_app/common';
 import {Fab, Icon} from 'native-base';
 import {color} from 'src/stylesheet';
 import {sizeFont, sizeHeight} from 'src/commons/Size';
+import store from 'src/redux/Store';
+import {actSetIMEIData} from 'src/redux/GSDLReducer';
 
 interface State extends BaseState {
   list: IMEIInfo[];
@@ -83,6 +85,13 @@ export default class Main extends BaseScreen<BasePops, State> {
     if (group !== 'RSSI' || !fieldData || fieldData.field.indexOf('F') !== 0) {
       return;
     }
+    store.dispatch(
+      actSetIMEIData({
+        group,
+        imei,
+        data: fieldData,
+      }),
+    );
     const item: {current: IMEIThumbListItem} | null = this.imeiItemRefs[imei];
     if (!!item) {
       item.current.onData(fieldData);
@@ -112,7 +121,7 @@ export default class Main extends BaseScreen<BasePops, State> {
       <BaseScreen>
         <View style={{flex: 1}}>
           <FlatList
-            style={{marginBottom: 30}}
+            style={{paddingBottom: sizeHeight(14)}}
             data={this.state.list}
             renderItem={this.renderItem}
             keyExtractor={(item) => item.imei}
@@ -137,7 +146,7 @@ export default class Main extends BaseScreen<BasePops, State> {
             <Icon
               name={'plus'}
               type={'AntDesign'}
-              style={{fontSize: sizeFont(12), color: color.buttonText}}
+              style={{fontSize: sizeFont(28), color: color.buttonText}}
             />
           </TouchView>
         </View>

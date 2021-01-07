@@ -7,7 +7,7 @@ import {AppUtil, Logger} from 'core_app/common';
 import {FieldData, IMQTTService, MqttData} from 'core_app/services';
 import GroupChart from 'src/portrait/screen_part/GroupChart';
 import store from 'src/redux/Store';
-import {actAddIMEIData} from 'src/redux/GSDLReducer';
+import {actSetIMEIData} from 'src/redux/GSDLReducer';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 
 interface Props {}
@@ -54,7 +54,7 @@ export default class GroupChartList extends BaseScrPart<Props, State> {
     }
     // store.dispatch(addIMEIData(group, imei, fieldData));
     store.dispatch(
-      actAddIMEIData({
+      actSetIMEIData({
         group,
         imei,
         data: fieldData,
