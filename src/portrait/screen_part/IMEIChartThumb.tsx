@@ -2,13 +2,14 @@ import BaseScrPart from 'src/BaseScrPart';
 import * as React from 'react';
 import {View, ViewProps} from 'react-native';
 import {FieldData} from 'core_app/services';
-import {GSDL_REDUCER_ACTION, SetIMEIData} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
 import {RootState} from 'src/redux/rootReducer';
 import {AppUtil, CONSTANTS} from 'core_app/common';
 import {Text} from 'src/shared_controls/Text';
 import {Body, Left, ListItem} from 'native-base';
 import {map} from 'src/middlewares/GlobalObservable';
+import * as Animatable from 'react-native-animatable';
+
 interface Props {
   list: AddIMEIData[];
 }
@@ -84,22 +85,28 @@ class IMEIChartThumb extends BaseScrPart<BaseProps & ViewProps, State> {
                   });
                 const data: FieldData = dataList[dataList.length - 1];
                 return (
-                  <Text
-                    style={{
-                      paddingRight: 5,
-                      paddingLeft: 5,
-                      margin: 5,
-                      color: 'white',
-                      alignContent: 'center',
-                      textAlign: 'center',
-                      // alignSelf: 'center',
-                      textAlignVertical: 'center',
-                      backgroundColor: colors[colorIndex],
-                      // flex: 1 / dd.length + 1,
-                      height: 40,
-                    }}>
-                    {`${!!data ? data.data : CONSTANTS.STR_EMPTY} (${ns[2]})`}
-                  </Text>
+                  <Animatable.View
+                    key={`${data.field}${data.data}${data.time}`}
+                    animation={'bounce'}
+                    duration={500}>
+                    <Text
+                      key={`${data.field}${data.data}${data.time}`}
+                      style={{
+                        paddingRight: 5,
+                        paddingLeft: 5,
+                        margin: 5,
+                        color: 'white',
+                        alignContent: 'center',
+                        textAlign: 'center',
+                        // alignSelf: 'center',
+                        textAlignVertical: 'center',
+                        backgroundColor: colors[colorIndex],
+                        // flex: 1 / dd.length + 1,
+                        height: 40,
+                      }}>
+                      {`${!!data ? data.data : CONSTANTS.STR_EMPTY} (${ns[2]})`}
+                    </Text>
+                  </Animatable.View>
                 );
               })}
             </Body>
