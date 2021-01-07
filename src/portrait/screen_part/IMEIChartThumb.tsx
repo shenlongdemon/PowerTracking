@@ -26,57 +26,6 @@ class IMEIChartThumb extends BaseScrPart<BaseProps & ViewProps, State> {
     this.state = {};
   }
 
-  // shouldComponentUpdate(
-  //   nextProps: Readonly<BaseProps>,
-  //   nextState: Readonly<State>,
-  //   nextContext: any,
-  // ): boolean {
-  //   if (nextProps.event) {
-  //     const reduxState: SetIMEIData = nextProps.event as SetIMEIData;
-  //     if (
-  //       !!reduxState.data &&
-  //       reduxState.type === GSDL_REDUCER_ACTION.SET_IMEI_DATA
-  //     ) {
-  //       const data: AddIMEIData = reduxState.data;
-  //       return nextProps.name === data.group && nextProps.imei === data.imei;
-  //     }
-  //   }
-  //   return false;
-  // }
-  //
-  // //
-  // static getDerivedStateFromProps(
-  //   nextProps: Readonly<BaseProps>,
-  //   prevState: Readonly<State>,
-  // ): State | null {
-  //   if (!!nextProps.event) {
-  //     const inputRedux: SetIMEIData = nextProps.event as SetIMEIData;
-  //     if (inputRedux.type === GSDL_REDUCER_ACTION.SET_IMEI_DATA) {
-  //       const data: AddIMEIData | null = inputRedux.data;
-  //       if (!!data && data.group === nextProps.name) {
-  //         let rest: FieldDataExt[] = prevState.list;
-  //         const existsIndex: number = prevState.list.findIndex(
-  //           (item: FieldData): boolean => {
-  //             return item.field === data.data.field;
-  //           },
-  //         );
-  //         let onOff: boolean = false;
-  //         if (existsIndex > -1) {
-  //           const existsItem: FieldDataExt = rest[existsIndex];
-  //           onOff = !existsItem.onOff;
-  //           rest.splice(existsIndex, 1);
-  //         }
-  //         rest.push({...data.data, onOff});
-  //
-  //         return {
-  //           list: rest,
-  //         };
-  //       }
-  //     }
-  //   }
-  //   return null;
-  // }
-
   private renderData(): any {
     const list: FieldData[] = this.props.list
       .filter((aid: AddIMEIData): boolean => {
@@ -118,11 +67,7 @@ class IMEIChartThumb extends BaseScrPart<BaseProps & ViewProps, State> {
             <Body
               style={{
                 flex: 1,
-                // alignSelf: 'space-between',
-                // alignItems: 'space-between',
                 alignContent: 'space-between',
-                // flexDirection: 'row',
-                // flexWrap: 'wrap',
               }}>
               {keys.map((field: string, index: number): any => {
                 const ns: string[] = field.split('_');

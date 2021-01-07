@@ -5,6 +5,7 @@ import {FieldData, IMEIInfo} from 'core_app/services';
 import {AppUtil, CONSTANTS} from 'core_app/common';
 import {Text} from 'src/shared_controls/Text';
 import {Body, Icon, ListItem, Right} from 'native-base';
+import * as Animatable from 'react-native-animatable';
 
 interface Props extends ViewProps {
   imei: IMEIInfo;
@@ -15,6 +16,7 @@ interface State {
 }
 
 export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
+  private ref!: Animatable.View;
   constructor(p: Props) {
     super(p);
     this.state = {
@@ -26,7 +28,9 @@ export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
     AppUtil.runAfter(async (): Promise<void> => {
       this.setState({data});
     }, 1);
+    this.ref.bounce!(500);
   }
+  private readonly handleViewRef = (ref) => (this.ref = ref);
 
   render() {
     const isOnline: boolean = !!this.state.data;
@@ -57,9 +61,13 @@ export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
               fontSize: 24,
             }}
           />
-          <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
-            {data}
-          </Text>
+          <Animatable.View
+            style={{alignSelf: 'center'}}
+            ref={this.handleViewRef}>
+            <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
+              {data}
+            </Text>
+          </Animatable.View>
         </Right>
       </ListItem>
     );
