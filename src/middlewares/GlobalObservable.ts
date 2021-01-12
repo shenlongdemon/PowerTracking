@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 export const map = <TInjectedProps>(
   type: any,
-  state: (state: RootState) => TInjectedProps,
+  state: (state: RootState, ownProps?: any) => TInjectedProps,
 ): any => {
   //InferableComponentEnhancerWithProps<TInjectedProps & DispatchProp, any>
   const connector = connect(state);

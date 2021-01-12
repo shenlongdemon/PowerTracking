@@ -56,7 +56,10 @@ const mainStack = createCompatNavigatorFactory(createStackNavigator)(
       screen: drawerStack,
       navigationOptions: {headerShown: false},
     },
-    [ROUTE.APP.IMEI_INFO]: IMEIInfoScreen,
+    [ROUTE.APP.IMEI_INFO]: {
+      screen: IMEIInfoScreen,
+      navigationOptions: IMEIInfoScreen.navigationOptions,
+    },
     [ROUTE.APP.GROUP_CHART_INFO]: {
       screen: GroupChartDetail,
       navigationOptions: {headerShown: false},

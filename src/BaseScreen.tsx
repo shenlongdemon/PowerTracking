@@ -11,8 +11,9 @@ import Store from 'src/redux/Store';
 import {actSetLoading} from 'src/redux/UIReducer';
 import {Logger} from 'core_app/common';
 import {Container} from 'native-base';
+export interface Navigation extends NavigationContainerRef {}
 export interface BasePops {
-  navigation?: NavigationContainerRef | undefined;
+  navigation?: Navigation | undefined;
 }
 export interface BaseState {}
 export default class BaseScreen<
@@ -35,6 +36,12 @@ export default class BaseScreen<
     if (!!this.props.navigation) {
       // @ts-ignore
       this.props.navigation.setOptions({title: title});
+    }
+  }
+
+  setSellNavigateParam(data: any): void {
+    if (!!this.props.navigation) {
+      this.props.navigation.setParams(data);
     }
   }
 

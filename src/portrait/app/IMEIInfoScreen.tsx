@@ -1,17 +1,36 @@
 import * as React from 'react';
-import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
+import BaseScreen, {BasePops, BaseState, Navigation} from 'src/BaseScreen';
 import {IMEIInfo} from 'core_app/services';
 import {CONSTANTS} from 'core_app/common';
 import {Body, Left, List, ListItem} from 'native-base';
-import {ScrollView, StyleSheet} from 'react-native';
+import {Button, ScrollView, StyleSheet} from 'react-native';
 import {Text} from 'src/shared_controls/Text';
 import IMEIChartList from 'src/portrait/screen_part/IMEIChartList';
 import {ROUTE} from 'src/portrait/route';
+import {map} from 'src/middlewares/GlobalObservable';
+import {RootState} from 'src/redux/rootReducer';
+import {IMEIData} from 'src/redux/models/IMEIData';
+interface InjectProps {
+  mainGroups: string[];
+}
 interface State extends BaseState {}
-export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
+class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
+  public static navigationOptions = ({navigation, navigationOptions}) => {
+    const mainGroups: string[] = navigation.state.params.mainGroups || [];
+    return {
+      headerRight: () => (
+        <Button
+          onPress={() => alert(mainGroups.join(','))}
+          title={`${mainGroups.length}`}
+        />
+      ),
+    };
+  };
+  public static IMEI_SELECTED: string = CONSTANTS.STR_EMPTY;
   private readonly imeiInfo!: IMEIInfo;
-  constructor(p: BasePops) {
+  constructor(p: BasePops & InjectProps) {
     super(p);
+    IMEIInfoScreen.IMEI_SELECTED = CONSTANTS.STR_EMPTY;
     this.onChartPress = this.onChartPress.bind(this);
     this.state = {};
     const param: any | null | undefined = this.getParam();
@@ -19,10 +38,24 @@ export default class IMEIInfoScreen extends BaseScreen<BasePops, State> {
       this.goBack();
     }
     this.imeiInfo = param as IMEIInfo;
+    IMEIInfoScreen.IMEI_SELECTED = this.imeiInfo.imei;
     this.setHeader(this.imeiInfo.xdesc);
   }
 
   async componentDidMount(): Promise<void> {}
+
+  componentDidUpdate(
+    prevProps: Readonly<BasePops & InjectProps>,
+    prevState: Readonly<State>,
+    snapshot?: any,
+  ) {
+    if (
+      prevProps.mainGroups.join(CONSTANTS.STR_EMPTY) !==
+      this.props.mainGroups.join(CONSTANTS.STR_EMPTY)
+    ) {
+      this.setSellNavigateParam({mainGroups: this.props.mainGroups});
+    }
+  }
 
   private onChartPress(group: string): void {
     const data: {name: string; imei: string} = {
@@ -86,3 +119,21 @@ const styles = StyleSheet.create({
     flex: 0.4,
   },
 });
+
+export default map<InjectProps>(
+  IMEIInfoScreen,
+  (state: RootState): InjectProps => {
+    return {
+      mainGroups: state.gsdlReducer.list
+        .filter((id: IMEIData): boolean => {
+          return (
+            IMEIInfoScreen.IMEI_SELECTED !== CONSTANTS.STR_EMPTY &&
+            id.imei === IMEIInfoScreen.IMEI_SELECTED
+          );
+        })
+        .map((id: IMEIData): string => {
+          return id.mainGroup;
+        }),
+    };
+  },
+);

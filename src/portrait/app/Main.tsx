@@ -15,7 +15,7 @@ import {FlatList, View} from 'react-native';
 import TouchView from 'src/shared_controls/TouchView';
 import {ROUTE} from 'src/portrait/route';
 import IMEIThumbListItem from 'src/portrait/screen_part/IMEIThumbListItem';
-import {AppUtil} from 'core_app/common';
+import {AppUtil, Logger} from 'core_app/common';
 import {Fab, Icon} from 'native-base';
 import {color} from 'src/stylesheet';
 import {sizeFont, sizeHeight} from 'src/commons/Size';
@@ -58,7 +58,9 @@ export default class Main extends BaseScreen<BasePops, State> {
     }
     await this.setLoading(false);
   }
+
   async componentWillUnmount(): Promise<void> {
+    Logger.log(`Main componentWillUnmount`);
     await this.close();
   }
 
@@ -79,6 +81,7 @@ export default class Main extends BaseScreen<BasePops, State> {
 
   private async handleRSSIData(data: MqttData): Promise<void> {
     // Logger.log(`MQTT Main onData`, data);
+    const mainGroup: string = data.mainGroup;
     const group: string = data.group;
     const imei: string = data.imei;
     const fieldData: FieldData | null = data.data;
@@ -87,6 +90,7 @@ export default class Main extends BaseScreen<BasePops, State> {
     }
     store.dispatch(
       actSetIMEIData({
+        mainGroup,
         group,
         imei,
         data: fieldData,

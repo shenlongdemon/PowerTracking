@@ -13,22 +13,27 @@ import {actSetIMEIData} from 'src/redux/GSDLReducer';
 import {AddIMEIData} from 'src/redux/models/AddIMEIData';
 import {map} from 'src/middlewares/GlobalObservable';
 import {RootState} from 'src/redux/rootReducer';
-import GSDLBusinessUtils from 'src/commons/GSDLBusinessUtils';
+import {IMEIData} from 'src/redux/models/IMEIData';
+import {GroupIMEIData} from 'src/redux/models/GroupIMEIData';
 
 interface InjectProps {
-  list: AddIMEIData[];
+  list: GroupIMEIData[];
 }
-interface Props extends InjectProps {
+interface Props {
   imeiInfo: IMEIInfo;
   onPress: (group: string) => void;
 }
+
 interface State {}
 
-class IMEIChartList extends BaseScrPart<Props & ViewProps, State> {
+class IMEIChartList extends BaseScrPart<
+  Props & ViewProps & InjectProps,
+  State
+> {
   protected mqttService: IMQTTService = FactoryInjection.get<IMQTTService>(
     PUBLIC_TYPES.IMQTTService,
   );
-  constructor(p: Props & ViewProps) {
+  constructor(p: Props & ViewProps & InjectProps) {
     super(p);
     this.mqttService.setHandleData(new DataHandling(this));
     this.onData = this.onData.bind(this);
@@ -65,6 +70,7 @@ class IMEIChartList extends BaseScrPart<Props & ViewProps, State> {
 
   private async handleData(data: MqttData): Promise<void> {
     // Logger.log(`MQTT Main onData`, data);
+    const mainGroup: string = data.mainGroup;
     const group: string = data.group;
     const imei: string = data.imei;
     const fieldData: FieldData | null = data.data;
@@ -74,6 +80,7 @@ class IMEIChartList extends BaseScrPart<Props & ViewProps, State> {
 
     store.dispatch(
       actSetIMEIData({
+        mainGroup,
         group,
         imei,
         data: fieldData,
@@ -82,13 +89,9 @@ class IMEIChartList extends BaseScrPart<Props & ViewProps, State> {
   }
 
   private renderData(): any {
-    const list: AddIMEIData[] = GSDLBusinessUtils.getFieldDataList(
-      this.props.list,
-      this.props.imeiInfo.imei,
-    );
     const groups: string[] = AppUtil.distinct(
-      list.map((aid: AddIMEIData): string => {
-        return aid.group;
+      this.props.list.map((id: GroupIMEIData): string => {
+        return id.group;
       }),
     );
 
@@ -100,7 +103,7 @@ class IMEIChartList extends BaseScrPart<Props & ViewProps, State> {
               this.props.onPress(group);
             }}
             key={`${this.props.imeiInfo.imei}-${group}`}
-            name={group}
+            group={group}
             imei={this.props.imeiInfo.imei}
           />
         );
@@ -112,6 +115,15 @@ class IMEIChartList extends BaseScrPart<Props & ViewProps, State> {
     return <BaseScrPart style={{flex: 1}}>{this.renderData()}</BaseScrPart>;
   }
 }
-export default map<InjectProps>(IMEIChartList, (state: RootState) => ({
-  list: state.gsdlReducer.list,
-}));
+export default map<InjectProps>(
+  IMEIChartList,
+  (state: RootState, props: Props): InjectProps => {
+    const imeiData: IMEIData | null =
+      state.gsdlReducer.list.find((id: IMEIData): boolean => {
+        return id.imei === props.imeiInfo.imei;
+      }) || null;
+    return {
+      list: !!imeiData ? imeiData.groups : [],
+    };
+  },
+);

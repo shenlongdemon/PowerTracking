@@ -183,12 +183,12 @@ export default class MQTTService extends BaseService implements IMQTTService {
 
   private async getIMEITopic(imei: string): Promise<string> {
     // return 'SENSOR/2CF432662C59/#';
-    return `REAL/${imei}/SOLIEU/#`;
+    return `REAL/${imei}/#`;
   }
 
   private async getIMEIRSSITopic(imei: string): Promise<string> {
     // return 'SENSOR/2CF432662C59/#';
-    return `REAL/${imei}/SOLIEU/F_RSSI_1`;
+    return `REAL/${imei}/+/F_RSSI_1`;
   }
 
   private onError = (error: Error): void => {
