@@ -25,7 +25,7 @@ export default class TouchView<P extends Props> extends BaseControl<P> {
     this.isWaitPreventMultiTouch = this.isWaitPreventMultiTouch.bind(this);
   }
 
-  onPress(_event: GestureResponderEvent) {
+  private readonly onPress = (_event: GestureResponderEvent): void => {
     if (
       !!this.props.onPress &&
       !this.isDisabled() &&
@@ -41,7 +41,7 @@ export default class TouchView<P extends Props> extends BaseControl<P> {
         }, 1000);
       }
     }
-  }
+  };
 
   isPreventMultiTouch(): boolean {
     return !(this.props.preventMultiTouch === false);

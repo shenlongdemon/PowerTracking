@@ -10,6 +10,8 @@ import {ROUTE} from 'src/portrait/route';
 import {map} from 'src/middlewares/GlobalObservable';
 import {RootState} from 'src/redux/rootReducer';
 import {IMEIData} from 'src/redux/models/IMEIData';
+import DropDownList from 'src/shared_controls/DropDownList';
+import {color} from 'src/stylesheet';
 interface InjectProps {
   mainGroups: string[];
 }
@@ -19,9 +21,14 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
     const mainGroups: string[] = navigation.state.params.mainGroups || [];
     return {
       headerRight: () => (
-        <Button
-          onPress={() => alert(mainGroups.join(','))}
-          title={`${mainGroups.length}`}
+        <DropDownList
+          H2
+          style={{
+            color: color.buttonText,
+          }}
+          items={mainGroups}
+          title={'Select group'}
+          message={'Select group to switch to another group and reload data'}
         />
       ),
     };
@@ -42,7 +49,9 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
     this.setHeader(this.imeiInfo.xdesc);
   }
 
-  async componentDidMount(): Promise<void> {}
+  async componentDidMount(): Promise<void> {
+    this.setSellNavigateParam({mainGroups: this.props.mainGroups});
+  }
 
   componentDidUpdate(
     prevProps: Readonly<BasePops & InjectProps>,
@@ -126,10 +135,7 @@ export default map<InjectProps>(
     return {
       mainGroups: state.gsdlReducer.list
         .filter((id: IMEIData): boolean => {
-          return (
-            IMEIInfoScreen.IMEI_SELECTED !== CONSTANTS.STR_EMPTY &&
-            id.imei === IMEIInfoScreen.IMEI_SELECTED
-          );
+          return id.imei === IMEIInfoScreen.IMEI_SELECTED;
         })
         .map((id: IMEIData): string => {
           return id.mainGroup;

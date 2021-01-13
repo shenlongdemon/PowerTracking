@@ -10,7 +10,7 @@ import {
 import Store from 'src/redux/Store';
 import {actSetLoading} from 'src/redux/UIReducer';
 import {Logger} from 'core_app/common';
-import {Container} from 'native-base';
+import {Container, Root} from 'native-base';
 export interface Navigation extends NavigationContainerRef {}
 export interface BasePops {
   navigation?: Navigation | undefined;
@@ -109,17 +109,19 @@ export default class BaseScreen<
 
   render() {
     return (
-      <Container>
-        <View
-          style={{
-            flex: 1,
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-          }}
-        />
-        <View style={{flex: 1}}>{this.props.children}</View>
-      </Container>
+      <Root>
+        <Container>
+          <View
+            style={{
+              flex: 1,
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+            }}
+          />
+          <View style={{flex: 1}}>{this.props.children}</View>
+        </Container>
+      </Root>
     );
   }
 }

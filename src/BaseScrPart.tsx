@@ -1,13 +1,5 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  View,
-  ViewProps,
-} from 'react-native';
-import {Container} from 'native-base';
+import {View, ViewProps} from 'react-native';
 
 export default class BaseScrPart<
   P extends ViewProps,
