@@ -12,6 +12,7 @@ import {ENV} from 'core_app/config';
 import {Link} from 'src/shared_controls/Link';
 import {logo} from 'src/assets';
 import {styleSheet} from 'src/stylesheet';
+import {DataHandling} from 'src/infrastructure/DataHandling';
 
 export default class UserLogin extends BaseScreen<BasePops, BaseState> {
   public authService: IAuthService = FactoryInjection.get<IAuthService>(
@@ -20,6 +21,7 @@ export default class UserLogin extends BaseScreen<BasePops, BaseState> {
 
   constructor(p: BasePops) {
     super(p);
+    this.authService.setHandleData(new DataHandling(this));
   }
 
   moveToEMEIList() {

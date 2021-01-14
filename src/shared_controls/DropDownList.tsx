@@ -2,7 +2,6 @@ import {Text, Props as TProps} from 'src/shared_controls/Text';
 import React from 'react';
 import {Icon} from 'native-base';
 import {IControl} from 'src/shared_controls/IControl';
-import BaseControl from 'src/shared_controls/BaseControl';
 import ActionSheet from 'react-native-custom-actionsheet';
 import {color} from 'src/stylesheet';
 import TouchView from 'src/shared_controls/TouchView';
@@ -10,7 +9,8 @@ interface Props extends IControl, TProps {
   items: string[];
   title: string;
   message: string;
-  onItemSelected?: (text: string) => Promise<void>;
+  onItemSelected?: (index: number) => Promise<void>;
+  defaultItemIndex?: number;
 }
 interface State {
   index: number;
@@ -20,13 +20,30 @@ export default class DropDownList extends React.Component<Props, State> {
   constructor(p: Props) {
     super(p);
     this.state = {
-      index: 0,
+      index: -1,
     };
     this.showOptions = this.showOptions.bind(this);
   }
+
   private readonly showOptions = (): void => {
     !!this.actionSheetRef && this.actionSheetRef.show();
   };
+
+  componentDidUpdate(
+    prevProps: Readonly<Props>,
+    prevState: Readonly<State>,
+    snapshot?: any,
+  ) {
+    const indexSelected: number = this.props.defaultItemIndex || 0;
+    if (
+      prevState.index === -1 &&
+      this.props.items.length > 0 &&
+      indexSelected > -1 &&
+      indexSelected < this.props.items.length
+    ) {
+      this.handlePress(indexSelected);
+    }
+  }
 
   private readonly renderOptions = (): any[] => {
     return this.props.items.map((item: string): any => {
@@ -43,8 +60,7 @@ export default class DropDownList extends React.Component<Props, State> {
 
   handlePress = (buttonIndex): void => {
     this.setState({index: buttonIndex});
-    !!this.props.onItemSelected &&
-      this.props.onItemSelected(this.props.items[buttonIndex]);
+    !!this.props.onItemSelected && this.props.onItemSelected(buttonIndex);
   };
   render() {
     if (this.props.items.length === 0) {

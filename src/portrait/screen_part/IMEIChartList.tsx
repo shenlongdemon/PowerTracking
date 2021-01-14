@@ -1,8 +1,14 @@
 import BaseScrPart from 'src/BaseScrPart';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {DataHandling} from 'src/infrastructure/DataHandling';
-import {AppUtil} from 'core_app/common';
-import {FieldData, IMEIInfo, IMQTTService, MqttData} from 'core_app/services';
+import {AppUtil, STATE_ACTION} from 'core_app/common';
+import {
+  FieldData,
+  IGlobalState,
+  IMEIInfo,
+  IMQTTService,
+  MqttData,
+} from 'core_app/services';
 import store from 'src/redux/Store';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import React from 'react';
@@ -10,7 +16,6 @@ import IMEIChartThumb from 'src/portrait/screen_part/IMEIChartThumb';
 import LoadingView from 'src/shared_controls/LoadingView';
 import {ViewProps} from 'react-native';
 import {actSetIMEIData} from 'src/redux/GSDLReducer';
-import {AddIMEIData} from 'src/redux/models/AddIMEIData';
 import {map} from 'src/middlewares/GlobalObservable';
 import {RootState} from 'src/redux/rootReducer';
 import {IMEIData} from 'src/redux/models/IMEIData';
@@ -18,6 +23,7 @@ import {GroupIMEIData} from 'src/redux/models/GroupIMEIData';
 
 interface InjectProps {
   list: GroupIMEIData[];
+  mainGroup: string;
 }
 interface Props {
   imeiInfo: IMEIInfo;
@@ -32,6 +38,9 @@ class IMEIChartList extends BaseScrPart<
 > {
   protected mqttService: IMQTTService = FactoryInjection.get<IMQTTService>(
     PUBLIC_TYPES.IMQTTService,
+  );
+  private globalState: IGlobalState = FactoryInjection.get<IGlobalState>(
+    PUBLIC_TYPES.IGlobalState,
   );
   constructor(p: Props & ViewProps & InjectProps) {
     super(p);
@@ -74,18 +83,24 @@ class IMEIChartList extends BaseScrPart<
     const group: string = data.group;
     const imei: string = data.imei;
     const fieldData: FieldData | null = data.data;
-    if (!fieldData || fieldData.field.indexOf('F') !== 0 || group === 'LIVE') {
+    if (!fieldData || group === 'LIVE') {
       return;
     }
-
-    store.dispatch(
-      actSetIMEIData({
+    if (fieldData.field.indexOf('F') === 0) {
+      this.globalState.do(STATE_ACTION.SET_IMEI_DATA, {
         mainGroup,
         group,
         imei,
         data: fieldData,
-      }),
-    );
+      });
+    } else if (fieldData.field.indexOf('S') === 0) {
+      this.globalState.do(STATE_ACTION.SET_IMEI_S_INFO, {
+        mainGroup,
+        group,
+        imei,
+        data: fieldData,
+      });
+    }
   }
 
   private renderData(): any {
@@ -118,12 +133,14 @@ class IMEIChartList extends BaseScrPart<
 export default map<InjectProps>(
   IMEIChartList,
   (state: RootState, props: Props): InjectProps => {
+    const mainGroup: string = state.gsdlReducer.mainGroup;
     const imeiData: IMEIData | null =
       state.gsdlReducer.list.find((id: IMEIData): boolean => {
-        return id.imei === props.imeiInfo.imei;
+        return id.imei === props.imeiInfo.imei && id.mainGroup === mainGroup;
       }) || null;
     return {
       list: !!imeiData ? imeiData.groups : [],
+      mainGroup,
     };
   },
 );

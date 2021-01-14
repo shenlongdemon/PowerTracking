@@ -1,6 +1,7 @@
 import * as React from 'React';
 
 import {BaseDto, CONSTANTS, IDataHandle} from 'core_app';
+import UIUtils from 'src/commons/UIUtils';
 
 export class DataHandling implements IDataHandle {
   private readonly component!: React.Component;
@@ -16,7 +17,7 @@ export class DataHandling implements IDataHandle {
         message = await this.component[`handle${dto.code}`](dto, data);
       } catch (e) {
         message = `${dto.code} ${dto.message}`;
-        alert(message);
+        UIUtils.toast(message);
       }
     }
   };

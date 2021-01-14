@@ -11,21 +11,24 @@ import Store from 'src/redux/Store';
 import {actSetLoading} from 'src/redux/UIReducer';
 import {Logger} from 'core_app/common';
 import {Container, Root} from 'native-base';
+import {IBaseScreen} from 'src/IBaseScreen';
 export interface Navigation extends NavigationContainerRef {}
 export interface BasePops {
   navigation?: Navigation | undefined;
 }
 export interface BaseState {}
-export default class BaseScreen<
-  P extends BasePops,
-  S extends BaseState
-> extends React.Component<P, S> {
+export default class BaseScreen<P extends BasePops, S extends BaseState>
+  extends React.Component<P, S>
+  implements IBaseScreen {
   private focusSubscription?: any | null;
   private blurSubscription?: any | null;
   constructor(p: P) {
     super(p);
     this.setNavigationEvents(true);
   }
+
+  async componentFocus(): Promise<void> {}
+  async componentBlur(): Promise<void> {}
 
   protected navigate(routeName: string, data?: any | undefined): void {
     if (!!this.props.navigation) {
@@ -50,18 +53,14 @@ export default class BaseScreen<
     if (!!navigation) {
       if (isNew) {
         this.focusSubscription = navigation.addListener('focus', () => {
-          if (!!this['componentFocus']) {
-            this['componentFocus']();
-          }
+          this.componentFocus();
         });
       } else if (!!this.focusSubscription) {
         this.focusSubscription();
       }
       if (isNew) {
         this.blurSubscription = navigation.addListener('beforeRemove', () => {
-          if (!!this['componentBlur']) {
-            this['componentBlur']();
-          }
+          this.componentBlur();
         });
       } else if (!!this.blurSubscription) {
         this.blurSubscription();

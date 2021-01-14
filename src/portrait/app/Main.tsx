@@ -2,6 +2,7 @@ import * as React from 'react';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
 import {
   FieldData,
+  IGlobalState,
   IMEIInfo,
   IMEIListDto,
   IMQTTService,
@@ -10,13 +11,12 @@ import {
 import {FactoryInjection} from 'core_app/infrastructure';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import {IIMEIService} from 'core_app/services/IIMEIService';
-import {Text} from 'src/shared_controls/Text';
 import {FlatList, View} from 'react-native';
 import TouchView from 'src/shared_controls/TouchView';
 import {ROUTE} from 'src/portrait/route';
 import IMEIThumbListItem from 'src/portrait/screen_part/IMEIThumbListItem';
-import {AppUtil, Logger} from 'core_app/common';
-import {Fab, Icon} from 'native-base';
+import {AppUtil, CONSTANTS, Logger, STATE_ACTION} from 'core_app/common';
+import {Icon} from 'native-base';
 import {color} from 'src/stylesheet';
 import {sizeFont, sizeHeight} from 'src/commons/Size';
 import store from 'src/redux/Store';
@@ -32,6 +32,9 @@ export default class Main extends BaseScreen<BasePops, State> {
   );
   protected mqttService: IMQTTService = FactoryInjection.get<IMQTTService>(
     PUBLIC_TYPES.IMQTTService,
+  );
+  private globalState: IGlobalState = FactoryInjection.get<IGlobalState>(
+    PUBLIC_TYPES.IGlobalState,
   );
   private imeiItemRefs: any = {};
   constructor(p: BasePops) {
@@ -57,6 +60,10 @@ export default class Main extends BaseScreen<BasePops, State> {
       }
     }
     await this.setLoading(false);
+  }
+
+  async componentFocus(): Promise<void> {
+    this.globalState.do(STATE_ACTION.IMEI_SELECTED, CONSTANTS.STR_EMPTY);
   }
 
   async componentWillUnmount(): Promise<void> {

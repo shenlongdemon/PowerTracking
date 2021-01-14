@@ -1,43 +1,34 @@
 import * as React from 'react';
-import BaseScreen, {BasePops, BaseState, Navigation} from 'src/BaseScreen';
-import {IMEIInfo} from 'core_app/services';
-import {CONSTANTS} from 'core_app/common';
+import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
+import {IGlobalState, IMEIInfo} from 'core_app/services';
+import {AppUtil, CONSTANTS, STATE_ACTION} from 'core_app/common';
 import {Body, Left, List, ListItem} from 'native-base';
-import {Button, ScrollView, StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet} from 'react-native';
 import {Text} from 'src/shared_controls/Text';
 import IMEIChartList from 'src/portrait/screen_part/IMEIChartList';
 import {ROUTE} from 'src/portrait/route';
 import {map} from 'src/middlewares/GlobalObservable';
 import {RootState} from 'src/redux/rootReducer';
-import {IMEIData} from 'src/redux/models/IMEIData';
-import DropDownList from 'src/shared_controls/DropDownList';
-import {color} from 'src/stylesheet';
+import {FactoryInjection} from 'core_app/infrastructure';
+import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
+import IMEIInfoHeader from 'src/portrait/screen_part/IMEIInfoHeader';
+
 interface InjectProps {
-  mainGroups: string[];
+  info: any | null;
 }
 interface State extends BaseState {}
 class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
-  public static navigationOptions = ({navigation, navigationOptions}) => {
-    const mainGroups: string[] = navigation.state.params.mainGroups || [];
+  public static navigationOptions = ({_navigation, _navigationOptions}) => {
     return {
-      headerRight: () => (
-        <DropDownList
-          H2
-          style={{
-            color: color.buttonText,
-          }}
-          items={mainGroups}
-          title={'Select group'}
-          message={'Select group to switch to another group and reload data'}
-        />
-      ),
+      headerRight: () => <IMEIInfoHeader />,
     };
   };
-  public static IMEI_SELECTED: string = CONSTANTS.STR_EMPTY;
+  private globalState: IGlobalState = FactoryInjection.get<IGlobalState>(
+    PUBLIC_TYPES.IGlobalState,
+  );
   private readonly imeiInfo!: IMEIInfo;
   constructor(p: BasePops & InjectProps) {
     super(p);
-    IMEIInfoScreen.IMEI_SELECTED = CONSTANTS.STR_EMPTY;
     this.onChartPress = this.onChartPress.bind(this);
     this.state = {};
     const param: any | null | undefined = this.getParam();
@@ -45,25 +36,8 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
       this.goBack();
     }
     this.imeiInfo = param as IMEIInfo;
-    IMEIInfoScreen.IMEI_SELECTED = this.imeiInfo.imei;
+    this.globalState.do(STATE_ACTION.IMEI_SELECTED, this.imeiInfo.imei);
     this.setHeader(this.imeiInfo.xdesc);
-  }
-
-  async componentDidMount(): Promise<void> {
-    this.setSellNavigateParam({mainGroups: this.props.mainGroups});
-  }
-
-  componentDidUpdate(
-    prevProps: Readonly<BasePops & InjectProps>,
-    prevState: Readonly<State>,
-    snapshot?: any,
-  ) {
-    if (
-      prevProps.mainGroups.join(CONSTANTS.STR_EMPTY) !==
-      this.props.mainGroups.join(CONSTANTS.STR_EMPTY)
-    ) {
-      this.setSellNavigateParam({mainGroups: this.props.mainGroups});
-    }
   }
 
   private onChartPress(group: string): void {
@@ -76,41 +50,49 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
   render() {
     const note: string = this.imeiInfo.note;
     const hasNote: boolean = note === CONSTANTS.STR_EMPTY;
+    const keys: string[] = !this.props.info
+      ? []
+      : AppUtil.getProperties(this.props.info);
     return (
       <BaseScreen>
         <ScrollView>
+          <ListItem noIndent>
+            <Left style={styles.leftColumn}>
+              <Text>IMEI No.</Text>
+            </Left>
+            <Body>
+              <Text>{this.imeiInfo.imei}</Text>
+            </Body>
+          </ListItem>
+          <ListItem noIndent>
+            <Left style={styles.leftColumn}>
+              <Text>Địa chỉ</Text>
+            </Left>
+            <Body>
+              <Text>{this.imeiInfo.addr}</Text>
+            </Body>
+          </ListItem>
+          {hasNote && (
+            <ListItem noIndent>
+              <Body>
+                <Text>{note}</Text>
+              </Body>
+            </ListItem>
+          )}
           <List>
-            <ListItem noIndent>
-              <Left style={styles.leftColumn}>
-                <Text>IMEI No.</Text>
-              </Left>
-              <Body>
-                <Text>{this.imeiInfo.imei}</Text>
-              </Body>
-            </ListItem>
-            <ListItem noIndent>
-              <Left style={styles.leftColumn}>
-                <Text>Thời gian</Text>
-              </Left>
-              <Body>
-                <Text>{this.imeiInfo.thoigian}</Text>
-              </Body>
-            </ListItem>
-            <ListItem noIndent>
-              <Left style={styles.leftColumn}>
-                <Text>Địa chỉ</Text>
-              </Left>
-              <Body>
-                <Text>{this.imeiInfo.addr}</Text>
-              </Body>
-            </ListItem>
-            {hasNote && (
-              <ListItem noIndent>
-                <Body>
-                  <Text>{note}</Text>
-                </Body>
-              </ListItem>
-            )}
+            {keys.map((key: string): any => {
+              const ss: string[] = key.split('_');
+              return (
+                <ListItem noIndent>
+                  <Left style={styles.leftColumn}>
+                    <Text>{ss[1]}</Text>
+                  </Left>
+                  <Body>
+                    <Text>{this.props.info[key]}</Text>
+                  </Body>
+                </ListItem>
+              );
+            })}
           </List>
           <IMEIChartList
             onPress={this.onChartPress}
@@ -133,13 +115,7 @@ export default map<InjectProps>(
   IMEIInfoScreen,
   (state: RootState): InjectProps => {
     return {
-      mainGroups: state.gsdlReducer.list
-        .filter((id: IMEIData): boolean => {
-          return id.imei === IMEIInfoScreen.IMEI_SELECTED;
-        })
-        .map((id: IMEIData): string => {
-          return id.mainGroup;
-        }),
+      info: state.gsdlReducer.imeiSInfo[state.gsdlReducer.imei] || null,
     };
   },
 );

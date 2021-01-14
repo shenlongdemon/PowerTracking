@@ -266,4 +266,11 @@ export class AppUtil {
   static distinct(array: any[]): any[] {
     return [...new Set(array)];
   }
+
+  static getProperties(obj: any): string[] {
+    if (!obj) {
+      return [];
+    }
+    return Object.keys(obj);
+  }
 }

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {View, ViewProps} from 'react-native';
+export interface BaseScrPartProps extends ViewProps {}
 
 export default class BaseScrPart<
-  P extends ViewProps,
+  P extends BaseScrPartProps,
   S
 > extends React.Component<P, S> {
   constructor(p: P) {
