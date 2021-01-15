@@ -2,6 +2,8 @@ import {StyleSheet} from 'react-native';
 import {sizeFont} from 'src/commons/Size';
 
 const color = {
+  disabledButton: '#4c6864',
+  darkButton: '#18504a',
   button: '#30ab9a',
   buttonText: '#ffffff',
 

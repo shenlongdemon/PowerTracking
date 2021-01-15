@@ -253,10 +253,6 @@ export class AppUtil {
     );
   }
 
-  static getProperties(schema: any): string[] {
-    return Object.keys(schema);
-  }
-
   static runAsync(promise: Promise<void>): void {
     setTimeout(async (): Promise<void> => {
       await promise;

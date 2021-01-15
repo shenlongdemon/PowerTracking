@@ -12,9 +12,12 @@ import {RootState} from 'src/redux/rootReducer';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import IMEIInfoHeader from 'src/portrait/screen_part/IMEIInfoHeader';
+import IMEIMainGroupChart from 'src/portrait/screen_part/IMEIMainGroupChart';
+import {FloatCircleButton} from 'src/shared_controls/FloatCircleButton';
 
 interface InjectProps {
   info: any | null;
+  fields: string[];
 }
 interface State extends BaseState {}
 class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
@@ -50,9 +53,7 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
   render() {
     const note: string = this.imeiInfo.note;
     const hasNote: boolean = note === CONSTANTS.STR_EMPTY;
-    const keys: string[] = !this.props.info
-      ? []
-      : AppUtil.getProperties(this.props.info);
+    const keys: string[] = AppUtil.getProperties(this.props.info);
     return (
       <BaseScreen>
         <ScrollView>
@@ -83,7 +84,7 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
             {keys.map((key: string): any => {
               const ss: string[] = key.split('_');
               return (
-                <ListItem noIndent>
+                <ListItem noIndent key={`info${key}`}>
                   <Left style={styles.leftColumn}>
                     <Text>{ss[1]}</Text>
                   </Left>
@@ -94,9 +95,10 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
               );
             })}
           </List>
+          {this.props.fields.length > 0 && <IMEIMainGroupChart />}
           <IMEIChartList
             onPress={this.onChartPress}
-            key={this.imeiInfo.imei}
+            key={`IMEIChartList${this.imeiInfo.imei}`}
             imeiInfo={this.imeiInfo}
           />
         </ScrollView>
@@ -116,6 +118,7 @@ export default map<InjectProps>(
   (state: RootState): InjectProps => {
     return {
       info: state.gsdlReducer.imeiSInfo[state.gsdlReducer.imei] || null,
+      fields: state.gsdlReducer.fields,
     };
   },
 );

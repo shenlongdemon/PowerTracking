@@ -1,7 +1,9 @@
 import React from 'react';
 import {IControl} from './IControl';
 
-interface Props extends IControl {}
+export interface Props extends IControl {
+  id: string;
+}
 
 export default class BaseControl<P extends Props> extends React.PureComponent<
   P

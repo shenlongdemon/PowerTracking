@@ -4,6 +4,7 @@ export enum LANGUAGES {
 }
 
 const CONSTANTS = {
+  TOPIC: 'APP',
   ADMIN: 'admin',
   STR_EMPTY: '',
   ERROR: 'Error',
@@ -118,6 +119,8 @@ export enum STATE_ACTION {
   IMEI_SELECTED = 'IMEI_SELECTED',
   SET_IMEI_DATA = 'SET_IMEI_DATA',
   SET_IMEI_S_INFO = 'SET_IMEI_S_INFO',
+  FIELD_SELECTED = 'FIELD_SELECTED',
+  FIELD_UNSELECTED = 'FIELD_UNSELECTED',
 }
 
 export {

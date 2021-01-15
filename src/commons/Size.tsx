@@ -13,9 +13,12 @@ const vh = (dim: 'window' | 'screen') => {
 };
 
 const vw = (dim: 'window' | 'screen') => {
-  return Dimensions.get(dim).width / 100;
+  return realDimensions(dim).width / 100;
 };
 
+export const size = (size, dim: 'window' | 'screen' = 'window') => {
+  return size * vw(dim);
+};
 export const sizeWidth = (size, dim: 'window' | 'screen' = 'window') => {
   return size * vw(dim);
 };

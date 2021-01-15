@@ -1,21 +1,24 @@
-import BaseScrPart from 'src/BaseScrPart';
+import BaseScrPart, {BaseScrPartProps} from 'src/BaseScrPart';
 import * as React from 'react';
-import {View, ViewProps} from 'react-native';
-import {FieldData} from 'core_app/services';
-import {AddIMEIData} from 'src/redux/models/AddIMEIData';
+import {Switch, View} from 'react-native';
+import {FieldData, IGlobalState} from 'core_app/services';
 import {RootState} from 'src/redux/rootReducer';
-import {AppUtil, CONSTANTS} from 'core_app/common';
+import {AppUtil, CONSTANTS, STATE_ACTION} from 'core_app/common';
 import {Text} from 'src/shared_controls/Text';
-import {Body, CheckBox, Left, ListItem} from 'native-base';
+import {Body, Left, ListItem} from 'native-base';
 import {map} from 'src/middlewares/GlobalObservable';
-import * as Animatable from 'react-native-animatable';
 import {IMEIData} from 'src/redux/models/IMEIData';
 import {GroupIMEIData} from 'src/redux/models/GroupIMEIData';
+import {color} from 'src/stylesheet';
+import {FactoryInjection} from 'core_app/infrastructure';
+import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
+import {size, sizeHeight, sizeWidth} from 'src/commons/Size';
 
 interface InjectProps {
   list: FieldData[];
+  fields: string[];
 }
-interface Props {
+interface Props extends InjectProps, BaseScrPartProps {
   group: string; // group name
   imei: string; // group name
   onPress: () => void;
@@ -23,13 +26,19 @@ interface Props {
 
 interface State {}
 
-class IMEIChartThumb extends BaseScrPart<
-  Props & InjectProps & ViewProps,
-  State
-> {
-  constructor(p: Props & InjectProps & ViewProps) {
+class IMEIChartThumb extends BaseScrPart<Props, State> {
+  private globalState: IGlobalState = FactoryInjection.get<IGlobalState>(
+    PUBLIC_TYPES.IGlobalState,
+  );
+  constructor(p: Props) {
     super(p);
     this.state = {};
+  }
+
+  private toggleField(field: string, val: boolean): void {
+    val
+      ? this.globalState.do(STATE_ACTION.FIELD_SELECTED, field)
+      : this.globalState.do(STATE_ACTION.FIELD_UNSELECTED, field);
   }
 
   private renderData(): any {
@@ -79,6 +88,8 @@ class IMEIChartThumb extends BaseScrPart<
                     return a.time - b.time;
                   });
                 const data: FieldData = dataList[dataList.length - 1];
+                const isChecked: boolean =
+                  this.props.fields.indexOf(data.field) > -1;
                 return (
                   <View
                     key={`View${data.field}${data.data}${data.time}`}
@@ -95,26 +106,58 @@ class IMEIChartThumb extends BaseScrPart<
                         flex: 1,
                       }}>
                       <Text
-                        key={`${data.field}${data.data}${data.time}`}
+                        H2
+                        key={`Text1${data.field}${data.data}${data.time}`}
                         style={{
-                          paddingRight: 5,
-                          paddingLeft: 5,
-                          margin: 5,
                           color: 'white',
                           alignContent: 'center',
                           textAlign: 'center',
-                          // alignSelf: 'center',
                           textAlignVertical: 'center',
                           backgroundColor: colors[colorIndex],
-                          // flex: 1 / dd.length + 1,
-                          height: 40,
+                          height: size(10),
+                          width: size(10),
+                          borderRadius: size(5),
                         }}>
-                        {`${!!data ? data.data : CONSTANTS.STR_EMPTY} (${
-                          ns[2]
-                        })`}
+                        {`${ns[3]}`}
+                      </Text>
+                      <Text
+                        H2
+                        key={`Text2${data.field}${data.data}${data.time}`}
+                        style={{
+                          color: colors[colorIndex],
+                          textAlign: 'right',
+                          textAlignVertical: 'center',
+                          backgroundColor: 'white',
+                          flex: 1,
+                          height: size(10),
+                        }}>
+                        {`${!!data ? data.data : CONSTANTS.STR_EMPTY}`}
+                      </Text>
+                      <Text
+                        H2
+                        key={`Text3${data.field}${data.data}${data.time}`}
+                        style={{
+                          textAlignVertical: 'center',
+                          flex: 0.3,
+                          height: size(10),
+                        }}>
+                        {`${ns[2]}`}
                       </Text>
                     </View>
-                    <CheckBox checked={false} />
+                    <Switch
+                      key={`Switch${data.field}${data.data}${data.time}`}
+                      trackColor={{
+                        false: color.darkButton,
+                        true: color.button,
+                      }}
+                      thumbColor={
+                        isChecked ? color.button : color.disabledButton
+                      }
+                      onValueChange={(val: boolean): void => {
+                        this.toggleField(data.field, val);
+                      }}
+                      value={isChecked}
+                    />
                   </View>
                 );
               })}
@@ -154,6 +197,6 @@ export default map<InjectProps>(
       }
     }
 
-    return {list};
+    return {list, fields: state.gsdlReducer.fields};
   },
 );

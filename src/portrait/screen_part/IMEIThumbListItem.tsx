@@ -39,6 +39,7 @@ export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
       : CONSTANTS.STR_EMPTY;
     return (
       <ListItem
+        key={`IMEIThumbListItemListItem${this.props.imei.imei}`}
         style={{padding: 20, marginVertical: 8, marginHorizontal: 16}}
         noIndent
         button

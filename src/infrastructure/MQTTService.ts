@@ -29,12 +29,6 @@ export default class MQTTService extends BaseService implements IMQTTService {
     this.onClose.bind(this);
   }
 
-  async subscribe(onData: (data: MqttData) => Promise<void>): Promise<BaseDto> {
-    Logger.log(`MqttService subscribe client`, this.client);
-    const topics: string = await this.getTopic();
-    return this.subscribeTopic(topics, onData);
-  }
-
   private clearAllSubscribes(): void {
     Logger.log(`MqttService clearAllSubscribes`, this.client);
 
@@ -176,19 +170,14 @@ export default class MQTTService extends BaseService implements IMQTTService {
     return promise;
   }
 
-  private async getTopic(): Promise<string> {
-    // return 'SENSOR/2CF432662C59/#';
-    return 'REAL/#';
-  }
-
   private async getIMEITopic(imei: string): Promise<string> {
     // return 'SENSOR/2CF432662C59/#';
-    return `REAL/${imei}/#`;
+    return `${CONSTANTS.TOPIC}/${imei}/#`;
   }
 
   private async getIMEIRSSITopic(imei: string): Promise<string> {
     // return 'SENSOR/2CF432662C59/#';
-    return `REAL/${imei}/+/F_RSSI_1`;
+    return `${CONSTANTS.TOPIC}/${imei}/+/F_RSSI_1`;
   }
 
   private onError = (error: Error): void => {
@@ -226,7 +215,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
     const imei: string = topicItems[TOPIC_INDEX.IMEI];
     const field: string = topicItems[topicItems.length - 1];
     const groups: string[] = field.split('_');
-    if (groups.length !== 3) {
+    if (groups.length !== 4) {
       return;
     }
     const topicValue: any = data.data;

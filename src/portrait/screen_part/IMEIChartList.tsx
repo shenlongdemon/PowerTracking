@@ -117,7 +117,7 @@ class IMEIChartList extends BaseScrPart<
             onPress={(): void => {
               this.props.onPress(group);
             }}
-            key={`${this.props.imeiInfo.imei}-${group}`}
+            key={`IMEIChartThumb${this.props.imeiInfo.imei}-${group}`}
             group={group}
             imei={this.props.imeiInfo.imei}
           />
@@ -127,7 +127,11 @@ class IMEIChartList extends BaseScrPart<
     return <LoadingView />;
   }
   render() {
-    return <BaseScrPart style={{flex: 1}}>{this.renderData()}</BaseScrPart>;
+    return (
+      <BaseScrPart style={{flex: 1, paddingBottom: 50}}>
+        {this.renderData()}
+      </BaseScrPart>
+    );
   }
 }
 export default map<InjectProps>(
