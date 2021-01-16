@@ -177,7 +177,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
 
   private async getIMEIRSSITopic(imei: string): Promise<string> {
     // return 'SENSOR/2CF432662C59/#';
-    return `${CONSTANTS.TOPIC}/${imei}/+/F_RSSI_1`;
+    return `${CONSTANTS.TOPIC}/${imei}/+/F_RSSI_dBm_1`;
   }
 
   private onError = (error: Error): void => {
@@ -221,6 +221,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
     const topicValue: any = data.data;
     const value: number = topicValue;
     const group: string = groups[1];
+    const unit: string = groups[2];
     !!onData &&
       (await onData({
         type: MQTT_MESSAGE_TYPE.MESSAGE,
@@ -228,6 +229,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
         imei,
         mainGroup,
         group,
+        unit,
         data: {
           field,
           data: value,

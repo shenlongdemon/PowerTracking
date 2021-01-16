@@ -1,6 +1,7 @@
 export interface AddIMEIData {
   mainGroup: string;
   group: string;
+  unit: string;
   imei: string;
   data: {
     field: string;

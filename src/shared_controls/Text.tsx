@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Text as NBText, H1, H2, H3} from 'native-base';
 import {TextProps} from 'react-native';
 import {IControl} from 'src/shared_controls/IControl';
-import {font} from 'src/stylesheet';
 import {sizeFont} from 'src/commons/Size';
 export interface Props extends TextProps, IControl {
   H1?: boolean;
@@ -35,7 +34,13 @@ export class Text extends React.PureComponent<Props> {
     return (
       <NBText
         {...this.getProps()}
-        style={[{fontSize: fontSize}, this.props.style]}>
+        style={[
+          {
+            fontSize: fontSize,
+            fontWeight: !!this.props.bold ? 'bold' : undefined,
+          },
+          this.props.style,
+        ]}>
         {this.children()}
       </NBText>
     );

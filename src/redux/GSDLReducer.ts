@@ -171,6 +171,7 @@ const handle_SET_IMEI_DATA = (
         ...imeiData.groups,
         {
           group: data.group,
+          unit: data.unit,
           fields: [fieldData],
         },
       ];
@@ -185,6 +186,7 @@ const handle_SET_IMEI_DATA = (
       groups: [
         {
           group: data.group,
+          unit: data.unit,
           fields: [fieldData],
         },
       ],

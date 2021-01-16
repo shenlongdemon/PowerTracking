@@ -5,7 +5,7 @@ import {FieldData, IGlobalState} from 'core_app/services';
 import {RootState} from 'src/redux/rootReducer';
 import {AppUtil, CONSTANTS, STATE_ACTION} from 'core_app/common';
 import {Text} from 'src/shared_controls/Text';
-import {Body, Left, ListItem} from 'native-base';
+import {Body, Left, ListItem, Right, Separator} from 'native-base';
 import {map} from 'src/middlewares/GlobalObservable';
 import {IMEIData} from 'src/redux/models/IMEIData';
 import {GroupIMEIData} from 'src/redux/models/GroupIMEIData';
@@ -20,6 +20,7 @@ interface InjectProps {
 }
 interface Props extends InjectProps, BaseScrPartProps {
   group: string; // group name
+  unit: string; // unit
   imei: string; // group name
   onPress: () => void;
 }
@@ -63,87 +64,130 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
 
       if (keys.length > 0) {
         return (
-          <ListItem
-            // onPress={this.props.onPress}
-            style={{marginVertical: 8, marginHorizontal: 16}}>
-            <Left style={{flex: 0.5}}>
-              <Text>{this.props.group}</Text>
-            </Left>
-            <Body
-              style={{
-                flex: 1,
-                alignContent: 'space-between',
-              }}>
-              {keys.map((field: string, index: number): any => {
-                const ns: string[] = field.split('_');
-                let colorIndex: number = index;
-                if (index >= colors.length) {
-                  colorIndex = index % colors.length;
-                }
-                const dataList: FieldData[] = this.props.list
-                  .filter((fd: FieldData): boolean => {
-                    return fd.field === field;
-                  })
-                  .sort((a: FieldData, b: FieldData): number => {
-                    return a.time - b.time;
-                  });
-                const data: FieldData = dataList[dataList.length - 1];
-                const isChecked: boolean =
-                  this.props.fields.indexOf(data.field) > -1;
-                return (
-                  <View
-                    key={`View${data.field}${data.data}${data.time}`}
+          <>
+            <Separator bordered style={{height: size(12)}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flex: 1,
+                  alignContent: 'space-between',
+                }}>
+                <Text bold style={{flex: 0.8}}>
+                  {this.props.group}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignContent: 'space-between',
+                    marginLeft: size(-3),
+                  }}>
+                  <Text
+                    H2
+                    bold
+                    key={`Text1${this.props.group}${this.props.unit}`}
                     style={{
-                      flexDirection: 'row',
-                      alignContent: 'center',
-                      alignItems: 'center',
+                      textAlignVertical: 'center',
+                      marginRight: size(3),
+                    }}>
+                    {`${this.props.unit}`}
+                  </Text>
+                  <Switch
+                    key={`Switch${this.props.group}${this.props.unit}All`}
+                    trackColor={{
+                      false: color.darkButton,
+                      true: color.button,
+                    }}
+                    thumbColor={color.disabledButton}
+                    // thumbColor={isChecked ? color.button : color.disabledButton}
+                    // onValueChange={(val: boolean): void => {
+                    //   this.toggleField(data.field, val);
+                    // }}
+                    // value={isChecked}
+                  />
+                </View>
+              </View>
+            </Separator>
+            {keys.map((field: string, index: number): any => {
+              const ns: string[] = field.split('_');
+              let colorIndex: number = index;
+              if (index >= colors.length) {
+                colorIndex = index % colors.length;
+              }
+              const dataList: FieldData[] = this.props.list
+                .filter((fd: FieldData): boolean => {
+                  return fd.field === field;
+                })
+                .sort((a: FieldData, b: FieldData): number => {
+                  return a.time - b.time;
+                });
+              const data: FieldData = dataList[dataList.length - 1];
+              const isChecked: boolean =
+                this.props.fields.indexOf(data.field) > -1;
+              return (
+                <ListItem style={{marginVertical: 8, marginHorizontal: 10}}>
+                  <Body
+                    style={{
+                      flex: 1,
+                      // alignContent: 'space-between',
                     }}>
                     <View
-                      key={`ViewText${data.field}${data.data}${data.time}`}
+                      key={`View${data.field}${data.data}${data.time}`}
                       style={{
                         flexDirection: 'row',
-                        alignContent: 'space-between',
                         flex: 1,
                       }}>
-                      <Text
-                        H2
-                        key={`Text1${data.field}${data.data}${data.time}`}
+                      <View
+                        key={`ViewText${data.field}${data.data}${data.time}`}
                         style={{
-                          color: 'white',
-                          alignContent: 'center',
-                          textAlign: 'center',
-                          textAlignVertical: 'center',
-                          backgroundColor: colors[colorIndex],
-                          height: size(10),
-                          width: size(10),
-                          borderRadius: size(5),
-                        }}>
-                        {`${ns[3]}`}
-                      </Text>
-                      <Text
-                        H2
-                        key={`Text2${data.field}${data.data}${data.time}`}
-                        style={{
-                          color: colors[colorIndex],
-                          textAlign: 'right',
-                          textAlignVertical: 'center',
-                          backgroundColor: 'white',
+                          flexDirection: 'row',
+                          alignContent: 'space-between',
                           flex: 1,
-                          height: size(10),
                         }}>
-                        {`${!!data ? data.data : CONSTANTS.STR_EMPTY}`}
-                      </Text>
-                      <Text
-                        H2
-                        key={`Text3${data.field}${data.data}${data.time}`}
-                        style={{
-                          textAlignVertical: 'center',
-                          flex: 0.3,
-                          height: size(10),
-                        }}>
-                        {`${ns[2]}`}
-                      </Text>
+                        <Text
+                          H2
+                          key={`Text2${data.field}${data.data}${data.time}`}
+                          style={{
+                            color: colors[colorIndex],
+                            textAlignVertical: 'center',
+                            flex: 1,
+                            height: size(10),
+                          }}>
+                          {`${!!data ? data.data : CONSTANTS.STR_EMPTY}`}
+                        </Text>
+                        <Text
+                          H2
+                          key={`Text3${data.field}${data.data}${data.time}`}
+                          style={{
+                            textAlignVertical: 'center',
+                            flex: 0.5,
+                            height: size(10),
+                          }}>
+                          {`${ns[2]}`}
+                        </Text>
+                      </View>
                     </View>
+                  </Body>
+                  <Right
+                    style={{
+                      flexDirection: 'row',
+                      alignContent: 'space-between',
+                    }}>
+                    <Text
+                      H2
+                      key={`Text1${data.field}${data.data}${data.time}`}
+                      style={{
+                        color: 'white',
+                        alignContent: 'center',
+                        textAlign: 'center',
+                        textAlignVertical: 'center',
+                        backgroundColor: colors[colorIndex],
+                        height: size(10),
+                        width: size(10),
+                        borderRadius: size(5),
+                        marginRight: size(3),
+                      }}>
+                      {`${ns[3]}`}
+                    </Text>
                     <Switch
                       key={`Switch${data.field}${data.data}${data.time}`}
                       trackColor={{
@@ -158,11 +202,11 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
                       }}
                       value={isChecked}
                     />
-                  </View>
-                );
-              })}
-            </Body>
-          </ListItem>
+                  </Right>
+                </ListItem>
+              );
+            })}
+          </>
         );
       }
     }

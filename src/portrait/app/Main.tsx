@@ -90,6 +90,7 @@ export default class Main extends BaseScreen<BasePops, State> {
     // Logger.log(`MQTT Main onData`, data);
     const mainGroup: string = data.mainGroup;
     const group: string = data.group;
+    const unit: string = data.unit;
     const imei: string = data.imei;
     const fieldData: FieldData | null = data.data;
     if (group !== 'RSSI' || !fieldData || fieldData.field.indexOf('F') !== 0) {
@@ -100,6 +101,7 @@ export default class Main extends BaseScreen<BasePops, State> {
         mainGroup,
         group,
         imei,
+        unit,
         data: fieldData,
       }),
     );

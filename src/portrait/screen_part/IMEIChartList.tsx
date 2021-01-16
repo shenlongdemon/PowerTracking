@@ -81,6 +81,7 @@ class IMEIChartList extends BaseScrPart<
     // Logger.log(`MQTT Main onData`, data);
     const mainGroup: string = data.mainGroup;
     const group: string = data.group;
+    const unit: string = data.unit;
     const imei: string = data.imei;
     const fieldData: FieldData | null = data.data;
     if (!fieldData || group === 'LIVE') {
@@ -90,6 +91,7 @@ class IMEIChartList extends BaseScrPart<
       this.globalState.do(STATE_ACTION.SET_IMEI_DATA, {
         mainGroup,
         group,
+        unit,
         imei,
         data: fieldData,
       });
@@ -104,21 +106,16 @@ class IMEIChartList extends BaseScrPart<
   }
 
   private renderData(): any {
-    const groups: string[] = AppUtil.distinct(
-      this.props.list.map((id: GroupIMEIData): string => {
-        return id.group;
-      }),
-    );
-
-    if (groups.length) {
-      return groups.map((group): any => {
+    if (this.props.list.length > 0) {
+      return this.props.list.map((group: GroupIMEIData): any => {
         return (
           <IMEIChartThumb
             onPress={(): void => {
-              this.props.onPress(group);
+              this.props.onPress(group.group);
             }}
             key={`IMEIChartThumb${this.props.imeiInfo.imei}-${group}`}
-            group={group}
+            group={group.group}
+            unit={group.unit}
             imei={this.props.imeiInfo.imei}
           />
         );

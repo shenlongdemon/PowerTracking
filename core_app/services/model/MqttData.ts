@@ -7,6 +7,7 @@ export interface MqttData {
   imei: string;
   mainGroup: string;
   group: string;
+  unit: string;
   data: FieldData | null;
   obj: any | null;
 }
