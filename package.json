@@ -67,6 +67,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "reflect-metadata": "0.1.13",
+    "safe-json-stringify": "^1.2.0",
     "stream-browserify": "1.0.0",
     "string_decoder": "0.10.31",
     "timers-browserify": "1.4.2",

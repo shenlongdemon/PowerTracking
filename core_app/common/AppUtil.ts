@@ -1,7 +1,7 @@
 // @ts-ignore
 import {CONSTANTS} from './Constants';
-
 import {Logger} from './Logger';
+const safeJsonStringify = require('safe-json-stringify');
 
 export class AppUtil {
   static genAppKey = (): string => {
@@ -171,16 +171,20 @@ export class AppUtil {
     return AppUtil.transformByJSON(data);
   };
 
-  static toJONString = (obj: any): string => {
-    return JSON.stringify(obj);
-  };
+  static toJONString(obj: any): string {
+    try {
+      return JSON.stringify(obj);
+    } catch (e) {
+      return safeJsonStringify(obj);
+    }
+  }
 
-  static toJSON = (str: string): any | null => {
+  static toJSON(str: string): any | null {
     try {
       return JSON.parse(str);
     } catch (e) {}
     return null;
-  };
+  }
   static tryParseNumber(value: any, defaultVal: number): number {
     if (AppUtil.isNumber(value)) {
       const num: number = AppUtil.parseInt(`${value}`);
@@ -268,5 +272,12 @@ export class AppUtil {
       return [];
     }
     return Object.keys(obj);
+  }
+  static flatArray(arrayOfArray: any[][]): any[] {
+    return [].concat(
+      ...arrayOfArray.map((d: any[]): any => {
+        return d;
+      }),
+    );
   }
 }

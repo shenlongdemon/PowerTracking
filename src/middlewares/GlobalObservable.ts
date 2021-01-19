@@ -6,7 +6,7 @@ export const map = <TInjectedProps>(
   state: (state: RootState, ownProps?: any) => TInjectedProps,
 ): any => {
   //InferableComponentEnhancerWithProps<TInjectedProps & DispatchProp, any>
-  const connector = connect(state);
+  const connector = connect(state, null, null, {forwardRef: true});
   // @ts-ignore
   return connector(type);
 };

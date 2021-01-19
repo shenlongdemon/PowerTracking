@@ -163,9 +163,8 @@ const handle_SET_IMEI_DATA = (
         imeiData.mainGroup === state.mainGroup &&
         state.fields.indexOf(fieldData.field) > -1;
       groupIMEIData.fields = [...groupIMEIData.fields, fieldData].slice(
-        needDetail ? -200000 : -10,
+        needDetail ? -200 : -10,
       );
-      // imeiData.groups = [...imeiData.groups, groupIMEIData];
     } else {
       imeiData.groups = [
         ...imeiData.groups,

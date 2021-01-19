@@ -1,9 +1,16 @@
 import * as React from 'react';
 import BaseScreen, {BasePops, BaseState} from 'src/BaseScreen';
 import {IGlobalState, IMEIInfo} from 'core_app/services';
-import {AppUtil, CONSTANTS, STATE_ACTION} from 'core_app/common';
+import {AppUtil, CONSTANTS, Logger, STATE_ACTION} from 'core_app/common';
 import {Body, Left, List, ListItem} from 'native-base';
-import {ScrollView, StyleSheet} from 'react-native';
+import {
+  LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Text} from 'src/shared_controls/Text';
 import IMEIChartList from 'src/portrait/screen_part/IMEIChartList';
 import {ROUTE} from 'src/portrait/route';
@@ -13,13 +20,14 @@ import {FactoryInjection} from 'core_app/infrastructure';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import IMEIInfoHeader from 'src/portrait/screen_part/IMEIInfoHeader';
 import IMEIMainGroupChart from 'src/portrait/screen_part/IMEIMainGroupChart';
-import {FloatCircleButton} from 'src/shared_controls/FloatCircleButton';
 
 interface InjectProps {
   info: any | null;
   fields: string[];
 }
-interface State extends BaseState {}
+interface State extends BaseState {
+  isChartFloat: boolean;
+}
 class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
   public static navigationOptions = ({_navigation, _navigationOptions}) => {
     return {
@@ -29,11 +37,24 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
   private globalState: IGlobalState = FactoryInjection.get<IGlobalState>(
     PUBLIC_TYPES.IGlobalState,
   );
+  // private scrollView: ScrollView | undefined | null;
+  private imeiMainGroupChart: any | undefined | null;
   private readonly imeiInfo!: IMEIInfo;
+  private chartHeight: number = 0;
+  private chartY: number = 0;
+  private viewY: number = 0;
   constructor(p: BasePops & InjectProps) {
     super(p);
     this.onChartPress = this.onChartPress.bind(this);
-    this.state = {};
+    this.onScroll = this.onScroll.bind(this);
+    this.setIMEIMainGroupChartRef = this.setIMEIMainGroupChartRef.bind(this);
+    this.onIMEIMainGroupChartLayout = this.onIMEIMainGroupChartLayout.bind(
+      this,
+    );
+    this.onViewLayout = this.onViewLayout.bind(this);
+    this.state = {
+      isChartFloat: false,
+    };
     const param: any | null | undefined = this.getParam();
     if (!param) {
       this.goBack();
@@ -50,14 +71,75 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
     };
     this.navigate(ROUTE.APP.GROUP_CHART_INFO, data);
   }
+
+  private getChartHeight(): number {
+    return !!this.imeiMainGroupChart ? this.chartHeight : 0;
+  }
+
+  private readonly onScroll = (
+    event: NativeSyntheticEvent<NativeScrollEvent>,
+  ): void => {
+    const ch: number = this.getChartHeight();
+    if (ch > 0) {
+      const y: number = event.nativeEvent.contentOffset.y;
+      Logger.log(
+        `y  =  ${y}      viewY = ${this.viewY}   chartY = ${this.chartY}`,
+      );
+      if (this.state.isChartFloat) {
+        if (this.viewY > y + 50) {
+          this.setState({isChartFloat: false});
+        }
+      } else {
+        if (y > this.chartY && this.chartY != 0) {
+          this.setState({isChartFloat: true});
+        }
+      }
+    }
+  };
+
+  private readonly setIMEIMainGroupChartRef = (e: View): void => {
+    this.imeiMainGroupChart = e;
+    // this.setState({isChartFloat: false});
+  };
+
+  private readonly onIMEIMainGroupChartLayout = (
+    event: LayoutChangeEvent,
+  ): void => {
+    this.chartHeight = event.nativeEvent.layout.height;
+    this.chartY = event.nativeEvent.layout.y;
+  };
+  private readonly onViewLayout = (event: LayoutChangeEvent): void => {
+    this.viewY = event.nativeEvent.layout.y;
+  };
+
+  private renderChart(): any {
+    return (
+      <IMEIMainGroupChart
+        onLayout={this.onIMEIMainGroupChartLayout}
+        style={{
+          backgroundColor: 'white',
+          position: this.state.isChartFloat ? 'absolute' : undefined,
+          left: this.state.isChartFloat ? 0 : undefined,
+          top: this.state.isChartFloat ? 0 : undefined,
+          zIndex: this.state.isChartFloat ? 10000 : undefined,
+          width: this.state.isChartFloat ? '100%' : undefined,
+          height: this.state.isChartFloat ? this.getChartHeight() : undefined,
+        }}
+        ref={this.setIMEIMainGroupChartRef}
+      />
+    );
+    // }
+    // return <View style={{width: '100%', height: this.chartHeight}} />;
+  }
+
   render() {
     const note: string = this.imeiInfo.note;
     const hasNote: boolean = note === CONSTANTS.STR_EMPTY;
     const keys: string[] = AppUtil.getProperties(this.props.info);
     return (
       <BaseScreen>
-        <ScrollView>
-          <ListItem noIndent>
+        <ScrollView onScroll={this.onScroll} scrollEnabled={true}>
+          <ListItem noIndent key={`info_imei_no`}>
             <Left style={styles.leftColumn}>
               <Text>IMEI No.</Text>
             </Left>
@@ -65,7 +147,7 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
               <Text>{this.imeiInfo.imei}</Text>
             </Body>
           </ListItem>
-          <ListItem noIndent>
+          <ListItem noIndent key={`info_address`}>
             <Left style={styles.leftColumn}>
               <Text>Địa chỉ</Text>
             </Left>
@@ -74,7 +156,7 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
             </Body>
           </ListItem>
           {hasNote && (
-            <ListItem noIndent>
+            <ListItem noIndent key={`info_note`}>
               <Body>
                 <Text>{note}</Text>
               </Body>
@@ -95,13 +177,22 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
               );
             })}
           </List>
-          {this.props.fields.length > 0 && <IMEIMainGroupChart />}
+          {!this.state.isChartFloat ? (
+            this.renderChart()
+          ) : (
+            <View
+              onLayout={this.onViewLayout}
+              style={{width: '100%', height: this.chartHeight}}
+            />
+          )}
+
           <IMEIChartList
             onPress={this.onChartPress}
             key={`IMEIChartList${this.imeiInfo.imei}`}
             imeiInfo={this.imeiInfo}
           />
         </ScrollView>
+        {this.state.isChartFloat && this.renderChart()}
       </BaseScreen>
     );
   }

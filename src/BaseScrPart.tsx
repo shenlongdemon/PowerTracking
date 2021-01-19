@@ -10,6 +10,6 @@ export default class BaseScrPart<
     super(p);
   }
   render() {
-    return <View style={this.props.style}>{this.props.children}</View>;
+    return <View {...this.props}>{this.props.children}</View>;
   }
 }

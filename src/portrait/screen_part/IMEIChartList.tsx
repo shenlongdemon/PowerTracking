@@ -9,13 +9,11 @@ import {
   IMQTTService,
   MqttData,
 } from 'core_app/services';
-import store from 'src/redux/Store';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import React from 'react';
 import IMEIChartThumb from 'src/portrait/screen_part/IMEIChartThumb';
 import LoadingView from 'src/shared_controls/LoadingView';
 import {ViewProps} from 'react-native';
-import {actSetIMEIData} from 'src/redux/GSDLReducer';
 import {map} from 'src/middlewares/GlobalObservable';
 import {RootState} from 'src/redux/rootReducer';
 import {IMEIData} from 'src/redux/models/IMEIData';
