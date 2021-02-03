@@ -115,6 +115,7 @@ class IMEIMainGroupChart extends BaseScrPart<Props, State> {
               {dd.map((d: any): any => {
                 return (
                   <Text
+                    key={`chart_text_description_${d.field}`}
                     style={{
                       color: 'white',
                       alignContent: 'center',
@@ -212,19 +213,22 @@ export default map<InjectProps>(
     let list: FieldData[] = [];
     const imeiData: IMEIData | undefined = state.gsdlReducer.list.find(
       (id: IMEIData): boolean => {
-        return id.imei === state.gsdlReducer.imei;
+        return (
+          id.imei === state.actionGSDL.imei &&
+          id.mainGroup === state.actionGSDL.mainGroup
+        );
       },
     );
     if (!!imeiData) {
       list = AppUtil.flatArray(
         imeiData.groups.map((g: GroupIMEIData): FieldData[] => {
           return g.fields.filter((f: FieldData): boolean => {
-            return state.gsdlReducer.fields.indexOf(f.field) > -1;
+            return state.actionGSDL.fields.indexOf(f.field) > -1;
           });
         }),
       );
     }
 
-    return {list, fields: state.gsdlReducer.fields};
+    return {list, fields: state.actionGSDL.fields};
   },
 );

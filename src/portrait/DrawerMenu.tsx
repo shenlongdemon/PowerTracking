@@ -70,15 +70,6 @@ class DrawerMenu extends BaseScreen<Props, BaseState> {
               <ListItem itemDivider />
               <ListItem icon>
                 <Left>
-                  <Icon type="FontAwesome" active name="wifi" />
-                </Left>
-                <Body>
-                  <Text>Smart Config</Text>
-                </Body>
-              </ListItem>
-              <ListItem itemDivider />
-              <ListItem icon>
-                <Left>
                   <Icon type="FontAwesome" active name="facebook-square" />
                 </Left>
                 <Body>

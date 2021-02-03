@@ -1,16 +1,15 @@
 import {injectable} from 'inversify';
-import {IGlobalState, User} from 'core_app/services';
+import {IGlobalState} from 'core_app/services';
 import {STATE_ACTION} from 'core_app/common';
 import {actUpdateUser} from 'src/redux/AuthReducer';
 import store from 'src/redux/Store';
+import {actSetIMEIData, actSetIMEISInfo} from 'src/redux/GSDLReducer';
 import {
   actFieldSelected,
   actFieldUnSelected,
   actIMEISelected,
   actMainGroupSelected,
-  actSetIMEIData,
-  actSetIMEISInfo,
-} from 'src/redux/GSDLReducer';
+} from 'src/redux/ActionGSDLReducer';
 
 @injectable()
 export default class GlobalState implements IGlobalState {

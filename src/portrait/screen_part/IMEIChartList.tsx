@@ -22,6 +22,8 @@ import {GroupIMEIData} from 'src/redux/models/GroupIMEIData';
 interface InjectProps {
   list: GroupIMEIData[];
   mainGroup: string;
+  imei: string;
+  fields: string[];
 }
 interface Props {
   imeiInfo: IMEIInfo;
@@ -92,6 +94,9 @@ class IMEIChartList extends BaseScrPart<
         unit,
         imei,
         data: fieldData,
+        currentMainGroup: this.props.mainGroup,
+        currentIMEI: this.props.imei,
+        currentFields: this.props.fields,
       });
     } else if (fieldData.field.indexOf('S') === 0) {
       this.globalState.do(STATE_ACTION.SET_IMEI_S_INFO, {
@@ -132,7 +137,7 @@ class IMEIChartList extends BaseScrPart<
 export default map<InjectProps>(
   IMEIChartList,
   (state: RootState, props: Props): InjectProps => {
-    const mainGroup: string = state.gsdlReducer.mainGroup;
+    const mainGroup: string = state.actionGSDL.mainGroup;
     const imeiData: IMEIData | null =
       state.gsdlReducer.list.find((id: IMEIData): boolean => {
         return id.imei === props.imeiInfo.imei && id.mainGroup === mainGroup;
@@ -140,6 +145,8 @@ export default map<InjectProps>(
     return {
       list: !!imeiData ? imeiData.groups : [],
       mainGroup,
+      imei: state.actionGSDL.imei,
+      fields: state.actionGSDL.fields,
     };
   },
 );

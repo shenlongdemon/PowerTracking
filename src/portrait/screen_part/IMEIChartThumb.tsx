@@ -5,14 +5,14 @@ import {FieldData, IGlobalState} from 'core_app/services';
 import {RootState} from 'src/redux/rootReducer';
 import {AppUtil, CONSTANTS, STATE_ACTION} from 'core_app/common';
 import {Text} from 'src/shared_controls/Text';
-import {Body, Left, ListItem, Right, Separator} from 'native-base';
+import {Body, ListItem, Right, Separator} from 'native-base';
 import {map} from 'src/middlewares/GlobalObservable';
 import {IMEIData} from 'src/redux/models/IMEIData';
 import {GroupIMEIData} from 'src/redux/models/GroupIMEIData';
 import {color} from 'src/stylesheet';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
-import {size, sizeHeight, sizeWidth} from 'src/commons/Size';
+import {size} from 'src/commons/Size';
 
 interface InjectProps {
   list: FieldData[];
@@ -65,7 +65,7 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
       if (keys.length > 0) {
         return (
           <>
-            <Separator bordered style={{height: size(12)}}>
+            <Separator bordered style={{height: size(14)}}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -91,19 +91,19 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
                     }}>
                     {`${this.props.unit}`}
                   </Text>
-                  <Switch
-                    key={`Switch${this.props.group}${this.props.unit}All`}
-                    trackColor={{
-                      false: color.darkButton,
-                      true: color.button,
-                    }}
-                    thumbColor={color.disabledButton}
-                    // thumbColor={isChecked ? color.button : color.disabledButton}
-                    // onValueChange={(val: boolean): void => {
-                    //   this.toggleField(data.field, val);
-                    // }}
-                    // value={isChecked}
-                  />
+                  {/*<Switch*/}
+                  {/*  key={`Switch${this.props.group}${this.props.unit}All`}*/}
+                  {/*  trackColor={{*/}
+                  {/*    false: color.darkButton,*/}
+                  {/*    true: color.button,*/}
+                  {/*  }}*/}
+                  {/*  thumbColor={color.disabledButton}*/}
+                  {/*  // thumbColor={isChecked ? color.button : color.disabledButton}*/}
+                  {/*  // onValueChange={(val: boolean): void => {*/}
+                  {/*  //   this.toggleField(data.field, val);*/}
+                  {/*  // }}*/}
+                  {/*  // value={isChecked}*/}
+                  {/*/>*/}
                 </View>
               </View>
             </Separator>
@@ -223,7 +223,7 @@ export default map<InjectProps>(
   IMEIChartThumb,
   (state: RootState, props: Props): InjectProps => {
     let list: FieldData[] = [];
-    const mainGroup: string = state.gsdlReducer.mainGroup;
+    const mainGroup: string = state.actionGSDL.mainGroup;
     const imeiDatas: IMEIData[] =
       state.gsdlReducer.list.filter((id: IMEIData): boolean => {
         return (
@@ -241,6 +241,6 @@ export default map<InjectProps>(
       }
     }
 
-    return {list, fields: state.gsdlReducer.fields};
+    return {list, fields: state.actionGSDL.fields};
   },
 );

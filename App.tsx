@@ -9,15 +9,15 @@
  */
 
 import React, {useRef} from 'react';
-import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {app as PortraitApp} from './src/portrait/navgator';
 import Startup from './app_start/Startup';
 import {Provider} from 'react-redux';
 import Store from 'src/redux/Store';
 declare const global: {HermesInternal: null | {}};
-import {BackHandler, YellowBox} from 'react-native';
+import {BackHandler, LogBox} from 'react-native';
 import Loading from 'src/shared_controls/Loading';
-YellowBox.ignoreWarnings([]);
+LogBox.ignoreLogs([]);
 
 Startup.start();
 function App() {

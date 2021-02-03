@@ -58,7 +58,7 @@ export default map<InjectProps>(
     return {
       mainGroups: state.gsdlReducer.list
         .filter((id: IMEIData): boolean => {
-          return id.imei === state.gsdlReducer.imei;
+          return id.imei === state.actionGSDL.imei;
         })
         .map((id: IMEIData): string => {
           return id.mainGroup;

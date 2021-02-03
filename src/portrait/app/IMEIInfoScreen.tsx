@@ -20,9 +20,11 @@ import {FactoryInjection} from 'core_app/infrastructure';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import IMEIInfoHeader from 'src/portrait/screen_part/IMEIInfoHeader';
 import IMEIMainGroupChart from 'src/portrait/screen_part/IMEIMainGroupChart';
+import {color} from 'src/stylesheet';
 
 interface InjectProps {
   info: any | null;
+  imeiSInfoProperties: string[];
   fields: string[];
 }
 interface State extends BaseState {
@@ -32,12 +34,15 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
   public static navigationOptions = ({_navigation, _navigationOptions}) => {
     return {
       headerRight: () => <IMEIInfoHeader />,
+      headerTitleStyle: {
+        color: color.buttonText,
+        flex: 1,
+      },
     };
   };
   private globalState: IGlobalState = FactoryInjection.get<IGlobalState>(
     PUBLIC_TYPES.IGlobalState,
   );
-  // private scrollView: ScrollView | undefined | null;
   private imeiMainGroupChart: any | undefined | null;
   private readonly imeiInfo!: IMEIInfo;
   private chartHeight: number = 0;
@@ -65,11 +70,11 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
   }
 
   private onChartPress(group: string): void {
-    const data: {name: string; imei: string} = {
-      name: group,
-      imei: this.imeiInfo.imei,
-    };
-    this.navigate(ROUTE.APP.GROUP_CHART_INFO, data);
+    // const data: {name: string; imei: string} = {
+    //   name: group,
+    //   imei: this.imeiInfo.imei,
+    // };
+    // this.navigate(ROUTE.APP.GROUP_CHART_INFO, data);
   }
 
   private getChartHeight(): number {
@@ -128,42 +133,39 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
         ref={this.setIMEIMainGroupChartRef}
       />
     );
-    // }
-    // return <View style={{width: '100%', height: this.chartHeight}} />;
   }
 
   render() {
     const note: string = this.imeiInfo.note;
     const hasNote: boolean = note === CONSTANTS.STR_EMPTY;
-    const keys: string[] = AppUtil.getProperties(this.props.info);
     return (
       <BaseScreen>
         <ScrollView onScroll={this.onScroll} scrollEnabled={true}>
-          <ListItem noIndent key={`info_imei_no`}>
-            <Left style={styles.leftColumn}>
-              <Text>IMEI No.</Text>
-            </Left>
-            <Body>
-              <Text>{this.imeiInfo.imei}</Text>
-            </Body>
-          </ListItem>
-          <ListItem noIndent key={`info_address`}>
-            <Left style={styles.leftColumn}>
-              <Text>Địa chỉ</Text>
-            </Left>
-            <Body>
-              <Text>{this.imeiInfo.addr}</Text>
-            </Body>
-          </ListItem>
-          {hasNote && (
-            <ListItem noIndent key={`info_note`}>
+          <List>
+            <ListItem noIndent key={`info_imei_no`}>
+              <Left style={styles.leftColumn}>
+                <Text>IMEI No.</Text>
+              </Left>
               <Body>
-                <Text>{note}</Text>
+                <Text>{this.imeiInfo.imei}</Text>
               </Body>
             </ListItem>
-          )}
-          <List>
-            {keys.map((key: string): any => {
+            <ListItem noIndent key={`info_address`}>
+              <Left style={styles.leftColumn}>
+                <Text>Địa chỉ</Text>
+              </Left>
+              <Body>
+                <Text>{this.imeiInfo.addr}</Text>
+              </Body>
+            </ListItem>
+            {hasNote && (
+              <ListItem noIndent key={`info_note`}>
+                <Body>
+                  <Text>{note}</Text>
+                </Body>
+              </ListItem>
+            )}
+            {this.props.imeiSInfoProperties.map((key: string): any => {
               const ss: string[] = key.split('_');
               return (
                 <ListItem noIndent key={`info${key}`}>
@@ -171,7 +173,9 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
                     <Text>{ss[1]}</Text>
                   </Left>
                   <Body>
-                    <Text>{this.props.info[key]}</Text>
+                    <Text numberOfLines={1} style={{flex: 1}}>
+                      {this.props.info[key]}
+                    </Text>
                   </Body>
                 </ListItem>
               );
@@ -208,8 +212,9 @@ export default map<InjectProps>(
   IMEIInfoScreen,
   (state: RootState): InjectProps => {
     return {
-      info: state.gsdlReducer.imeiSInfo[state.gsdlReducer.imei] || null,
-      fields: state.gsdlReducer.fields,
+      info: state.gsdlReducer.imeiSInfo[state.actionGSDL.imei] || null,
+      imeiSInfoProperties: state.gsdlReducer.imeiSInfoProperties,
+      fields: state.actionGSDL.fields,
     };
   },
 );

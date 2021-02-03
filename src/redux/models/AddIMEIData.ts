@@ -8,4 +8,7 @@ export interface AddIMEIData {
     data: any;
     time: number;
   };
+  currentMainGroup?: string;
+  currentIMEI?: string;
+  currentFields?: string[];
 }

@@ -13,7 +13,6 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import IMEIInfoScreen from 'src/portrait/app/IMEIInfoScreen';
 import DrawerMenu from 'src/portrait/DrawerMenu';
 import {color} from 'src/stylesheet';
-import GroupChartDetail from 'src/portrait/app/GroupChartDetail';
 
 const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
   {
@@ -59,10 +58,6 @@ const mainStack = createCompatNavigatorFactory(createStackNavigator)(
     [ROUTE.APP.IMEI_INFO]: {
       screen: IMEIInfoScreen,
       navigationOptions: IMEIInfoScreen.navigationOptions,
-    },
-    [ROUTE.APP.GROUP_CHART_INFO]: {
-      screen: GroupChartDetail,
-      navigationOptions: {headerShown: false},
     },
   },
   {
