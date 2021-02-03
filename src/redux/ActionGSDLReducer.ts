@@ -67,6 +67,7 @@ const actionGSDLReducer = (
       const mainGroup: string = action.data as string;
       return {
         ...state,
+        fields: [],
         mainGroup,
       };
     case ACTION_GSDL_REDUCER_ACTION.IMEI_SELECTED:
@@ -74,6 +75,7 @@ const actionGSDLReducer = (
       return {
         ...state,
         imei,
+        fields: [],
         mainGroup: CONSTANTS.STR_EMPTY,
       };
     case ACTION_GSDL_REDUCER_ACTION.FIELD_SELECTED: {

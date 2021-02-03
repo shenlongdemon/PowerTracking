@@ -174,7 +174,9 @@ class IMEIInfoScreen extends BaseScreen<BasePops & InjectProps, State> {
                   </Left>
                   <Body>
                     <Text numberOfLines={1} style={{flex: 1}}>
-                      {this.props.info[key]}
+                      {!this.props.info
+                        ? CONSTANTS.STR_EMPTY
+                        : this.props.info[key]}
                     </Text>
                   </Body>
                 </ListItem>

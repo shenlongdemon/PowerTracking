@@ -1,6 +1,6 @@
 import BaseScrPart, {BaseScrPartProps} from 'src/BaseScrPart';
 import * as React from 'react';
-import {View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {FieldData, IGlobalState} from 'core_app/services';
 import {RootState} from 'src/redux/rootReducer';
 import {AppUtil, DateUtils} from 'core_app/common';
@@ -112,26 +112,28 @@ class IMEIMainGroupChart extends BaseScrPart<Props, State> {
                 flexDirection: 'row',
                 // backgroundColor: 'red',
               }}>
-              {dd.map((d: any): any => {
-                return (
-                  <Text
-                    key={`chart_text_description_${d.field}`}
-                    style={{
-                      color: 'white',
-                      alignContent: 'center',
-                      textAlign: 'center',
-                      alignSelf: 'center',
-                      backgroundColor: d.color,
-                      // flex: 1 / dd.length + 1,
-                      paddingLeft: 5,
-                      paddingRight: 5,
-                      marginLeft: 5,
-                      height: 30,
-                    }}>
-                    {d.field}
-                  </Text>
-                );
-              })}
+              <ScrollView horizontal={true}>
+                {dd.map((d: any): any => {
+                  return (
+                    <Text
+                      key={`chart_text_description_${d.field}`}
+                      style={{
+                        color: 'white',
+                        alignContent: 'center',
+                        textAlign: 'center',
+                        alignSelf: 'center',
+                        backgroundColor: d.color,
+                        // flex: 1 / dd.length + 1,
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        marginLeft: 5,
+                        height: 30,
+                      }}>
+                      {d.field}
+                    </Text>
+                  );
+                })}
+              </ScrollView>
             </View>
             <View
               style={{

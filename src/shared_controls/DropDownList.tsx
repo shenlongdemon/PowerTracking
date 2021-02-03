@@ -66,6 +66,11 @@ export default class DropDownList extends React.Component<Props, State> {
     if (this.props.items.length === 0) {
       return null;
     }
+    const itemSelection: string | null =
+      this.props.items[this.state.index] || null;
+    const itemText: string = !!itemSelection
+      ? itemSelection
+      : this.props.items[0];
     return (
       <TouchView
         {...this.props}
@@ -78,7 +83,7 @@ export default class DropDownList extends React.Component<Props, State> {
           justifyContent: 'flex-end',
         }}
         onPress={this.showOptions}>
-        <Text {...this.props}>{this.props.items[this.state.index]}</Text>
+        <Text {...this.props}>{itemText}</Text>
         <Icon
           style={[this.props.style, {marginBottom: 3, marginLeft: 10}]}
           type="FontAwesome"
