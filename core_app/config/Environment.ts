@@ -10,6 +10,7 @@ export class ENV {
   static WEB_SITE: string = '';
   static LOGO: string = '';
   static WEB_SITE_NAME: string = '';
+  static ENV_FILE: string = '';
   static config = (configuration: any): void => {
     Object.assign(ENV, configuration);
     ENV.HOST = configuration.HOST;
@@ -21,11 +22,13 @@ export class ENV {
     ENV.WEB_SITE = configuration.WEB_SITE;
     ENV.WEB_SITE_NAME = configuration.WEB_SITE_NAME;
     ENV.LOGO = configuration.LOGO;
-    Logger.log(`ENVIRONMENT`, {
+    ENV.ENV_FILE = configuration.ENV_FILE;
+    Logger.log('ENVIRONMENT', {
       HOST: ENV.HOST,
       MQTT_HOST: ENV.MQTT_HOST,
       IS_DEBUGGER: ENV.IS_DEBUGGER,
       LOGO: ENV.LOGO,
+      ENV_FILE: ENV.ENV_FILE,
     });
   };
 }
