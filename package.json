@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "first": "sh ./first.sh",
     "update": "sh ./update.sh",
     "clear": "sh ./clear.sh",
     "start": "sh ./start.sh",
@@ -14,7 +15,7 @@
     "install-apk": "adb install ./android/app/build/outputs/apk/release/app-release.apk",
     "dev": "SET ENVFILE=.env && npx react-native run-android",
     "stg": "SET ENVFILE=.env.staging && npx react-native run-android",
-    "release-apk": "export ENVFILE=.env.staging && sh ./release-apk.sh"
+    "release-apk": "SET ENVFILE=.env.staging && sh ./release-apk.sh"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.13.2",
