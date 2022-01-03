@@ -10,7 +10,7 @@ import {ROUTE} from './route';
 import Splash from './Splash';
 import Main from './app/Main';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import IMEIInfoScreen from 'src/portrait/app/IMEIInfoScreen';
+import IMEIDetailScreen from 'src/portrait/app/IMEIDetailScreen';
 import DrawerMenu from 'src/portrait/DrawerMenu';
 import {color} from 'src/stylesheet';
 
@@ -56,8 +56,8 @@ const mainStack = createCompatNavigatorFactory(createStackNavigator)(
       navigationOptions: {headerShown: false},
     },
     [ROUTE.APP.IMEI_INFO]: {
-      screen: IMEIInfoScreen,
-      navigationOptions: IMEIInfoScreen.navigationOptions,
+      screen: IMEIDetailScreen,
+      navigationOptions: IMEIDetailScreen.navigationOptions,
     },
   },
   {

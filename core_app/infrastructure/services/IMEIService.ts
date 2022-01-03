@@ -1,7 +1,5 @@
 import {
   BaseService,
-  IMEIDetail,
-  IMEIDetailDto,
   IMEIInfo,
   IMEIListDto,
 } from 'core_app/services';
@@ -12,6 +10,7 @@ import {IIMEIService} from 'core_app/services/IIMEIService';
 import {IIMEIRepo} from 'core_app/repositories/IIMEIRepo';
 
 import {inject, injectable} from 'inversify';
+import {Logger} from "core_app/common";
 
 @injectable()
 export class IMEIService extends BaseService implements IIMEIService {
@@ -23,5 +22,10 @@ export class IMEIService extends BaseService implements IIMEIService {
       list = this.mappingList<IMEIInfo>(sdo.list);
     }
     return {...this.populate(sdo), list};
+  }
+
+  async keepAlive(imei: string): Promise<void> {
+    Logger.logF(()=>[`IMEIService keepAlive`]);
+    // await this.IMEIRepo.keepAlive(imei);
   }
 }

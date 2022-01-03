@@ -8,4 +8,12 @@ export class Logger {
       });
     }
   }
+  static logF(func: ()=> any[]): void{
+    if (ENV.IS_DEBUGGER) {
+      try {
+        Logger.log(...func());
+      }
+      catch (ex){}
+    }
+  }
 }

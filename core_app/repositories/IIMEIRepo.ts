@@ -4,4 +4,6 @@ import {IMEIListSdo} from 'core_app/repositories/sdo';
 
 export interface IIMEIRepo {
   getIMEIList(): Promise<IMEIListSdo>;
+  keepAlive(imei: string): Promise<void>;
+
 }

@@ -11,7 +11,7 @@ import {
 } from 'core_app/services';
 import {PUBLIC_TYPES} from 'core_app/infrastructure/Identifiers';
 import React from 'react';
-import IMEIChartThumb from 'src/portrait/screen_part/IMEIChartThumb';
+import IMEIPropertySelectionItemForChart from 'src/portrait/screen_part/IMEIPropertySelectionItemForChart';
 import LoadingView from 'src/shared_controls/LoadingView';
 import {ViewProps} from 'react-native';
 import {map} from 'src/middlewares/GlobalObservable';
@@ -32,7 +32,7 @@ interface Props {
 
 interface State {}
 
-class IMEIChartList extends BaseScrPart<
+class IMEIPropertySelectionListForChart extends BaseScrPart<
   Props & ViewProps & InjectProps,
   State
 > {
@@ -112,7 +112,7 @@ class IMEIChartList extends BaseScrPart<
     if (this.props.list.length > 0) {
       return this.props.list.map((group: GroupIMEIData): any => {
         return (
-          <IMEIChartThumb
+          <IMEIPropertySelectionItemForChart
             onPress={(): void => {
               this.props.onPress(group.group);
             }}
@@ -135,7 +135,7 @@ class IMEIChartList extends BaseScrPart<
   }
 }
 export default map<InjectProps>(
-  IMEIChartList,
+  IMEIPropertySelectionListForChart,
   (state: RootState, props: Props): InjectProps => {
     const mainGroup: string = state.actionGSDL.mainGroup;
     const imeiData: IMEIData | null =

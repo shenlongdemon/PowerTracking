@@ -10,6 +10,9 @@ const API = {
   GET_IMEI_DETAIL: (imei: string): string => {
     return `${ENV.HOST}/InfoIMEIUser?imei=${imei}`;
   },
+  KEEP_ALIVE: (): string => {
+    return `${ENV.HOST}/IMEIUser/keep-alive`;
+  },
 };
 
 export {API};

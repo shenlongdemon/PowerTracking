@@ -27,7 +27,7 @@ interface Props extends InjectProps, BaseScrPartProps {
 
 interface State {}
 
-class IMEIChartThumb extends BaseScrPart<Props, State> {
+class IMEIPropertySelectionItemForChart extends BaseScrPart<Props, State> {
   private globalState: IGlobalState = FactoryInjection.get<IGlobalState>(
     PUBLIC_TYPES.IGlobalState,
   );
@@ -220,7 +220,7 @@ class IMEIChartThumb extends BaseScrPart<Props, State> {
 }
 
 export default map<InjectProps>(
-  IMEIChartThumb,
+  IMEIPropertySelectionItemForChart,
   (state: RootState, props: Props): InjectProps => {
     let list: FieldData[] = [];
     const mainGroup: string = state.actionGSDL.mainGroup;
