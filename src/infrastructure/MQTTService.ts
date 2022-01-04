@@ -11,12 +11,14 @@ import {
   MqttData,
   Subscribe,
   TOPIC_INDEX,
-  SubscribeTopicDto,
+  SubscribeTopicDto, IStore, User,
 } from 'core_app';
-import {injectable} from 'inversify';
+import {inject, injectable} from 'inversify';
 import MQTT, {MqttClient} from 'react-native-mqtt';
+import {PUBLIC_TYPES} from "core_app/infrastructure/Identifiers";
 @injectable()
 export default class MQTTService extends BaseService implements IMQTTService {
+  @inject(PUBLIC_TYPES.IStore) private store!: IStore;
   private client: MqttClient | null = null;
   private imeiMap: Map<string, {topic: string; onData: any}> = new Map<
     string,
@@ -171,13 +173,27 @@ export default class MQTTService extends BaseService implements IMQTTService {
   }
 
   private async getIMEITopic(imei: string): Promise<string> {
+    const user: User| null = await this.store.getUser();
+    if(!user){
+      return CONSTANTS.STR_EMPTY;
+    }
     // return 'SENSOR/2CF432662C59/#';
-    return `${CONSTANTS.TOPIC}/${imei}/#`;
+    const topic: string = user.linkRSSI.replace('{IMEI}', imei);
+    // return `${CONSTANTS.TOPIC}/${imei}/#`;
+    return topic;
   }
 
   private async getIMEIRSSITopic(imei: string): Promise<string> {
     // return 'SENSOR/2CF432662C59/#';
-    return `${CONSTANTS.TOPIC}/${imei}/+/F_RSSI_dBm_1`;
+    // return `${CONSTANTS.TOPIC}/${imei}/+/F_RSSI_dBm_1`;
+    const user: User | null = await this.store.getUser();
+    if(!user){
+      return CONSTANTS.STR_EMPTY;
+    }
+    // return 'SENSOR/2CF432662C59/#';
+    const topic: string = user.linkIMEIDetail.replace('{IMEI}', imei);
+    // return `${CONSTANTS.TOPIC}/${imei}/#`;
+    return topic;
   }
 
   private onError = (error: Error): void => {

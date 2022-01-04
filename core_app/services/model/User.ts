@@ -7,7 +7,8 @@ export class User {
   linklogo: string = CONSTANTS.STR_EMPTY;
   name: string = CONSTANTS.STR_EMPTY;
   mail: string = CONSTANTS.STR_EMPTY;
-
+  linkRSSI: string = CONSTANTS.STR_EMPTY;
+  linkIMEIDetail: string = CONSTANTS.STR_EMPTY;
   constructor() {}
 }
 

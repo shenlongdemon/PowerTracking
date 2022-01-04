@@ -4,7 +4,6 @@ export enum LANGUAGES {
 }
 
 const CONSTANTS = {
-  TOPIC: 'APP',
   ADMIN: 'admin',
   STR_EMPTY: '',
   ERROR: 'Error',

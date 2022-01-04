@@ -26,7 +26,7 @@ export class IMEIRepo extends BaseRepository implements IIMEIRepo {
   }
 
   async keepAlive(imei: string): Promise<void> {
-    const url: string = API.KEEP_ALIVE();
+    const url: string = API.KEEP_ALIVE(imei);
     await this.api.post(url, {imei});
   }
 }
