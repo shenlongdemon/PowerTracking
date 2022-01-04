@@ -24,6 +24,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
     string,
     any
   >();
+  public hashCode: string = (new Date()).toString();
   constructor() {
     super();
     this.onError.bind(this);
@@ -109,7 +110,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
     topic: string,
     onData: (data: MqttData) => Promise<void>,
   ): Promise<SubscribeTopicDto> {
-    Logger.log(`MqttService subscribe client`, this.client);
+    Logger.logF(()=>[`MqttService subscribe topic ${topic}`, this.client]);
     if (!!this.client) {
       Logger.log(`MQTT subscribe `, topic);
       this.client.subscribe(topic, 0);
@@ -152,7 +153,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
                 resolve(this.failedSdo(MQTT_CODE.CONNECT_ERROR, msg));
               });
               client.on('message', (data): void => {
-                Logger.log('message', data);
+                // Logger.log('message', data);
                 this.onMessage(onData, data);
               });
               client.on('connect', (): void => {
@@ -178,7 +179,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
       return CONSTANTS.STR_EMPTY;
     }
     // return 'SENSOR/2CF432662C59/#';
-    const topic: string = user.linkRSSI.replace('{IMEI}', imei);
+    const topic: string = user.linkIMEIDetail.replace('{IMEI}', imei);
     // return `${CONSTANTS.TOPIC}/${imei}/#`;
     return topic;
   }
@@ -191,7 +192,7 @@ export default class MQTTService extends BaseService implements IMQTTService {
       return CONSTANTS.STR_EMPTY;
     }
     // return 'SENSOR/2CF432662C59/#';
-    const topic: string = user.linkIMEIDetail.replace('{IMEI}', imei);
+    const topic: string = user.linkRSSI.replace('{IMEI}', imei);
     // return `${CONSTANTS.TOPIC}/${imei}/#`;
     return topic;
   }

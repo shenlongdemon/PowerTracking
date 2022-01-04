@@ -10,10 +10,8 @@ export class User {
   linkRSSI: string = CONSTANTS.STR_EMPTY;
   linkIMEIDetail: string = CONSTANTS.STR_EMPTY;
   constructor() {}
-}
 
-Object.defineProperty(User.prototype, 'isAdmin', {
-  get: function () {
+  isAdmin(): boolean {
     return this.isadmin === CONSTANTS.ADMIN;
-  },
-});
+  }
+}

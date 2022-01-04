@@ -57,7 +57,7 @@ export default class UserLogin extends BaseScreen<BasePops, BaseState> {
             }}
             schema={UserLoginValidate}
             submit={this.login}
-            defaultValue={{phone: '0978480206', password: '1234567890'}}
+            defaultValue={{phone: '0978480206', password: '1111111'}}
           />
         </View>
         <Link style={{alignSelf: 'center', color: 'grey'}} url={ENV.WEB_SITE}>

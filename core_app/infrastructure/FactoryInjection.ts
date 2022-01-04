@@ -11,7 +11,7 @@ export class FactoryInjection {
     type: string,
     constructor: {new (...args: any[]): T},
   ): void => {
-    builder.bind<T>(type).to(constructor);
+    builder.bind<T>(type).to(constructor).inRequestScope()
   };
 
   public static get = <T>(type: string): T => {

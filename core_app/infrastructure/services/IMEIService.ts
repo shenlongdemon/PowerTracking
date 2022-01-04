@@ -26,6 +26,6 @@ export class IMEIService extends BaseService implements IIMEIService {
 
   async keepAlive(imei: string): Promise<void> {
     Logger.logF(()=>[`IMEIService keepAlive`]);
-    // await this.IMEIRepo.keepAlive(imei);
+    await this.IMEIRepo.keepAlive(imei);
   }
 }

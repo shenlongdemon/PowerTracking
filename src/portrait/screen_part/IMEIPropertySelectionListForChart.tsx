@@ -1,7 +1,7 @@
 import BaseScrPart from 'src/BaseScrPart';
 import {FactoryInjection} from 'core_app/infrastructure';
 import {DataHandling} from 'src/infrastructure/DataHandling';
-import {AppUtil, STATE_ACTION} from 'core_app/common';
+import {AppUtil, Logger, STATE_ACTION} from 'core_app/common';
 import {
   FieldData,
   IGlobalState,
@@ -49,6 +49,8 @@ class IMEIPropertySelectionListForChart extends BaseScrPart<
     this.state = {
       groups: [],
     };
+    Logger.logF(()=>[`IMEIPropertySelectionListForChart mqttService`, this.mqttService]);
+
   }
 
   async componentDidMount(): Promise<void> {
@@ -60,6 +62,7 @@ class IMEIPropertySelectionListForChart extends BaseScrPart<
   }
 
   private async close(): Promise<void> {
+    Logger.logF(()=>[`IMEIPropertySelectionListForChart close`]);
     await this.mqttService.close();
   }
   private async subscribe(): Promise<void> {

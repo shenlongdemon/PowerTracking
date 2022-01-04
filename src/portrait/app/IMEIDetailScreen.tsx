@@ -100,7 +100,7 @@ class IMEIDetailScreen extends BaseScreen<BasePops & InjectProps, State> {
         await this.IMEIService.keepAlive(this.imeiInfo.imei);
         this.keepAliveTimer = setInterval(async (): Promise<void> => {
             await this.IMEIService.keepAlive(this.imeiInfo.imei);
-        }, 2000);
+        }, 30000);
     }
 
     async componentFocus(): Promise<void> {
