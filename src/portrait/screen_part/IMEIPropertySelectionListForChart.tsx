@@ -50,7 +50,7 @@ class IMEIPropertySelectionListForChart extends BaseScrPart<
       groups: [],
     };
     Logger.logF(()=>[`IMEIPropertySelectionListForChart mqttService`, this.mqttService]);
-
+    this.mqttService.setOnData(this.onData);
   }
 
   async componentDidMount(): Promise<void> {
@@ -63,15 +63,14 @@ class IMEIPropertySelectionListForChart extends BaseScrPart<
 
   private async close(): Promise<void> {
     Logger.logF(()=>[`IMEIPropertySelectionListForChart close`]);
-    await this.mqttService.close();
+    await this.mqttService.unsubscribeIMEI( this.props.imeiInfo.imei,true);
   }
   private async subscribe(): Promise<void> {
     await AppUtil.sleep(2000);
     await this.mqttService.subscribeIMEI(
       // this.props.imeiDetail.imei,
       this.props.imeiInfo.imei,
-      true,
-      this.onData,
+      true
     );
   }
 
@@ -119,7 +118,7 @@ class IMEIPropertySelectionListForChart extends BaseScrPart<
             onPress={(): void => {
               this.props.onPress(group.group);
             }}
-            key={`IMEIChartThumb${this.props.imeiInfo.imei}-${group}`}
+            key={`IMEIChartThumb${this.props.imeiInfo.imei}-${group.group}`}
             group={group.group}
             unit={group.unit}
             imei={this.props.imeiInfo.imei}

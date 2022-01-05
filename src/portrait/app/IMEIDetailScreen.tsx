@@ -72,7 +72,6 @@ class IMEIDetailScreen extends BaseScreen<BasePops & InjectProps, State> {
             this.goBack();
         }
         this.imeiInfo = param as IMEIInfo;
-        this.globalState.do(STATE_ACTION.IMEI_SELECTED, this.imeiInfo.imei);
         this.setHeader(this.imeiInfo.xdesc);
     }
 
@@ -92,6 +91,7 @@ class IMEIDetailScreen extends BaseScreen<BasePops & InjectProps, State> {
     }
 
     async componentDidMount() {
+        this.globalState.do(STATE_ACTION.IMEI_SELECTED, this.imeiInfo.imei);
         await this.keepAlive();
     }
 

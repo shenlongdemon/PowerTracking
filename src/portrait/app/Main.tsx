@@ -42,6 +42,7 @@ export default class Main extends BaseScreen<BasePops, State> {
     this.onRSSIData = this.onRSSIData.bind(this);
     this.state = {list: []};
     Logger.logF(()=>[`Main mqttService`, this.mqttService]);
+    this.mqttService.setOnData(this.onRSSIData);
   }
 
   async componentDidMount(): Promise<void> {
@@ -51,7 +52,6 @@ export default class Main extends BaseScreen<BasePops, State> {
   }
 
   private async subscribeRSSIList(): Promise<void>{
-
     const dto: IMEIListDto = await this.IMEIService.getIMEIs();
     if (dto.isSuccess) {
       const list: IMEIInfo[] = dto.list || [];
@@ -68,7 +68,9 @@ export default class Main extends BaseScreen<BasePops, State> {
   }
 
   async componentFocus(): Promise<void> {
+
     this.globalState.do(STATE_ACTION.IMEI_SELECTED, CONSTANTS.STR_EMPTY);
+
   }
 
   async componentWillUnmount(): Promise<void> {
@@ -80,12 +82,10 @@ export default class Main extends BaseScreen<BasePops, State> {
     Logger.logF(()=>[`Main close`]);
     await this.mqttService.close();
   }
+
   private async subscribeRSSI(imeiList: string[]): Promise<void> {
     await this.mqttService.subscribeRSSIIMEIS(
-      // this.props.imeiDetail.imei,
-      imeiList,
-      true,
-      this.onRSSIData,
+      imeiList
     );
   }
   private readonly onRSSIData = async (data: MqttData): Promise<void> => {
