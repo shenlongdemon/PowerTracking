@@ -1,3 +1,4 @@
+sh ./hide-log.sh
 rm ./.babelrc
 cp ./.babelrc-release ./.babelrc
 npm run clear
