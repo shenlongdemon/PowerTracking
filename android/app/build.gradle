@@ -133,8 +133,8 @@ android {
         applicationId "com.powertracking"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode project.env.get("VERSION_CD").toInteger()
+        versionName project.env.get("VERSION")
     }
     splits {
         abi {
