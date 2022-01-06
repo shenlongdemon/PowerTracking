@@ -80,34 +80,37 @@ class IMEIPropertySelectionListForChart extends BaseScrPart<
   };
 
   private async handleData(data: MqttData): Promise<void> {
-    // Logger.log(`MQTT Main onData`, data);
-    const mainGroup: string = data.mainGroup;
-    const group: string = data.group;
-    const unit: string = data.unit;
-    const imei: string = data.imei;
-    const fieldData: FieldData | null = data.data;
-    if (!fieldData || group === 'LIVE') {
-      return;
+    try {
+      // Logger.log(`MQTT Main onData`, data);
+      const mainGroup: string = data.mainGroup;
+      const group: string = data.group;
+      const unit: string = data.unit;
+      const imei: string = data.imei;
+      const fieldData: FieldData | null = data.data;
+      if (!fieldData || group === 'LIVE') {
+        return;
+      }
+      if (fieldData.field.indexOf('F') === 0) {
+        this.globalState.do(STATE_ACTION.SET_IMEI_DATA, {
+          mainGroup,
+          group,
+          unit,
+          imei,
+          data: fieldData,
+          currentMainGroup: this.props.mainGroup,
+          currentIMEI: this.props.imei,
+          currentFields: this.props.fields,
+        });
+      } else if (fieldData.field.indexOf('S') === 0) {
+        this.globalState.do(STATE_ACTION.SET_IMEI_S_INFO, {
+          mainGroup,
+          group,
+          imei,
+          data: fieldData,
+        });
+      }
     }
-    if (fieldData.field.indexOf('F') === 0) {
-      this.globalState.do(STATE_ACTION.SET_IMEI_DATA, {
-        mainGroup,
-        group,
-        unit,
-        imei,
-        data: fieldData,
-        currentMainGroup: this.props.mainGroup,
-        currentIMEI: this.props.imei,
-        currentFields: this.props.fields,
-      });
-    } else if (fieldData.field.indexOf('S') === 0) {
-      this.globalState.do(STATE_ACTION.SET_IMEI_S_INFO, {
-        mainGroup,
-        group,
-        imei,
-        data: fieldData,
-      });
-    }
+    catch (ex){}
   }
 
   private renderData(): any {
@@ -118,7 +121,7 @@ class IMEIPropertySelectionListForChart extends BaseScrPart<
             onPress={(): void => {
               this.props.onPress(group.group);
             }}
-            key={`IMEIChartThumb${this.props.imeiInfo.imei}-${group.group}`}
+            key={`IMEIChartThumb${this.props.imeiInfo.imei}-${group}`}
             group={group.group}
             unit={group.unit}
             imei={this.props.imeiInfo.imei}

@@ -2,7 +2,7 @@
 OS="`uname`"
 
 rm -rf ./.babelrc
-cp ./.babelrc_dev ./.babelrc
+cp ./.babelrc-dev ./.babelrc
 
 sed -i -e "s/IS_DEBUGGER=false/IS_DEBUGGER=true/g" ./.env.staging
 

@@ -126,7 +126,7 @@ export default class MQTTService extends BaseMQTTService{
   };
 
   private getIPAddress(): string {
-    return ENV.MQTT_HOST;
+    return 'mqtt://113.160.233.27:1883';
   }
 
   private onMessage = async (

@@ -48,7 +48,7 @@ export default class Splash extends BaseScreen<BasePops, BaseState> {
           Made in VietNam
         </Text>
         <Text style={{alignSelf: 'center', color: 'grey'}}>
-          Version {ENV.VERSION_CODE}
+          Version {ENV.VERSION_CODE} { ENV.ENV_FILE}
         </Text>
       </BaseScreen>
     );
