@@ -17,7 +17,7 @@ export class ENV {
     ENV.MQTT_HOST = configuration.MQTT_HOST;
     ENV.ENVIRONMENT = configuration.ENVIRONMENT;
     ENV.IS_DEBUGGER = `${configuration.IS_DEBUGGER}` === 'true';
-    ENV.VERSION_CODE = configuration.VERSION_COD;
+    ENV.VERSION_CODE = configuration.VERSION_CD;
     ENV.VERSION = configuration.VERSION;
     ENV.WEB_SITE = configuration.WEB_SITE;
     ENV.WEB_SITE_NAME = configuration.WEB_SITE_NAME;

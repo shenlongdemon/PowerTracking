@@ -13,9 +13,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "shake": "adb shell input keyevent 82",
     "install-apk": "adb install ./android/app/build/outputs/apk/release/app-release.apk",
-    "dev": "SET ENVFILE=.env && npx react-native run-android",
-    "stg": "SET ENVFILE=.env.staging && npx react-native run-android",
-    "release-apk": "SET ENVFILE=.env.staging && sh ./release-apk.sh"
+    "dev": "./dev.sh",
+    "stg": "./stg.sh",
+    "prod": "./prod.sh",
+    "release-stg": "sh ./release-stg.sh",
+    "release-prod": "sh ./release-prod.sh"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.13.2",

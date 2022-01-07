@@ -2,6 +2,7 @@
 
 buildscript {
     ext {
+        applicationId = "com.powertracking"
         buildToolsVersion = "29.0.2"
         minSdkVersion = 26
         compileSdkVersion = 29

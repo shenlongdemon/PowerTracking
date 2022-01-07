@@ -42,13 +42,13 @@ export default class Splash extends BaseScreen<BasePops, BaseState> {
       <BaseScreen>
         <Image source={logo} style={[styleSheet.logo_splash]} />
         <Text style={{alignSelf: 'center', color: 'grey'}}>
-          Design by GiamSatDuLieu.com
+          Design by {ENV.WEB_SITE_NAME}
         </Text>
         <Text style={{alignSelf: 'center', color: 'grey'}}>
           Made in VietNam
         </Text>
         <Text style={{alignSelf: 'center', color: 'grey'}}>
-          Version {ENV.VERSION_CODE} { ENV.ENV_FILE}
+          Version {ENV.VERSION_CODE} { ENV.ENVIRONMENT}
         </Text>
       </BaseScreen>
     );
