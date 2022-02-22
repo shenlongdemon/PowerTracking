@@ -13,9 +13,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "shake": "adb shell input keyevent 82",
     "install-apk": "adb install ./android/app/build/outputs/apk/release/app-release.apk",
-    "dev": "./dev.sh",
-    "stg": "./stg.sh",
-    "prod": "./prod.sh",
+    "dev": "sh ./dev.sh",
+    "stg": "sh ./stg.sh",
+    "prod": "sh ./prod.sh",
     "release-stg": "sh ./release-stg.sh",
     "release-prod": "sh ./release-prod.sh"
   },

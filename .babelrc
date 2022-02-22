@@ -2,7 +2,6 @@
   "presets": ["module:metro-react-native-babel-preset"],
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
-    ["transform-remove-console"],
     ["babel-plugin-root-import",
       {
         "paths": [
@@ -16,10 +15,5 @@
         ]
       }
     ]
-  ],
-  "env": {
-    "production": {
-      "plugins": ["transform-remove-console"]
-    }
-  }
+  ]
 }

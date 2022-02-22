@@ -40,6 +40,7 @@ export default class Main extends BaseScreen<BasePops, State> {
   constructor(p: BasePops) {
     super(p);
     this.onRSSIData = this.onRSSIData.bind(this);
+    this.addNewDevice = this.addNewDevice.bind(this);
     this.state = {list: []};
     Logger.logF(()=>[`Main mqttService`, this.mqttService]);
     this.mqttService.setOnData(this.onRSSIData);
@@ -135,6 +136,10 @@ export default class Main extends BaseScreen<BasePops, State> {
     );
   };
 
+  private readonly addNewDevice = (): void =>{
+    this.navigate(ROUTE.APP.ADD_DEVICE.ROUTE);
+  };
+
   render() {
     return (
       <BaseScreen>
@@ -161,7 +166,7 @@ export default class Main extends BaseScreen<BasePops, State> {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onPress={() => {}}>
+            onPress={this.addNewDevice}>
             <Icon
               name={'plus'}
               type={'AntDesign'}
