@@ -8,8 +8,10 @@ import WifiSelectedList from "src/shared_controls/WifiSelectedList";
 import {WifiObject} from "src/models/WifiObject";
 import {ROUTE} from "src/portrait/route";
 import {useNavigation} from "@react-navigation/native";
+import useService from "src/use_hooks/useService";
 
 const AddDeviceScreen = () => {
+    const  {authService} = useService();
     const navigation = useNavigation();
     const [isAndroid] = useState(AppUtil.isAndroid());
     const [selectedWifi, setSelectedWifi] = useState<WifiObject | null>(null);
