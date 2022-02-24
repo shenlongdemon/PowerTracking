@@ -1,6 +1,7 @@
 // @ts-ignore
 import {CONSTANTS} from './Constants';
 import {Logger} from './Logger';
+import {Platform} from "react-native";
 const safeJsonStringify = require('safe-json-stringify');
 
 export class AppUtil {
@@ -279,5 +280,9 @@ export class AppUtil {
         return d;
       }),
     );
+  }
+
+  static isAndroid(): boolean {
+    return Platform.OS === "android";
   }
 }

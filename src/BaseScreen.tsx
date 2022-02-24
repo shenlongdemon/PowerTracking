@@ -35,6 +35,7 @@ export default class BaseScreen<P extends BasePops, S extends BaseState>
       this.props.navigation.navigate(routeName, data);
     }
   }
+
   protected setHeader(title: string): void {
     if (!!this.props.navigation) {
       // @ts-ignore

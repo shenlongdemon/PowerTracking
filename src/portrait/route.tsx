@@ -7,7 +7,7 @@ export const ROUTE = {
     IMEI_INFO: 'imei_info',
     ADD_DEVICE : {
       ROUTE: 'add_device',
-      SELECT_WIFI: 'select_wifi',
+      CONFIG_DEVICE: 'config_device',
     }
   },
 };

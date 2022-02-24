@@ -5,6 +5,7 @@ const color = {
   disabledButton: '#4c6864',
   darkButton: '#18504a',
   button: '#30ab9a',
+  selectedListItem: 'rgba(192,243,233,0.5)',
   buttonText: '#ffffff',
 
   buttonDanger: '#ce3d3e',

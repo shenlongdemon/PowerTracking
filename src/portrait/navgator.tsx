@@ -14,7 +14,7 @@ import IMEIDetailScreen from 'src/portrait/app/IMEIDetailScreen';
 import DrawerMenu from 'src/portrait/DrawerMenu';
 import {color} from 'src/stylesheet';
 import AddDeviceScreen from "src/portrait/app/add_device/AddDeviceScreen";
-import SelectWifiScreen from "src/portrait/app/add_device/SelectWifiScreen";
+import ConfigDeviceScreen from "src/portrait/app/add_device/ConfigDeviceScreen";
 
 const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
     {
@@ -50,6 +50,8 @@ const drawerStack = createCompatNavigatorFactory(createDrawerNavigator)(
         },
     },
 );
+
+
 // const mainStack = createCompatNavigatorFactory(createDrawerNavigator)(
 let mainStack: { ({screenProps}: { screenProps?: unknown }): JSX.Element; navigationOptions: Record<string, any> | undefined };
 mainStack = createCompatNavigatorFactory(createStackNavigator)(
@@ -61,13 +63,7 @@ mainStack = createCompatNavigatorFactory(createStackNavigator)(
       [ROUTE.APP.IMEI_INFO]: {
         screen: IMEIDetailScreen,
         navigationOptions: IMEIDetailScreen.navigationOptions,
-      },
-      [ROUTE.APP.ADD_DEVICE.ROUTE]: {
-        screen: AddDeviceScreen
-      },
-      [ROUTE.APP.ADD_DEVICE.SELECT_WIFI]: {
-        screen: SelectWifiScreen
-      },
+      }
     },
     {
       initialRouteName: ROUTE.APP.MAIN,
@@ -75,14 +71,10 @@ mainStack = createCompatNavigatorFactory(createStackNavigator)(
         headerStyle: {backgroundColor: color.button},
         headerTitleStyle: {
           textAlign: 'center',
-          // backgroundColor: 'red',
-          // flexGrow: 1,
           flex: 1,
           alignSelf: 'center',
           color: color.buttonText,
           backgroundColor: color.button,
-          // marginLeft: -50,
-          // width: '100%',
         },
         headerTintColor: color.buttonText,
       },
@@ -100,11 +92,8 @@ const addDeviceStack = createCompatNavigatorFactory(createStackNavigator)(
     {
         [ROUTE.APP.ADD_DEVICE.ROUTE]: {
             screen: AddDeviceScreen,
-            navigationOptions: {headerShown: false},
-        },
-        [ROUTE.APP.IMEI_INFO]: {
-            screen: IMEIDetailScreen,
-            navigationOptions: IMEIDetailScreen.navigationOptions,
+        },[ROUTE.APP.ADD_DEVICE.CONFIG_DEVICE]: {
+            screen: ConfigDeviceScreen,
         },
     },
     {
@@ -132,6 +121,7 @@ const appStack = createSwitchNavigator(
         [ROUTE.SPLASH]: Splash,
         [ROUTE.AUTH]: UserLogin,
         [ROUTE.APP.ROUTE]: mainStack,
+        [ROUTE.APP.ADD_DEVICE.ROUTE]: addDeviceStack,
     },
     {
         initialRouteName: ROUTE.SPLASH,
