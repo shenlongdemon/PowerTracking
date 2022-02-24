@@ -1,6 +1,6 @@
 
 import {useEffect, useState} from 'react';
-import WifiManager, {WifiEntry} from 'react-native-wifi-reborn';
+import WifiManager, {reScanAndLoadWifiList, WifiEntry} from 'react-native-wifi-reborn';
 import {WifiObject} from 'src/models/WifiObject';
 import {Logger} from 'core_app/common';
 const useGetWifiList = () => {
@@ -11,8 +11,9 @@ const useGetWifiList = () => {
   useEffect(() => {
     setIsLoading(true);
     (async (): Promise<void> => {
-      const wifiList: WifiEntry[] = await WifiManager.loadWifiList();
-      Logger.logF(() => [`AddDeviceScreen `, wifiList]);
+      Logger.logF(() => [`useGetWifiList `]);
+      const wifiList: WifiEntry[] = await WifiManager.reScanAndLoadWifiList();
+      Logger.logF(() => [`useGetWifiList `, wifiList]);
       const wifiObjects: WifiObject[] = wifiList.map(
         (wifi: WifiEntry): WifiObject => {
           return {

@@ -8,21 +8,24 @@ import WifiSelectedList from "src/shared_controls/WifiSelectedList";
 import {WifiObject} from "src/models/WifiObject";
 import {ROUTE} from "src/portrait/route";
 import {useNavigation} from "@react-navigation/native";
-import useService from "src/use_hooks/useService";
+import Popup from "src/shared_controls/Popup";
 
 const AddDeviceScreen = () => {
-    const  {authService} = useService();
     const navigation = useNavigation();
     const [isAndroid] = useState(AppUtil.isAndroid());
-    const [selectedWifi, setSelectedWifi] = useState<WifiObject | null>(null);
+    const [scanQRCode, setScanQRCode] = useState(false);
 
-    const next = (): void => {
-        navigation.navigate(ROUTE.APP.ADD_DEVICE.CONFIG_DEVICE, {wifi: selectedWifi});
+    const next = (item: WifiObject): void => {
+        navigation.navigate(ROUTE.APP.ADD_DEVICE.CONFIG_DEVICE, {wifi: item});
     };
 
     const renderBody = (): any => {
         return isAndroid ?
-            <WifiSelectedList onSelected={(item: WifiObject) => setSelectedWifi(item) } /> : <View/>;
+            <WifiSelectedList onSelected={(item: WifiObject) => next(item) } /> : <View/>;
+    };
+
+    const startQRCode = () : void => {
+        setScanQRCode(!scanQRCode);
     };
 
     return (
@@ -31,9 +34,15 @@ const AddDeviceScreen = () => {
                 {renderBody()}
             </View>
             <View style={{flexDirection: 'row'}}>
-                <Button style={styles.btnAction}>QR Code</Button>
-                <Button style={styles.btnAction} onPress={next}>Next</Button>
+                <Button style={styles.btnAction} onPress={startQRCode}>QR Code</Button>
             </View>
+            <Popup modalVisible={scanQRCode}>
+                <View style={{
+                    flexDirection: 'row',
+                  }}>
+                    <Button style={styles.btnAction} onPress={startQRCode}>QR Code</Button>
+                </View>
+            </Popup>
         </BaseScreen>
     );
 };
