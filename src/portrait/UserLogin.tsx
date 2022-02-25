@@ -49,7 +49,8 @@ export default class UserLogin extends BaseScreen<BasePops, BaseState> {
             alignItems: 'center',
             flex: 1,
             marginTop: -20,
-          }}>
+          }}
+        >
           <Image source={logo} style={[styleSheet.logo]} />
           <Formik
             style={{

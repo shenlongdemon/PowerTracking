@@ -13,9 +13,9 @@ import {
 } from 'core_app';
 import {injectable} from 'inversify';
 import MQTT, {MqttClient} from 'react-native-mqtt';
-import BaseMQTTService from "src/infrastructure/BaseMQTTService";
+import BaseMQTTService from 'src/infrastructure/BaseMQTTService';
 @injectable()
-export default class MQTTService extends BaseMQTTService{
+export default class MQTTService extends BaseMQTTService {
   private client: MqttClient | null = null;
 
   protected getClient(): any {
@@ -23,38 +23,47 @@ export default class MQTTService extends BaseMQTTService{
   }
 
   protected getHashcode(): string {
-    return `${this.hashCode}_${(!!this.client ? this.client.clientRef : '')}`;
+    return `${this.hashCode}_${!!this.client ? this.client.clientRef : ''}`;
   }
 
   async unsubscribeIMEI(imei: string, shouldClose: boolean): Promise<void> {
     if (!!this.client) {
       const topic: string = await this.getIMEITopic(imei);
       this.client.unsubscribe(topic);
-      Logger.logF(()=>[`MqttService unsubscribeIMEI ${imei} ${topic} ${this.getHashcode()}`, this.client]);
-
+      Logger.logF(() => [
+        `MqttService unsubscribeIMEI ${imei} ${topic} ${this.getHashcode()}`,
+        this.client,
+      ]);
     }
-    if(shouldClose){
+    if (shouldClose) {
       await this.close();
     }
   }
 
   protected async connect(): Promise<BaseSdo> {
-    if(!!this.client){
+    if (!!this.client) {
       return this.successSdo(this.client);
     }
     const sdo: BaseSdo = await this.makeConnect();
     if (sdo.isSuccess && !!sdo.data) {
       this.client = sdo.data as MqttClient;
-      Logger.logF(()=>[`MqttService connect client ${this.getHashcode()}`, this.client]);
+      Logger.logF(() => [
+        `MqttService connect client ${this.getHashcode()}`,
+        this.client,
+      ]);
     }
-    Logger.logF(()=>[`MqttService connect client ${this.getHashcode()}`, this.client, sdo]);
+    Logger.logF(() => [
+      `MqttService connect client ${this.getHashcode()}`,
+      this.client,
+      sdo,
+    ]);
     return sdo;
   }
 
-  protected async subscribeTopic(
-      topic: string
-  ): Promise<SubscribeTopicDto> {
-    Logger.logF(()=>[`MqttService subscribe topic ${topic} ${this.getHashcode()}`]);
+  protected async subscribeTopic(topic: string): Promise<SubscribeTopicDto> {
+    Logger.logF(() => [
+      `MqttService subscribe topic ${topic} ${this.getHashcode()}`,
+    ]);
 
     if (!!this.client) {
       this.client.unsubscribe(topic);
@@ -71,9 +80,8 @@ export default class MQTTService extends BaseMQTTService{
     return {...this.populate(sdo, false), subscribe: null};
   }
 
-
-  protected async disconnectClient(): Promise<void>{
-    if(!!this.client) {
+  protected async disconnectClient(): Promise<void> {
+    if (!!this.client) {
       this.client.disconnect();
       // TO DO if we remove client, all clients will be removed so if we call this, we have to re-subscribe others
       // MQTT.removeClient(this.client);
@@ -81,39 +89,40 @@ export default class MQTTService extends BaseMQTTService{
     }
   }
 
-  protected async makeConnect(
-  ): Promise<BaseSdo> {
+  protected async makeConnect(): Promise<BaseSdo> {
     Logger.log(`MqttService makeConnect`);
-    const promise = new Promise<BaseSdo>(
-      async (resolve): Promise<void> => {
-        try {
-          Logger.log(`MqttService start connect`);
-          MQTT.createClient({
-            uri: this.getIPAddress(),
-          })
-            .then((client): void => {
-              client.on('closed', this.onClose);
-              client.on('error', (msg): void => {
-                resolve(this.failedSdo(MQTT_CODE.CONNECT_ERROR, msg));
-              });
-              client.on('message', (data): void => {
-                Logger.logF(()=>[`message ${this.hashCode} ${client.clientRef}`]);
-                this.onMessage(data);
-              });
-              client.on('connect', (): void => {
-                Logger.logF(()=>[`connect ${this.hashCode} ${client.clientRef}`]);
-                resolve(this.successSdo(client));
-              });
-              client.connect();
-            })
-            .catch((err: any): void => {
-              resolve(this.failedSdo(MQTT_CODE.CONNECT_ERROR, err));
+    const promise = new Promise<BaseSdo>(async (resolve): Promise<void> => {
+      try {
+        Logger.log(`MqttService start connect`);
+        MQTT.createClient({
+          uri: this.getIPAddress(),
+        })
+          .then((client): void => {
+            client.on('closed', this.onClose);
+            client.on('error', (msg): void => {
+              resolve(this.failedSdo(MQTT_CODE.CONNECT_ERROR, msg));
             });
-        } catch (err) {
-          resolve(this.failedSdo(MQTT_CODE.CONNECT_ERROR, err));
-        }
-      },
-    );
+            client.on('message', (data): void => {
+              Logger.logF(() => [
+                `message ${this.hashCode} ${client.clientRef}`,
+              ]);
+              this.onMessage(data);
+            });
+            client.on('connect', (): void => {
+              Logger.logF(() => [
+                `connect ${this.hashCode} ${client.clientRef}`,
+              ]);
+              resolve(this.successSdo(client));
+            });
+            client.connect();
+          })
+          .catch((err: any): void => {
+            resolve(this.failedSdo(MQTT_CODE.CONNECT_ERROR, err));
+          });
+      } catch (err) {
+        resolve(this.failedSdo(MQTT_CODE.CONNECT_ERROR, err));
+      }
+    });
     return promise;
   }
 

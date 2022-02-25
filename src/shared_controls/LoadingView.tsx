@@ -20,7 +20,8 @@ export default class LoadingView extends PureComponent<Props> {
           justifyContent: 'center',
           alignContent: 'center',
           alignItems: 'center',
-        }}>
+        }}
+      >
         <Spinner color="white" size={30} style={styleSheet.spinner} />
       </View>
     );

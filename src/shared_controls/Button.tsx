@@ -45,7 +45,8 @@ export default class Button extends TouchView<Props> {
           },
           styles.button,
           this.props.style,
-        ]}>
+        ]}
+      >
         {!!this.props.isLoading && <Spinner color={'white'} />}
         {typeof this.props.children === 'object' && this.props.children}
         <Text
@@ -54,7 +55,8 @@ export default class Button extends TouchView<Props> {
           style={{
             fontWeight: 'bold',
             color: this.textColor(),
-          }}>
+          }}
+        >
           {!!this.props.isLoading ? 'Wait...' : `${this.props.children}`}
         </Text>
       </TouchView>

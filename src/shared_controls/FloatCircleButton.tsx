@@ -45,7 +45,8 @@ export class FloatCircleButton extends BaseControl<Props> {
           alignItems: 'center',
           justifyContent: 'center',
         }}
-        onPress={this.props.onPress}>
+        onPress={this.props.onPress}
+      >
         <Icon
           name={this.props.iconName || 'plus'}
           // @ts-ignore

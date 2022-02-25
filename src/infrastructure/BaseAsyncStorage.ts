@@ -61,11 +61,9 @@ export class BaseAsyncStorage {
     type: {new (): T} | null = null,
   ): Promise<T[]> => {
     const data: T[] = await this.getObjectsByWildcard<T>(wildcard);
-    return data.map(
-      (d: T): T => {
-        return !!type ? Object.assign(new type(), d) : d;
-      },
-    );
+    return data.map((d: T): T => {
+      return !!type ? Object.assign(new type(), d) : d;
+    });
   };
   getObjectClassesByWildCards = async <T>(
     wildcards: string[],
@@ -73,11 +71,9 @@ export class BaseAsyncStorage {
   ): Promise<T[]> => {
     const keys: string[] = await this.getKeysByEveryWildcards(wildcards);
     const data: T[] = await this.getObjectsByKeys<T>(keys);
-    return data.map(
-      (d: T): T => {
-        return !!type ? Object.assign(new type(), d) : d;
-      },
-    );
+    return data.map((d: T): T => {
+      return !!type ? Object.assign(new type(), d) : d;
+    });
   };
 
   getObject = async <T>(key: string): Promise<T | null> => {

@@ -40,7 +40,8 @@ export class Text extends React.PureComponent<Props> {
             fontWeight: !!this.props.bold ? 'bold' : undefined,
           },
           this.props.style,
-        ]}>
+        ]}
+      >
         {this.children()}
       </NBText>
     );

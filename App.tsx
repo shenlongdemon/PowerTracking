@@ -17,8 +17,8 @@ import Store from 'src/redux/Store';
 declare const global: {HermesInternal: null | {}};
 import {BackHandler, LogBox, NativeEventSubscription} from 'react-native';
 import Loading from 'src/shared_controls/Loading';
-import { PermissionsAndroid } from 'react-native';
-import {Logger} from "core_app/common";
+import {PermissionsAndroid} from 'react-native';
+import {Logger} from 'core_app/common';
 
 LogBox.ignoreLogs([]);
 
@@ -38,30 +38,33 @@ function App() {
   };
 
   React.useEffect(() => {
-      Logger.logF(() =>[`App addEventListener`]);
-      hardwareBackPressEvent = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    Logger.logF(() => [`App addEventListener`]);
+    hardwareBackPressEvent = BackHandler.addEventListener(
+      'hardwareBackPress',
+      onBackPress,
+    );
 
     return () => {
-        !!hardwareBackPressEvent && BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      !!hardwareBackPressEvent &&
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     };
   }, [hardwareBackPressEvent]);
 
   useEffect(() => {
     checkPermissions();
-  }, [permissionGranted])
+  }, [permissionGranted]);
 
-  const checkPermissions = async () : Promise<void> => {
-
+  const checkPermissions = async (): Promise<void> => {
     const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Location permission is required for WiFi connections',
-          message:
-              'This app needs location permission as this is required  ' +
-              'to scan for wifi networks.',
-          buttonNegative: 'DENY',
-          buttonPositive: 'ALLOW',
-        },
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location permission is required for WiFi connections',
+        message:
+          'This app needs location permission as this is required  ' +
+          'to scan for wifi networks.',
+        buttonNegative: 'DENY',
+        buttonPositive: 'ALLOW',
+      },
     );
     setPermissionGranted(granted === PermissionsAndroid.RESULTS.GRANTED);
   };
@@ -69,12 +72,12 @@ function App() {
   return (
     <Provider store={Store}>
       <NavigationContainer ref={navigationRef}>
-        {permissionGranted &&
-            <>
-                <PortraitApp/>
-                <Loading />
-            </>
-        }
+        {permissionGranted && (
+          <>
+            <PortraitApp />
+            <Loading />
+          </>
+        )}
       </NavigationContainer>
     </Provider>
   );

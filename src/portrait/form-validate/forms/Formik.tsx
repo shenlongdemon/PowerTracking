@@ -125,7 +125,8 @@ export default class Formik<T> extends React.Component<Props<T>, State> {
             onPress={async (): Promise<void> => {
               props.handleSubmit();
             }}
-            disabled={!props.isValid}>
+            disabled={!props.isValid}
+          >
             {!!this.props.submitTittle ? this.props.submitTittle : 'Submit'}
           </Button>
         </View>
@@ -145,11 +146,13 @@ export default class Formik<T> extends React.Component<Props<T>, State> {
             backgroundColor: '#ffffff',
             borderRadius: 10,
           },
-        ]}>
+        ]}
+      >
         <FormikLib
           validationSchema={this.getSchema()}
           initialValues={this.initialValues()}
-          onSubmit={this.submit}>
+          onSubmit={this.submit}
+        >
           {(props: FormikProps<any>): any => {
             return this.renderLayout(props);
           }}

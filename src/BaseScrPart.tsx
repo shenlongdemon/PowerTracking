@@ -4,7 +4,7 @@ export interface BaseScrPartProps extends ViewProps {}
 
 export default class BaseScrPart<
   P extends BaseScrPartProps,
-  S
+  S,
 > extends React.Component<P, S> {
   constructor(p: P) {
     super(p);

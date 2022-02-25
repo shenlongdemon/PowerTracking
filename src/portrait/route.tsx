@@ -5,9 +5,9 @@ export const ROUTE = {
     ROUTE: 'app',
     MAIN: 'main',
     IMEI_INFO: 'imei_info',
-    ADD_DEVICE : {
+    ADD_DEVICE: {
       ROUTE: 'add_device',
       CONFIG_DEVICE: 'config_device',
-    }
+    },
   },
 };

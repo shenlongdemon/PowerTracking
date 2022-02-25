@@ -105,13 +105,15 @@ class IMEIMainGroupChart extends BaseScrPart<Props, State> {
               borderColor: 'grey',
               marginBottom: 20,
               marginTop: 10,
-            }}>
+            }}
+          >
             <View
               style={{
                 height: 30,
                 flexDirection: 'row',
                 // backgroundColor: 'red',
-              }}>
+              }}
+            >
               <ScrollView horizontal={true}>
                 {dd.map((d: any): any => {
                   return (
@@ -128,7 +130,8 @@ class IMEIMainGroupChart extends BaseScrPart<Props, State> {
                         paddingRight: 5,
                         marginLeft: 5,
                         height: 30,
-                      }}>
+                      }}
+                    >
                       {d.field}
                     </Text>
                   );
@@ -140,7 +143,8 @@ class IMEIMainGroupChart extends BaseScrPart<Props, State> {
                 height: 260,
                 flexDirection: 'row',
                 // backgroundColor: 'yellow',
-              }}>
+              }}
+            >
               <YAxis
                 style={{width: 30}}
                 data={yAxis}

@@ -12,6 +12,8 @@ target 'PowerTracking' do
 
   pod 'react-native-orientation', :path => '../node_modules/react-native-orientation'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
   target 'PowerTrackingTests' do
     inherit! :complete
     # Pods for testing

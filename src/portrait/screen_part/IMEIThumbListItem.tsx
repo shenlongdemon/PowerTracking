@@ -43,7 +43,8 @@ export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
         style={{padding: 20, marginVertical: 8, marginHorizontal: 16}}
         noIndent
         button
-        onPress={this.props.onPress}>
+        onPress={this.props.onPress}
+      >
         <Body style={{flex: 1}}>
           <Text H3 style={{marginBottom: 10}}>
             {this.props.imei.xdesc}
@@ -64,7 +65,8 @@ export default class IMEIThumbListItem extends BaseScrPart<Props, State> {
           />
           <Animatable.View
             style={{alignSelf: 'center'}}
-            ref={this.handleViewRef}>
+            ref={this.handleViewRef}
+          >
             <Text H3 style={{alignSelf: 'center', color: 'grey'}}>
               {data}
             </Text>

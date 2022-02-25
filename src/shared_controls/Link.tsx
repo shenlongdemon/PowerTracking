@@ -21,7 +21,8 @@ export class Link extends React.PureComponent<Props> {
       <Text
         {...this.getProps()}
         style={[{color: 'blue'}, this.props.style]}
-        onPress={this.goToURL}>
+        onPress={this.goToURL}
+      >
         {this.props.children}
       </Text>
     );

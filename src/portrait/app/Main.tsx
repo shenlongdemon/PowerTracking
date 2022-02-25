@@ -42,7 +42,7 @@ export default class Main extends BaseScreen<BasePops, State> {
     this.onRSSIData = this.onRSSIData.bind(this);
     this.addNewDevice = this.addNewDevice.bind(this);
     this.state = {list: []};
-    Logger.logF(()=>[`Main mqttService`, this.mqttService]);
+    Logger.logF(() => [`Main mqttService`, this.mqttService]);
     this.mqttService.setOnData(this.onRSSIData);
   }
 
@@ -52,7 +52,7 @@ export default class Main extends BaseScreen<BasePops, State> {
     await this.setLoading(false);
   }
 
-  private async subscribeRSSIList(): Promise<void>{
+  private async subscribeRSSIList(): Promise<void> {
     const dto: IMEIListDto = await this.IMEIService.getIMEIs();
     if (dto.isSuccess) {
       const list: IMEIInfo[] = dto.list || [];
@@ -69,9 +69,7 @@ export default class Main extends BaseScreen<BasePops, State> {
   }
 
   async componentFocus(): Promise<void> {
-
     this.globalState.do(STATE_ACTION.IMEI_SELECTED, CONSTANTS.STR_EMPTY);
-
   }
 
   async componentWillUnmount(): Promise<void> {
@@ -80,14 +78,12 @@ export default class Main extends BaseScreen<BasePops, State> {
   }
 
   private async close(): Promise<void> {
-    Logger.logF(()=>[`Main close`]);
+    Logger.logF(() => [`Main close`]);
     await this.mqttService.close();
   }
 
   private async subscribeRSSI(imeiList: string[]): Promise<void> {
-    await this.mqttService.subscribeRSSIIMEIS(
-      imeiList
-    );
+    await this.mqttService.subscribeRSSIIMEIS(imeiList);
   }
   private readonly onRSSIData = async (data: MqttData): Promise<void> => {
     await this.handleRSSIData(data);
@@ -136,7 +132,7 @@ export default class Main extends BaseScreen<BasePops, State> {
     );
   };
 
-  private readonly addNewDevice = (): void =>{
+  private readonly addNewDevice = (): void => {
     this.navigate(ROUTE.APP.ADD_DEVICE.ROUTE);
   };
 
@@ -166,7 +162,8 @@ export default class Main extends BaseScreen<BasePops, State> {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onPress={this.addNewDevice}>
+            onPress={this.addNewDevice}
+          >
             <Icon
               name={'plus'}
               type={'AntDesign'}

@@ -82,7 +82,8 @@ export default class DropDownList extends React.Component<Props, State> {
           alignItems: 'flex-end',
           justifyContent: 'flex-end',
         }}
-        onPress={this.showOptions}>
+        onPress={this.showOptions}
+      >
         <Text {...this.props}>{itemText}</Text>
         <Icon
           style={[this.props.style, {marginBottom: 3, marginLeft: 10}]}

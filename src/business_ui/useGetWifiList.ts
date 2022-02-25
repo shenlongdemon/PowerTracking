@@ -1,10 +1,11 @@
-
 import {useEffect, useState} from 'react';
-import WifiManager, {reScanAndLoadWifiList, WifiEntry} from 'react-native-wifi-reborn';
+import WifiManager, {
+  reScanAndLoadWifiList,
+  WifiEntry,
+} from 'react-native-wifi-reborn';
 import {WifiObject} from 'src/models/WifiObject';
 import {Logger} from 'core_app/common';
 const useGetWifiList = () => {
-
   const [isLoading, setIsLoading] = useState(true);
   const [wifiList, setWifiList] = useState<WifiObject[]>([]);
 

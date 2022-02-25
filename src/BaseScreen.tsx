@@ -19,7 +19,8 @@ export interface BasePops {
 export interface BaseState {}
 export default class BaseScreen<P extends BasePops, S extends BaseState>
   extends React.Component<P, S>
-  implements IBaseScreen {
+  implements IBaseScreen
+{
   private focusSubscription?: any | null;
   private blurSubscription?: any | null;
   constructor(p: P) {

@@ -136,7 +136,7 @@ android {
         versionCode project.env.get("VERSION_CD").toInteger()
         versionName project.env.get("VERSION")
         resValue "string", "build_config_package", "com.powertracking"
-
+        missingDimensionStrategy 'react-native-camera', 'general' // <--- insert this lin
     }
     splits {
         abi {

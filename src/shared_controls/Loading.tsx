@@ -23,7 +23,8 @@ class Loading extends PureComponent<Props> {
             zIndex: 99999,
             justifyContent: 'center',
             flexDirection: 'row',
-          }}>
+          }}
+        >
           <Spinner color="white" size={30} style={styleSheet.spinner} />
         </View>
       );

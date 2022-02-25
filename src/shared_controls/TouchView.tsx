@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
   TouchableOpacityProps,
   GestureResponderEvent,
@@ -65,7 +65,8 @@ export default class TouchView<P extends Props> extends BaseControl<P> {
         testID={this.props.id}
         accessibilityLabel={this.props.id}
         disabled={disabled}
-        onPress={disabled ? undefined : this.onPress}>
+        onPress={disabled ? undefined : this.onPress}
+      >
         {this.props.children}
       </TouchableOpacity>
     );
