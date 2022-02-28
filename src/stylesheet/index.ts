@@ -31,9 +31,11 @@ const styleSheet = StyleSheet.create({
     flex: 1,
     resizeMode: 'contain',
     // position: 'absolute',
-    width: '100%',
-    height: '100%',
+    width: '70%',
+    height: '70%',
     justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
     borderRadius: 5,
   },
   logo: {
