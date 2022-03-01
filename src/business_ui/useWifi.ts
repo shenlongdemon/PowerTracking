@@ -21,7 +21,6 @@ const useWifi = () => {
   const connect = async (ssid: string, password: string): Promise<any> => {
     try {
       Logger.logF(() => [`userWifi connect ${ssid} ${password}`]);
-      WifiManager.setEnabled(true);
       await WifiManager.connectToProtectedSSID(ssid, password, false);
       return null;
     } catch (e) {

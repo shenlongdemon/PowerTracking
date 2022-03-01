@@ -29,7 +29,7 @@ const QRCodeScan = ({onRead}: {onRead: (data: QRCodeScanData) => void}) => {
           <QRCodeScanner onRead={onSuccess} />
         </View>
       ) : (
-        <View />
+        <></>
       )}
     </>
   );

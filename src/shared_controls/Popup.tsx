@@ -3,8 +3,8 @@ import * as React from 'react';
 
 const Popup = ({modalVisible, children}) => {
   return (
-    <Modal animationType="fade" transparent={true} visible={modalVisible}>
-      <View style={styles.centeredView}>
+    <Modal animationType="fade" visible={modalVisible}>
+      <View style={styles.container}>
         <View style={styles.modalView}>{children}</View>
       </View>
     </Modal>
@@ -14,12 +14,11 @@ const Popup = ({modalVisible, children}) => {
 export default Popup;
 
 const styles = StyleSheet.create({
-  centeredView: {
+  container: {
     flex: 1,
+    backgroundColor: 'rgba(43,83,99,0.27)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(43,83,99,0.27)',
-    alignSelf: 'center',
   },
   modalView: {
     alignSelf: 'center',
